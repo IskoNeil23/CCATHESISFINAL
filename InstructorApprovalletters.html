@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="instructor.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+
+<div id="mySidebar" class="sidebar">
+    <!-- Removed close button -->
+    <img class="navlog" src="cca-logo.png" alt="">
+    <h1>City College of Angeles City</h1> 
+    <a href="InstructorAttendancesheet.html">Attendance Sheet</a> 
+    <a href="InstructorSeatplan.html">Seat Plan</a>
+    <a href="InstructorSeatplan.html">Seat Plan</a>
+    <a class="active">Approval Letters</a>
+</div>
+
+<!-- Top navigation bar with logout button -->
+<div id="topNav" class="topnav shifted">
+    <div class="nav-left">
+        <!-- Removed the sidebar toggle button -->
+        <img src="cca-logo.png" alt="CCA Logo" height="50">
+        <h3>City College of Angeles City - Approval Letters</h3>
+    </div>
+    <button class="logout-btn" onclick="logout()">Log Out</button>
+</div>
+
+<div id="main" style="marginLeft: 250px">
+    <div id="pageContent" class="page-content">
+    
+        
+        
+    </div>
+</div>
+
+<script>
+    let letters = JSON.parse(localStorage.getItem('excuseLetters')) || [];
+
+// Logout function
+function logout() {
+    if(confirm("Are you sure you want to log out?")) {
+        // In a real application, this would clear session data and redirect to login
+        alert("You have been logged out successfully!");
+        window.location.href = "index.html"; // Redirect to login page
+    }
+}
+
+// Initialize the page
+document.addEventListener("DOMContentLoaded", function() {
+    // Set initial state
+    const currentPage = window.location.pathname.split("/").pop();
+    if (currentPage === "studentseatplan.html") {
+        // If we're on the seat plan page initially
+        document.querySelector(".topnav h3").innerText = "City College of Angeles City - Seat Plan";
+    }
+    
+    // Make sure sidebar is permanently visible
+    document.getElementById("mySidebar").style.width = "250px";
+    document.getElementById("main").style.marginLeft = "250px";
+});
+</script>
+   
+</body>
+</html>

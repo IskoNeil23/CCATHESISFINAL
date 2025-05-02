@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="Student.css">
+<style>
+ .sidebar {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color:darkgreen;
+    overflow-x: hidden;
+    padding-top: 60px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.sidebar a {
+    padding: 10px 15px;
+    text-decoration: none;
+
+    color: white;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidebar a:hover {
+    background-color:wheat;
+}
+
+</style>
+</head>
+<body>
+
+<div id="mySidebar" class="sidebar">
+    <img class="navlog" src="cca-logo.png" alt="">
+    <h1>City College of Angeles</h1>  
+    <a href="RegistrarEnrolledStudents.html">Enrolled Students</a>
+    <a href="RegistrarClassRecords.html">Class Records</a>
+    <a class="active">Instructors Management</a>
+    <a href="registrarinstructschedules.html">Instructor Schedules</a>
+</div>
+
+<!-- Top navigation bar with logout button -->
+<div id="topNav" class="topnav shifted">
+    <div class="nav-left">
+        <img src="cca-logo.png" alt="CCA Logo" height="50">
+        <h3>City College of Angeles - Instructor Management</h3>
+    </div>
+    <button class="logout-btn" onclick="logout()">Log Out</button>
+</div>
+
+<div id="main" style="margin-left: 250px">
+    <div id="pageContent" class="page-content">
+        <h2 class="section-title">Instructor Management</h2>
+        
+        <!-- Form for adding/editing instructors -->
+        <div class="form-container">
+            <form id="instructorForm">
+                <h3>Instructor Information Form</h3>
+                
+                <!-- Basic Information -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="instructorId">Instructor ID*</label>
+                        <input type="text" id="instructorId" required placeholder="Ex: INS-2023-001">
+                    </div>
+                    <div class="form-group">
+                        <label for="firstName">First Name*</label>
+                        <input type="text" id="firstName" required placeholder="First Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="middleName">Middle Name</label>
+                        <input type="text" id="middleName" placeholder="Middle Name (optional)">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name*</label>
+                        <input type="text" id="lastName" required placeholder="Last Name">
+                    </div>
+                </div>
+                
+                <!-- Contact Information -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="emailAddress">Email Address*</label>
+                        <input type="email" id="emailAddress" required placeholder="email@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="contactNumber">Contact Number*</label>
+                        <input type="tel" id="contactNumber" required placeholder="Ex: 09123456789">
+                    </div>
+                </div>
+                
+                <!-- Employment Details -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="institute">Institute*</label>
+                        <select id="institute" required>
+                            <option value="">Select Institute</option>
+                            <option value="ICSLIS">ICSLIS</option>
+                            <option value="IBM">IBM</option>
+                            <option value="IEAS">IEAS</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="position">Position*</label>
+                        <select id="position" required>
+                            <option value="">Select Position</option>
+                            <option value="Professor">Professor</option>
+                            <option value="Associate Professor">Associate Professor</option>
+                            <option value="Assistant Professor">Assistant Professor</option>
+                            <option value="Instructor">Instructor</option>
+                            <option value="Lecturer">Lecturer</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="employmentStatus">Employment Status*</label>
+                        <select id="employmentStatus" required>
+                            <option value="">Select Status</option>
+                            <option value="Full-time">Full-time</option>
+                            <option value="Part-time">Part-time</option>
+                            <option value="Contract">Contract</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="dateHired">Date Hired*</label>
+                        <input type="date" id="dateHired" required>
+                    </div>
+                </div>
+                
+                <!-- Qualifications -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="highestEducation">Highest Education*</label>
+                        <select id="highestEducation" required>
+                            <option value="">Select Education</option>
+                            <option value="PhD">PhD/Doctorate</option>
+                            <option value="Masters">Master's Degree</option>
+                            <option value="Bachelors">Bachelor's Degree</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="specialization">Field of Specialization*</label>
+                        <input type="text" id="specialization" required placeholder="Ex: Computer Science">
+                    </div>
+                </div>
+                
+                <div class="btn-container">
+                    <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset</button>
+                    <button type="button" class="btn btn-primary" onclick="saveInstructor()">Save Instructor</button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Instructor Table View -->
+        <h3 class="section-title">Instructors Table View</h3>
+        <div class="table-container">
+            <table class="data-table" id="instructorsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Institute</th>
+                        <th>Position</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="instructorsTableBody">
+                    <!-- Instructor records will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+// Function to reset form
+function resetForm() {
+    document.getElementById('instructorForm').reset();
+}
+
+// Function to save instructor
+function saveInstructor() {
+    // Get form values
+    const instructorId = document.getElementById('instructorId').value.trim();
+    const firstName = document.getElementById('firstName').value.trim();
+    const middleName = document.getElementById('middleName').value.trim();
+    const lastName = document.getElementById('lastName').value.trim();
+    const emailAddress = document.getElementById('emailAddress').value.trim();
+    const contactNumber = document.getElementById('contactNumber').value.trim();
+    const institute = document.getElementById('institute').value;
+    const position = document.getElementById('position').value;
+    const employmentStatus = document.getElementById('employmentStatus').value;
+    const dateHired = document.getElementById('dateHired').value;
+    const highestEducation = document.getElementById('highestEducation').value;
+    const specialization = document.getElementById('specialization').value.trim();
+    
+    // Form validation
+    if (!instructorId || !firstName || !lastName || !emailAddress || !contactNumber || 
+        !institute || !position || !employmentStatus || !dateHired || !highestEducation || 
+        !specialization) {
+        alert('Please fill in all required fields (marked with *)');
+        return;
+    }
+    
+    // Validate instructor ID format
+    if (!/^INS-\d{4}-\d{3}$/.test(instructorId)) {
+        alert('Instructor ID should be in the format INS-YYYY-### (e.g., INS-2023-001)');
+        return;
+    }
+    
+    // Validate email format
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailAddress)) {
+        alert('Please enter a valid email address');
+        return;
+    }
+    
+    // Validate contact number format
+    if (!/^09\d{9}$/.test(contactNumber)) {
+        alert('Contact number should be in the format 09XXXXXXXXX (e.g., 09123456789)');
+        return;
+    }
+    
+    // Create instructor object
+    const instructor = {
+        instructorId,
+        firstName,
+        middleName,
+        lastName,
+        emailAddress,
+        contactNumber,
+        institute,
+        position,
+        employmentStatus,
+        dateHired,
+        highestEducation,
+        specialization
+    };
+    
+    // Get existing instructors or initialize empty array
+    const instructors = JSON.parse(localStorage.getItem('instructors')) || [];
+    
+    // Check if instructor ID already exists
+    const existingIndex = instructors.findIndex(i => i.instructorId === instructorId);
+    
+    if (existingIndex !== -1) {
+        // Ask for confirmation to update
+        if (confirm(`Instructor with ID ${instructorId} already exists. Do you want to update?`)) {
+            instructors[existingIndex] = instructor;
+            alert('Instructor updated successfully!');
+        } else {
+            return;
+        }
+    } else {
+        // Add new instructor
+        instructors.push(instructor);
+        alert('Instructor added successfully!');
+    }
+    
+    // Save to localStorage
+    localStorage.setItem('instructors', JSON.stringify(instructors));
+    
+    resetForm();
+    displayInstructorTable(instructors);
+}
+
+// Function to display instructors in table format
+function displayInstructorTable(instructors) {
+    const tableBody = document.getElementById('instructorsTableBody');
+    tableBody.innerHTML = '';
+    
+    if (instructors.length === 0) {
+        const row = document.createElement('tr');
+        const cell = document.createElement('td');
+        cell.colSpan = 6;
+        cell.textContent = 'No instructors found.';
+        cell.style.textAlign = 'center';
+        row.appendChild(cell);
+        tableBody.appendChild(row);
+        return;
+    }
+    
+    // Sort instructors by last name
+    instructors.sort((a, b) => a.lastName.localeCompare(b.lastName));
+    
+    // Add each instructor to the table
+    instructors.forEach(instructor => {
+        const row = document.createElement('tr');
+        
+        // ID
+        const idCell = document.createElement('td');
+        idCell.textContent = instructor.instructorId;
+        row.appendChild(idCell);
+        
+        // Name
+        const nameCell = document.createElement('td');
+        nameCell.textContent = `${instructor.lastName}, ${instructor.firstName} ${instructor.middleName ? instructor.middleName : ''}`.trim();
+        row.appendChild(nameCell);
+        
+        // Institute
+        const instituteCell = document.createElement('td');
+        instituteCell.textContent = instructor.institute;
+        row.appendChild(instituteCell);
+        
+        // Position
+        const positionCell = document.createElement('td');
+        positionCell.textContent = instructor.position;
+        row.appendChild(positionCell);
+        
+        // Status
+        const statusCell = document.createElement('td');
+        statusCell.textContent = instructor.employmentStatus;
+        row.appendChild(statusCell);
+        
+        // Actions
+        const actionsCell = document.createElement('td');
+        actionsCell.className = 'action-btns';
+        
+        // Edit button
+        const editBtn = document.createElement('button');
+        editBtn.className = 'action-btn edit-btn';
+        editBtn.textContent = 'Edit';
+        editBtn.onclick = () => editInstructor(instructor.instructorId);
+        actionsCell.appendChild(editBtn);
+        
+        // Delete button
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'action-btn delete-btn';
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.onclick = () => deleteInstructor(instructor.instructorId);
+        actionsCell.appendChild(deleteBtn);
+        
+        row.appendChild(actionsCell);
+        tableBody.appendChild(row);
+    });
+}
+
+// Function to edit instructor
+function editInstructor(instructorId) {
+    const instructors = JSON.parse(localStorage.getItem('instructors')) || [];
+    const instructor = instructors.find(i => i.instructorId === instructorId);
+    
+    if (!instructor) {
+        alert('Instructor not found.');
+        return;
+    }
+    
+    // Populate form with instructor data
+    document.getElementById('instructorId').value = instructor.instructorId;
+    document.getElementById('firstName').value = instructor.firstName;
+    document.getElementById('middleName').value = instructor.middleName || '';
+    document.getElementById('lastName').value = instructor.lastName;
+    document.getElementById('emailAddress').value = instructor.emailAddress;
+    document.getElementById('contactNumber').value = instructor.contactNumber;
+    document.getElementById('institute').value = instructor.institute;
+    document.getElementById('position').value = instructor.position;
+    document.getElementById('employmentStatus').value = instructor.employmentStatus;
+    document.getElementById('dateHired').value = instructor.dateHired;
+    document.getElementById('highestEducation').value = instructor.highestEducation;
+    document.getElementById('specialization').value = instructor.specialization;
+    
+    // Scroll to form
+    document.querySelector('.form-container').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Function to delete instructor
+function deleteInstructor(instructorId) {
+    if (!confirm('Are you sure you want to delete this instructor?')) {
+        return;
+    }
+    
+    const instructors = JSON.parse(localStorage.getItem('instructors')) || [];
+    const updatedInstructors = instructors.filter(i => i.instructorId !== instructorId);
+    
+    localStorage.setItem('instructors', JSON.stringify(updatedInstructors));
+    
+    alert('Instructor deleted successfully.');
+    displayInstructorTable(updatedInstructors);
+}
+
+// Function for logout
+function logout() {
+    if (confirm('Are you sure you want to log out?')) {
+        window.location.href = 'student-login.html';
+    }
+}
+
+// Initialize page on load
+window.onload = function() {
+    const instructors = JSON.parse(localStorage.getItem('instructors')) || [];
+    displayInstructorTable(instructors);
+};
+</script>
+
+</body>
+</html>

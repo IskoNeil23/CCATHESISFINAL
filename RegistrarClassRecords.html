@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="Student.css">
+<style>
+    /* Added style for highlighted link */
+    .sidebar a.active {
+        background-color: wheat; 
+        color: rgb(0, 0, 0);
+        font-weight: bold;
+    }
+    
+    /* Styles for the form and table */
+    .form-container {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 15px;
+    }
+
+    .form-group {
+        margin-right: 20px;
+        margin-bottom: 15px;
+        flex: 1 0 200px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .form-group input, .form-group select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .btn-container {
+        margin-top: 20px;
+        text-align: right;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .btn-primary {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .btn-secondary {
+        background-color: #f0f0f0;
+        color: #333;
+        margin-right: 10px;
+    }
+
+    /* Table styles */
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .data-table th, .data-table td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+    }
+
+    .data-table th {
+        background-color: #f2f2f2;
+        position: sticky;
+        top: 0;
+    }
+
+    .data-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .data-table tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .table-container {
+        overflow-x: auto;
+        max-height: 500px;
+        overflow-y: auto;
+    }
+
+    .section-title {
+        margin-top: 30px;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #eee;
+    }
+
+    /* Action buttons in table */
+    .action-btns {
+        display: flex;
+        gap: 5px;
+    }
+
+    .action-btn {
+        padding: 5px 10px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .edit-btn {
+        background-color: #2196F3;
+        color: white;
+    }
+
+    .delete-btn {
+        background-color: #f44336;
+        color: white;
+    }
+
+    /* Search and filters */
+    .filters-container {
+        background-color: #f9f9f9;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .search-box {
+        flex: 1;
+        margin-right: 15px;
+        min-width: 200px;
+    }
+
+    .search-box input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .filter-group {
+        margin-right: 15px;
+        min-width: 150px;
+    }
+
+    .filter-group select {
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        width: 100%;
+    }
+
+    /* Add necessary space for sidebar */
+    #main {
+        transition: margin-left .5s;
+        padding: 20px;
+    }
+    
+    /* Database action buttons */
+    .db-actions {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .db-actions button {
+        padding: 10px 15px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    
+    .db-actions button.import-btn {
+        background-color: #2196F3;
+    }
+    
+    /* Hidden file input */
+    #fileInput {
+        display: none;
+    }
+    
+    /* Last saved indicator */
+    .last-saved {
+        font-style: italic;
+        color: #666;
+        margin-top: 5px;
+    }
+
+    /* Section header styles */
+    .section-header {
+        background-color: #f0f0f0;
+        padding: 10px 15px;
+        margin: 20px 0 10px 0;
+        border-radius: 5px;
+        font-weight: bold;
+        border-left: 5px solid #2196F3;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .section-header .section-info {
+        font-size: 1.1em;
+    }
+    
+    .section-header .section-count {
+        background-color: #2196F3;
+        color: white;
+        padding: 3px 10px;
+        border-radius: 15px;
+        font-size: 0.9em;
+    }
+
+    /* Collapsible section styles */
+    .collapsible {
+        cursor: pointer;
+        width: 100%;
+        text-align: left;
+    }
+
+    .section-content {
+        display: block;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+
+    .hide-section {
+        font-size: 0.9em;
+        color: #666;
+        cursor: pointer;
+        padding: 5px;
+    }
+
+    .hide-section:hover {
+        text-decoration: underline;
+    }
+
+    /* Print button styles */
+    .print-btn {
+        background-color: #555;
+        color: white;
+        margin-left: 10px;
+    }
+
+    /* Status styles */
+    .status-cell {
+        position: relative;
+    }
+
+    .status-select {
+        padding: 5px;
+        border-radius: 3px;
+        border: 1px solid #ddd;
+        width: 100%;
+    }
+    
+    .status-enrolled {
+        color: #4CAF50;
+        font-weight: bold;
+    }
+    
+    .status-uw {
+        color: #f44336;
+        font-weight: bold;
+    }
+    
+    .status-loa {
+        color: #FF9800;
+        font-weight: bold;
+    }
+    
+    .status-od {
+        color: #9C27B0;
+        font-weight: bold;
+    }
+
+    @media print {
+        .sidebar, .topnav, .filters-container, .db-actions, .last-saved, .hide-section {
+            display: none !important;
+        }
+        
+        #main {
+            margin-left: 0 !important;
+            padding: 10px !important;
+        }
+        
+        .section-content {
+            display: block !important;
+        }
+
+        .table-container {
+            overflow: visible !important;
+            max-height: none !important;
+        }
+    }
+</style>
+</head>
+<body>
+
+<div id="mySidebar" class="sidebar">
+    <img class="navlog" src="cca-logo.png" alt="">
+    <h1>City College of Angeles</h1>  
+    <a href="RegistrarEnrolledStudents.html">Enrolled Students</a>
+    <a class="active" href="RegistrarClassRecords.html">Class Records</a>
+    <a href="RegistrarInstructorManagement.html">Instructor Management</a>
+    <a href="registrarinstructschedules.html">Instructor Schedules</a>
+</div>
+
+<!-- Top navigation bar with logout button -->
+<div id="topNav" class="topnav shifted">
+    <div class="nav-left">
+        <img src="cca-logo.png" alt="CCA Logo" height="50">
+        <h3>City College of Angeles - Class Records</h3>
+    </div>
+    <button class="logout-btn" onclick="logout()">Log Out</button>
+</div>
+
+<div id="main" style="margin-left: 250px">
+    <div id="pageContent" class="page-content">
+        <h2 class="section-title">Class Records by Section</h2>
+        
+        <!-- Database action buttons -->
+        <div class="db-actions">
+            <button onclick="exportDatabase()">Export Class Records to File</button>
+            <button class="import-btn" onclick="document.getElementById('fileInput').click()">Import Class Records from File</button>
+            <button onclick="printClassRecords()">Print Class Records</button>
+            <input type="file" id="fileInput" accept=".json" onchange="importDatabase(this.files)">
+        </div>
+        <div class="last-saved" id="lastSaved"></div>
+        
+        <!-- Search and Filters -->
+        <div class="filters-container">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search by name, student number, section..." onkeyup="filterClassRecords()">
+            </div>
+            <div class="filter-group">
+                <select id="instituteFilter" onchange="filterClassRecords()">
+                    <option value="">All Institutes</option>
+                    <option value="ICSLIS">ICSLIS</option>
+                    <option value="IBM">IBM</option>
+                    <option value="IEAS">IEAS</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <select id="yearFilter" onchange="filterClassRecords()">
+                    <option value="">All Year Levels</option>
+                    <option value="1">1st Year</option>
+                    <option value="2">2nd Year</option>
+                    <option value="3">3rd Year</option>
+                    <option value="4">4th Year</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <select id="schoolYearFilter" onchange="filterClassRecords()">
+                    <option value="">All School Years</option>
+                    <option value="2024-2025">2024-2025</option>
+                    <option value="2025-2026">2025-2026</option>
+                    <option value="2026-2027">2026-2027</option>
+                    <option value="2027-2028">2027-2028</option>
+                    <option value="2028-2029">2028-2029</option>
+                    <option value="2029-2030">2029-2030</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <select id="statusFilter" onchange="filterClassRecords()">
+                    <option value="">All Statuses</option>
+                    <option value="Enrolled">Enrolled</option>
+                    <option value="UW">UW (Unauthorized Withdrawal)</option>
+                    <option value="LOA">LOA (Leave of Absence)</option>
+                    <option value="OD">OD (Officially Dropped)</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Class Records Section -->
+        <div id="classRecordsContainer">
+            <!-- Class records organized by section will be dynamically added here -->
+            <div class="loading-message">Loading class records...</div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Store for courses by institute (keeping this from the original file)
+const coursesByInstitute = {
+    "ICSLIS": [
+        "Bachelor of Science in Computer Science",
+        "Bachelor of Science in Information Systems",
+        "Associate in Computer Technology",
+        "Bachelor of Library and Information Science"
+    ],
+    "IBM": [
+        "Bachelor of Science in Tourism Management",
+        "Bachelor of Science in Entrepreneurship",
+        "Bachelor of Science in Accountancy"
+    ],
+    "IEAS": [
+        "Bachelor of Arts in English Language Studies",
+        "Bachelor of Science in Psychology",
+        "Bachelor of Science in Mathematics",
+        "Bachelor of Physical Education",
+        "Bachelor of Special Needs Education",
+        "Bachelor of Technical-Vocational Teacher Education Major in Food and Service Management"
+    ]
+};
+
+// Function to update the last saved indicator
+function updateLastSaved() {
+    const lastSaved = localStorage.getItem('lastDatabaseSave');
+    if (lastSaved) {
+        document.getElementById('lastSaved').textContent = 'Last database save: ' + new Date(lastSaved).toLocaleString();
+    }
+}
+
+// Function to update student status
+function updateStudentStatus(studentNumber, newStatus) {
+    const students = JSON.parse(localStorage.getItem('enrolledStudents')) || [];
+    
+    const studentIndex = students.findIndex(student => student.studentNumber === studentNumber);
+    
+    if (studentIndex !== -1) {
+        // Update student status
+        students[studentIndex].status = newStatus;
+        
+        // Save to localStorage
+        localStorage.setItem('enrolledStudents', JSON.stringify(students));
+        localStorage.setItem('lastDatabaseSave', new Date().toISOString());
+        
+        // Update status display
+        const statusCell = document.querySelector(`.status-cell[data-student="${studentNumber}"]`);
+        if (statusCell) {
+            statusCell.innerHTML = `
+                <select class="status-select status-${newStatus.toLowerCase()}" onchange="updateStudentStatus('${studentNumber}', this.value)">
+                    <option value="Enrolled" ${newStatus === 'Enrolled' ? 'selected' : ''}>Enrolled</option>
+                    <option value="UW" ${newStatus === 'UW' ? 'selected' : ''}>UW (Unauthorized Withdrawal)</option>
+                    <option value="LOA" ${newStatus === 'LOA' ? 'selected' : ''}>LOA (Leave of Absence)</option>
+                    <option value="OD" ${newStatus === 'OD' ? 'selected' : ''}>OD (Officially Dropped)</option>
+                </select>
+            `;
+        }
+        
+        // Refresh the filter if needed
+        filterClassRecords();
+    }
+}
+
+// Function to load and organize class records by section
+function loadClassRecords() {
+    const students = JSON.parse(localStorage.getItem('enrolledStudents')) || [];
+    const container = document.getElementById('classRecordsContainer');
+    container.innerHTML = '';
+    
+    if (students.length === 0) {
+        container.innerHTML = '<div class="no-data">No student records available. Please enroll students first.</div>';
+        return;
+    }
+    
+    // Ensure each student has a status (default to "Enrolled" if not set)
+    students.forEach(student => {
+        if (!student.status) {
+            student.status = "Enrolled";
+        }
+        // Convert any "Dropped" status to "OD" for compatibility
+        if (student.status === "Dropped") {
+            student.status = "OD";
+        }
+    });
+    
+    // Save updated students with status
+    localStorage.setItem('enrolledStudents', JSON.stringify(students));
+    
+    // Group students by section, year level, course, and institute
+    const sectionGroups = {};
+    
+    students.forEach(student => {
+        const sectionKey = `${student.institute}-${student.course}-${student.yearLevel}-${student.section}-${student.schoolYear}`;
+        
+        if (!sectionGroups[sectionKey]) {
+            sectionGroups[sectionKey] = {
+                institute: student.institute,
+                course: student.course,
+                yearLevel: student.yearLevel,
+                section: student.section,
+                schoolYear: student.schoolYear,
+                students: []
+            };
+        }
+        
+        sectionGroups[sectionKey].students.push(student);
+    });
+    
+    // Sort the sections by institute, course, year level, and section name
+    const sortedSections = Object.values(sectionGroups).sort((a, b) => {
+        // Sort by institute
+        if (a.institute !== b.institute) {
+            return a.institute.localeCompare(b.institute);
+        }
+        
+        // Then by course
+        if (a.course !== b.course) {
+            return a.course.localeCompare(b.course);
+        }
+        
+        // Then by school year
+        if (a.schoolYear !== b.schoolYear) {
+            return a.schoolYear.localeCompare(b.schoolYear);
+        }
+        
+        // Then by year level
+        if (a.yearLevel !== b.yearLevel) {
+            return a.yearLevel - b.yearLevel;
+        }
+        
+        // Finally by section name
+        return a.section.localeCompare(b.section);
+    });
+    
+    // Create HTML for each section
+    sortedSections.forEach((sectionGroup, index) => {
+        // Sort students within each section by last name
+        sectionGroup.students.sort((a, b) => a.lastName.localeCompare(b.lastName));
+        
+        const sectionId = `section-${index}`;
+        const yearLevelText = {
+            '1': '1st Year',
+            '2': '2nd Year',
+            '3': '3rd Year',
+            '4': '4th Year'
+        }[sectionGroup.yearLevel] || `${sectionGroup.yearLevel} Year`;
+        
+        const sectionDiv = document.createElement('div');
+        sectionDiv.className = 'section-group';
+        sectionDiv.innerHTML = `
+            <div class="section-header collapsible" onclick="toggleSection('${sectionId}')">
+                <div class="section-info">
+                    ${sectionGroup.institute} | ${sectionGroup.course} | ${yearLevelText} | Section ${sectionGroup.section} | ${sectionGroup.schoolYear || 'No School Year'}                    
+                </div>
+                <div class="section-count">${sectionGroup.students.length} Students</div>
+            </div>
+            <div id="${sectionId}" class="section-content">
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Student Number</th>
+                                <th>Last Name</th>
+                                <th>First Name</th>
+                                <th>Middle Name</th>
+                                <th>Email</th>
+                                <th>Sex</th>
+                                <th>PWD</th>
+                                <th>Enrollment Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${sectionGroup.students.map(student => `
+                                <tr>
+                                    <td>${student.studentNumber}</td>
+                                    <td>${student.lastName}</td>
+                                    <td>${student.firstName}</td>
+                                    <td>${student.middleName || ''}</td>
+                                    <td>${student.email}</td>
+                                    <td>${student.sex}</td>
+                                    <td>${student.isPWD}</td>
+                                    <td>${student.enrollmentDate}</td>
+                                    <td class="status-cell" data-student="${student.studentNumber}">
+                                        <select class="status-select status-${(student.status || 'Enrolled').toLowerCase()}" onchange="updateStudentStatus('${student.studentNumber}', this.value)">
+                                            <option value="Enrolled" ${(student.status || 'Enrolled') === 'Enrolled' ? 'selected' : ''}>Enrolled</option>
+                                            <option value="UW" ${student.status === 'UW' ? 'selected' : ''}>UW (Unauthorized Withdrawal)</option>
+                                            <option value="LOA" ${student.status === 'LOA' ? 'selected' : ''}>LOA (Leave of Absence)</option>
+                                            <option value="OD" ${student.status === 'OD' ? 'selected' : ''}>OD (Officially Dropped)</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="hide-section" onclick="toggleSection('${sectionId}')">Hide section</div>
+            </div>
+        `;
+        
+        container.appendChild(sectionDiv);
+    });
+    
+    // Update last saved indicator
+    updateLastSaved();
+}
+
+// Function to toggle section visibility
+function toggleSection(sectionId) {
+    const sectionContent = document.getElementById(sectionId);
+    const isVisible = sectionContent.style.display !== 'none';
+    
+    if (isVisible) {
+        sectionContent.style.display = 'none';
+    } else {
+        sectionContent.style.display = 'block';
+    }
+}
+
+// Function to filter class records based on search and filter options
+function filterClassRecords() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const instituteFilter = document.getElementById('instituteFilter').value;
+    const yearFilter = document.getElementById('yearFilter').value;
+    const schoolYearFilter = document.getElementById('schoolYearFilter').value;
+    const statusFilter = document.getElementById('statusFilter').value;
+    
+    const sectionGroups = document.querySelectorAll('.section-group');
+    
+    sectionGroups.forEach(sectionGroup => {
+        const sectionHeader = sectionGroup.querySelector('.section-header');
+        const headerText = sectionHeader.textContent.toLowerCase();
+        
+        // Extract section information
+        const sectionInfo = headerText.split('|');
+        const institute = sectionInfo[0].trim();
+        const yearLevel = (sectionInfo[2].includes('1st') ? '1' : 
+                          sectionInfo[2].includes('2nd') ? '2' : 
+                          sectionInfo[2].includes('3rd') ? '3' : 
+                          sectionInfo[2].includes('4th') ? '4' : '');
+        const schoolYear = sectionInfo[4].trim();
+        
+        // Check if section matches all filters
+        const matchesSearch = searchTerm === '' || headerText.includes(searchTerm);
+        const matchesInstitute = instituteFilter === '' || institute.includes(instituteFilter.toLowerCase());
+        const matchesYear = yearFilter === '' || yearLevel === yearFilter;
+        const matchesSchoolYear = schoolYearFilter === '' || schoolYear.includes(schoolYearFilter);
+        
+        // Additionally, check student records for search term and status filter
+        let matchesStudentSearch = false;
+        let matchesStatus = statusFilter === '';
+        
+        const studentRows = sectionGroup.querySelectorAll('tbody tr');
+        studentRows.forEach(row => {
+            const studentText = row.textContent.toLowerCase();
+            const statusSelect = row.querySelector('.status-select');
+            const currentStatus = statusSelect ? statusSelect.value : 'Enrolled';
+            
+            // Check if this row matches the search term
+            if (searchTerm !== '' && studentText.includes(searchTerm)) {
+                matchesStudentSearch = true;
+            }
+            
+            // Check if this row matches the status filter
+            if (statusFilter !== '' && currentStatus === statusFilter) {
+                matchesStatus = true;
+            }
+            
+            // Apply row-level filtering for status
+            if (statusFilter !== '' && currentStatus !== statusFilter) {
+                row.style.display = 'none';
+            } else {
+                row.style.display = '';
+            }
+        });
+        
+        // Show or hide based on filters
+        if ((matchesSearch || matchesStudentSearch) && matchesInstitute && matchesYear && matchesSchoolYear && (matchesStatus || statusFilter === '')) {
+            sectionGroup.style.display = 'block';
+        } else {
+            sectionGroup.style.display = 'none';
+        }
+    });
+    
+    // Check if any sections are visible
+    const visibleSections = Array.from(sectionGroups).filter(section => section.style.display !== 'none');
+    
+    if (visibleSections.length === 0) {
+        const container = document.getElementById('classRecordsContainer');
+        const noResultsMsg = document.querySelector('.no-results-message');
+        
+        if (!noResultsMsg) {
+            const message = document.createElement('div');
+            message.className = 'no-results-message';
+            message.innerHTML = '<p>No class records match your search criteria.</p>';
+            container.appendChild(message);
+        }
+    } else {
+        const noResultsMsg = document.querySelector('.no-results-message');
+        if (noResultsMsg) {
+            noResultsMsg.remove();
+        }
+    }
+}
+
+// Function to export database to file
+function exportDatabase() {
+    const students = JSON.parse(localStorage.getItem('enrolledStudents')) || [];
+    
+    // Create database object with metadata
+    const database = {
+        name: "CCA Class Records Database",
+        exportDate: new Date().toISOString(),
+        version: "1.0",
+        recordCount: students.length,
+        data: students
+    };
+    
+    // Convert to JSON string
+    const jsonString = JSON.stringify(database, null, 2);
+    
+    // Create a blob and download link
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    
+    // Create download link and trigger click
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'cca_class_records_' + new Date().toISOString().split('T')[0] + '.json';
+    document.body.appendChild(a);
+    a.click();
+    
+    // Clean up
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    alert('Class records exported successfully! The file has been saved to your downloads folder.');
+}
+
+// Function to import database from file
+function importDatabase(files) {
+    if (files.length === 0) return;
+    
+    const file = files[0];
+    const reader = new FileReader();
+    
+    reader.onload = function(e) {
+        try {
+            const database = JSON.parse(e.target.result);
+            
+            // Validate database structure
+            if (!database.data || !Array.isArray(database.data)) {
+                throw new Error('Invalid database format.');
+            }
+            
+            // Confirm import
+            if (confirm(`Are you sure you want to import this database? It contains ${database.data.length} student records. This will replace your current database.`)) {
+                // Ensure all records have a status field
+                database.data.forEach(student => {
+                    if (!student.status) {
+                        student.status = "Enrolled";
+                    }
+                    // Convert any "Dropped" status to "OD" for compatibility
+                    if (student.status === "Dropped") {
+                        student.status = "OD";
+                    }
+                });
+                
+                // Store data in localStorage
+                localStorage.setItem('enrolledStudents', JSON.stringify(database.data));
+                localStorage.setItem('lastDatabaseSave', new Date().toISOString());
+                
+                // Reload class records
+                loadClassRecords();
+                
+                alert('Class records imported successfully!');
+            }
+        } catch (error) {
+            alert('Error importing database: ' + error.message);
+        }
+    };
+    
+    reader.readAsText(file);
+    
+    // Reset file input
+    document.getElementById('fileInput').value = '';
+}
+
+// Function to print class records
+function printClassRecords() {
+    // Make sure all sections are expanded before printing
+    const sectionContents = document.querySelectorAll('.section-content');
+    sectionContents.forEach(section => {
+        section.style.display = 'block';
+    });
+    
+    // Print the page
+    window.print();
+}
+
+// Logout function
+function logout() {
+    if(confirm("Are you sure you want to log out?")) {
+        // Clear session storage to remove user login info
+        sessionStorage.removeItem('currentUser');
+        
+        alert("You have been logged out successfully!");
+        window.location.href = "student-login.html"; // Changed from index.html to Registrar-Login.html
+    }
+}
+
+// Initialize the page
+document.addEventListener("DOMContentLoaded", function() {
+    // Set initial state
+    document.getElementById("mySidebar").style.width = "250px";
+    document.getElementById("main").style.marginLeft = "250px";
+    
+    // Load class records
+    loadClassRecords();
+});
+</script>
+   
+</body>
+</html>

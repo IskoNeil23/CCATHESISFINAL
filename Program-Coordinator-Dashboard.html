@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="instructor.css">
+    <style>
+        .user-info-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .user-info-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: bold;
+            color: #555;
+            margin-right: 20px;
+        }
+        
+        .user-details h2 {
+            margin: 0 0 5px 0;
+            color: #333;
+        }
+        
+        .user-details p {
+            margin: 0;
+            color: #666;
+        }
+        
+        .user-meta {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .meta-item {
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        
+        .meta-item h4 {
+            margin: 0 0 5px 0;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        .meta-item p {
+            margin: 0;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            color: #333;
+            margin: 0 0 10px 0;
+        }
+        
+        .stat-card .stat-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: darkgreen;
+            margin: 10px 0;
+        }
+        
+        .stat-card p {
+            color: #666;
+            margin: 0;
+        }
+        
+        .welcome-message {
+            margin-bottom: 30px;
+        }
+        
+        .welcome-message h1 {
+            color: #333;
+            margin: 0 0 10px 0;
+        }
+        
+        .welcome-message p {
+            color: #666;
+            font-size: 16px;
+            margin: 0;
+        }
+    </style>
+    <title>City College of Angeles City - Program Coordinator Dashboard</title>
+</head>
+<body>
+    <div class="sidebar">
+        <img src="cca-logo.png" alt="CCA Logo">
+        <h1>City College of Angeles</h1>
+        <a class="active">Dashboard</a>
+        <a href="program-coor-approval-letter.html">Approval Letters</a>
+    </div>
+    
+    <div class="topnav">
+        <div class="nav-left">
+            <img src="cca-logo.png" alt="CCA Logo">
+            <h3>Program Coordinator Portal</h3>
+        </div>
+        <button class="logout-btn" onclick="logout()">Log Out</button>
+    </div>
+    
+    <div class="main-content">
+        <div class="welcome-message">
+            <h1>Welcome to Your Dashboard</h1>
+            <p>Manage your program coordination activities from this centralized portal.</p>
+        </div>
+        
+        <div class="user-info-card">
+            <div class="user-info-header">
+                <div class="user-avatar" id="userInitials">PC</div>
+                <div class="user-details">
+                    <h2 id="userName">Loading...</h2>
+                    <p id="userPosition">Loading...</p>
+                </div>
+            </div>
+            <div class="user-meta">
+                <div class="meta-item">
+                    <h4>Email Address</h4>
+                    <p id="userEmail">Loading...</p>
+                </div>
+                <div class="meta-item">
+                    <h4>Role ID</h4>
+                    <p id="userId">Loading...</p>
+                </div>
+                <div class="meta-item">
+                    <h4>Institute</h4>
+                    <p id="userInstitute">Loading...</p>
+                </div>
+                <div class="meta-item">
+                    <h4>Program</h4>
+                    <p id="userProgram">Loading...</p>
+                </div>
+            </div>
+        </div>
+        
+    <script>
+        // Check if user is logged in
+        window.addEventListener('load', function() {
+            if (!sessionStorage.getItem('currentUser')) {
+                window.location.href = 'login-CCA-Officials.html';
+                return;
+            }
+            
+            // Load user information from session storage
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            
+            // Verify this is a coordinator
+            if (currentUser.roleType !== 'Coordinator') {
+                alert('Access denied. This portal is for Program Coordinators only.');
+                sessionStorage.removeItem('currentUser');
+                window.location.href = 'login-CCA-Officials.html';
+                return;
+            }
+            
+            // Get additional user details from admin roles
+            const adminRoles = JSON.parse(localStorage.getItem('adminRoles')) || [];
+            const userDetails = adminRoles.find(role => role.roleId === currentUser.roleId);
+            
+            if (userDetails) {
+                // Set user information on the page
+                document.getElementById('userName').textContent = `${userDetails.firstName} ${userDetails.middleName ? userDetails.middleName + ' ' : ''}${userDetails.lastName}`;
+                document.getElementById('userPosition').textContent = userDetails.position;
+                document.getElementById('userEmail').textContent = userDetails.emailAddress;
+                document.getElementById('userId').textContent = userDetails.roleId;
+                document.getElementById('userInstitute').textContent = userDetails.institute || 'N/A';
+                document.getElementById('userProgram').textContent = userDetails.course || 'N/A';
+                
+                // Set avatar initials
+                const initials = `${userDetails.firstName.charAt(0)}${userDetails.lastName.charAt(0)}`;
+                document.getElementById('userInitials').textContent = initials;
+            } else {
+                console.error('User details not found in adminRoles');
+            }
+        });
+
+        // Prevent back button after logout
+        window.history.pushState(null, null, window.location.href);
+        window.addEventListener('popstate', function() {
+            window.history.pushState(null, null, window.location.href);
+        });
+
+        // Enhanced logout function
+        function logout() {
+            if (confirm('Are you sure you want to log out?')) {
+                // Clear session storage
+                sessionStorage.removeItem('currentUser');
+                
+                // Redirect to login page
+                window.location.replace('login-CCA-Officials.html');
+            }
+        }
+    </script>
+</body>
+</html>

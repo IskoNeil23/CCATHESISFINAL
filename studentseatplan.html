@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="Student.css">
+</head>
+<body>
+
+<div id="mySidebar" class="sidebar">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+    <img class="navlog" src="cca-logo.png" alt="">
+    <h1>City College of Angeles City</h1>  
+    <a href="javascript:void(0)" onclick="loadPage('schedule.html')">Schedule</a>
+    <a href="javascript:void(0)" onclick="loadPage('registration.html')">Certificate of Registration</a>
+    <a href="javascript:void(0)" onclick="loadPage('seatplan.html')">Seat Plan</a>
+    <a href="javascript:void(0)" onclick="loadPage('excuse.html')">Excuse Letters</a>
+</div>
+
+<!-- Top navigation bar with logout button -->
+<div id="topNav" class="topnav">
+    <div class="nav-left">
+        <button class="openbtn" onclick="openNav()">☰</button>
+        <img src="cca-logo.png" alt="CCA Logo" height="50">
+        <h3>City College of Angeles City - Seat Plan</h3>
+    </div>
+    <button class="logout-btn" onclick="logout()">Log Out</button>
+</div>
+
+<div id="main">
+    <div id="pageContent" class="page-content">
+        <!-- Page content will be loaded here -->
+        <h2>Welcome to the Student Portal</h2>
+        <p>Please select an option from the sidebar menu to continue.</p>
+    </div>
+</div>
+
+<script src="Student.js"></script>
+   
+</body>
+</html>

@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Submit Absence Excuse - City College of Angeles</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .sidebar {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: darkgreen;
+            overflow-x: hidden;
+            padding-top: 60px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar img.navlog {
+            width: 80px;
+            height: auto;
+            display: block;
+            margin: 0 auto 20px;
+        }
+        
+        .sidebar h1 {
+            color: white;
+            text-align: center;
+            font-size: 35px;
+            padding: 0 15px;
+            margin-bottom: 30px;
+        }
+        
+        .sidebar a {
+            padding: 10px 15px;
+            text-decoration: none;
+            color: white;
+            display: block;
+            transition: 0.3s;
+        }
+        
+        .sidebar a:hover, .sidebar a.active {
+            background-color: wheat;
+            color: black;
+            font-weight: bold;
+        }
+        
+        .topnav {
+            height: 70px;
+            background-color: darkgreen;
+            position: fixed;
+            top: 0;
+            left: 250px;
+            color: white;
+            right: 0;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: white;
+        }
+        
+        .nav-left {
+            display: flex;
+            align-items: center;
+        }
+        
+        .nav-left img {
+            height: 50px;
+            margin-right: 15px;
+        }
+        
+        .logout-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .logout-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        .main {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        .page-header {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .page-header h1 {
+            margin: 0;
+            color: #333;
+            font-size: 24px;
+        }
+
+        .panel {
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .panel-title {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #444;
+            font-size: 18px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        select.form-control {
+            height: 38px;
+        }
+
+        textarea.form-control {
+            height: 150px;
+            resize: vertical;
+        }
+
+        .recipient-list {
+            margin-top: 15px;
+        }
+
+        .recipient-item {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .recipient-name {
+            font-weight: bold;
+        }
+
+        .recipient-role {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .recipient-email {
+            color: #007bff;
+        }
+
+        .btn-container {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0069d9;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        .file-upload {
+            margin-bottom: 15px;
+        }
+
+        .file-upload label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input-button {
+            border: 1px solid #ccc;
+            background-color: #f8f9fa;
+            display: inline-block;
+            padding: 6px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .file-input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-count {
+            margin-left: 10px;
+            font-style: italic;
+        }
+
+        .file-list {
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .file-item:last-child {
+            border-bottom: none;
+        }
+
+        .file-name {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .file-action-btn {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            padding: 2px 5px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .file-action-btn:hover {
+            background-color: #e9ecef;
+        }
+
+        .file-remove {
+            color: #dc3545;
+        }
+
+        .file-view {
+            color: #007bff;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7);
+        }
+
+        .modal-content {
+            position: relative;
+            background-color: #fefefe;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 800px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 4px;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #aaa;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            margin-top: 20px;
+            max-height: 70vh;
+            overflow: auto;
+        }
+
+        .modal-body img, .modal-body iframe {
+            max-width: 100%;
+            max-height: 70vh;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .modal-title {
+            margin-top: 0;
+            padding-right: 20px;
+        }
+
+        /* Tab styles for switching between form and preview */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            margin-right: 5px;
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+        }
+
+        .tab.active {
+            background-color: white;
+            border-bottom-color: white;
+            margin-bottom: -1px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .history-item {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .history-title {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .history-date {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .history-status {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+
+        .history-status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .history-status-approved {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .history-status-rejected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .history-details {
+            margin-top: 10px;
+        }
+
+        .history-details p {
+            margin: 5px 0;
+        }
+
+        .history-attachments {
+            margin-top: 10px;
+        }
+
+        .history-attachment-item {
+            display: flex;
+            align-items: center;
+            background-color: #f1f1f1;
+            padding: 5px 10px;
+            margin-bottom: 5px;
+            border-radius: 3px;
+        }
+
+        .file-type-icon {
+            margin-right: 8px;
+            color: #555;
+        }
+
+        @media screen and (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding-top: 0;
+            }
+            
+            .main, .topnav {
+                margin-left: 0;
+            }
+            
+            .weeks-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+
+        /* Letter preview styles */
+        .letter-preview {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: 'Times New Roman', Times, serif;
+            line-height: 1.6;
+        }
+
+        .letter-header {
+            text-align: right;
+            margin-bottom: 30px;
+        }
+
+        .letter-date {
+            margin-bottom: 50px;
+        }
+
+        .letter-subject {
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 30px;
+            text-decoration: underline;
+        }
+
+        .letter-closing {
+            margin-top: 40px;
+        }
+
+        .letter-signature {
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <img class="navlog" src="cca-logo.png" alt="CCA Logo">
+        <h1>City College of Angeles</h1>
+        <a href="student-dashboard.html">Dashboard</a>
+        <a href="student-schedule.html">Schedule</a>
+        <a href="student-attendance.html">Attendance</a>
+        <a href="#">Grades</a>
+        <a class="active">Approval Letter</a>
+    </div>
+    
+    <div class="topnav">
+        <div class="nav-left">
+            <img src="cca-logo.png" alt="CCA Logo" height="50">
+            <h3>Student Portal - Absence Excuse Request</h3>
+        </div>
+        <button class="logout-btn" onclick="logout()">Log Out</button>
+    </div>
+    
+    <div class="main">
+        <div class="page-header">
+            <h1>Absence Excuse Request</h1>
+            <p>Submit a formal excuse letter to have your absences marked as excused.</p>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('new-request')">New Request</div>
+            <div class="tab" onclick="switchTab('request-history')">Request History</div>
+        </div>
+        
+        <!-- New Request Tab -->
+        <div class="tab-content active" id="new-request-content">
+            <div class="panel">
+                <div class="inner-tabs">
+                    <div class="tab active" onclick="switchInnerTab('form')">Request Form</div>
+                    <div class="tab" onclick="switchInnerTab('preview')">Preview Letter</div>
+                </div>
+                
+                <!-- Form Tab -->
+                <div class="inner-tab-content active" id="form-content">
+                    <h3 class="panel-title">Absence Excuse Request Form</h3>
+                    
+                    <div id="alert-container"></div>
+                    
+                    <form id="excuseForm">
+                        <div class="form-group">
+                            <label for="subject">Subject/Course:</label>
+                            <select id="subject" class="form-control" required>
+                                <option value="">Select a subject</option>
+                                <!-- Subjects will be dynamically populated here -->
+                            </select>
+                        </div>
+                        
+                        <div class="weeks-row">
+                            <div class="form-group">
+                                <label for="absenceStartWeek">Absence Start Week:</label>
+                                <select id="absenceStartWeek" class="form-control" required>
+                                    <option value="">Select start week</option>
+                                    <option value="1">Week 1</option>
+                                    <option value="2">Week 2</option>
+                                    <option value="3">Week 3</option>
+                                    <option value="4">Week 4</option>
+                                    <option value="5">Week 5</option>
+                                    <option value="6">Week 6</option>
+                                    <option value="7">Week 7</option>
+                                    <option value="8">Week 8</option>
+                                    <option value="9">Week 9</option>
+                                    <option value="10">Week 10</option>
+                                    <option value="11">Week 11</option>
+                                    <option value="12">Week 12</option>
+                                    <option value="13">Week 13</option>
+                                    <option value="14">Week 14</option>
+                                    <option value="15">Week 15</option>
+                                    <option value="16">Week 16</option>
+                                    <option value="17">Week 17</option>
+                                    <option value="18">Week 18</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="absenceEndWeek">Absence End Week:</label>
+                                <select id="absenceEndWeek" class="form-control" required>
+                                    <option value="">Select end week</option>
+                                    <option value="1">Week 1</option>
+                                    <option value="2">Week 2</option>
+                                    <option value="3">Week 3</option>
+                                    <option value="4">Week 4</option>
+                                    <option value="5">Week 5</option>
+                                    <option value="6">Week 6</option>
+                                    <option value="7">Week 7</option>
+                                    <option value="8">Week 8</option>
+                                    <option value="9">Week 9</option>
+                                    <option value="10">Week 10</option>
+                                    <option value="11">Week 11</option>
+                                    <option value="12">Week 12</option>
+                                    <option value="13">Week 13</option>
+                                    <option value="14">Week 14</option>
+                                    <option value="15">Week 15</option>
+                                    <option value="16">Week 16</option>
+                                    <option value="17">Week 17</option>
+                                    <option value="18">Week 18</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="reason">Reason for Absence:</label>
+                            <select id="reason" class="form-control" required>
+                                <option value="">Select a reason</option>
+                                <option value="Medical">Medical/Health Issue</option>
+                                <option value="Family Emergency">Family Emergency</option>
+                                <option value="Academic Activity">Academic Activity</option>
+                                <option value="Sports/University Event">Sports/University Event</option>
+                                <option value="Transportation Issue">Transportation Issue</option>
+                                <option value="Others">Others (Please specify)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group" id="otherReasonGroup" style="display: none;">
+                            <label for="otherReason">Please specify reason:</label>
+                            <input type="text" id="otherReason" class="form-control">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="explanation">Detailed Explanation:</label>
+                            <textarea id="explanation" class="form-control" required placeholder="Please provide a detailed explanation of your absence..."></textarea>
+                        </div>
+                        
+                        <div class="file-upload">
+                            <label>Supporting Documents (Up to 10 files):</label>
+                            <div class="file-input-wrapper">
+                                <span class="file-input-button">Choose Files</span>
+                                <input type="file" id="supportingDocs" class="file-input" multiple>
+                            </div>
+                            <span class="file-count" id="fileCount">No files chosen</span>
+                        </div>
+                        
+                        <div class="file-list" id="fileList">
+                            <!-- File list will be displayed here -->
+                        </div>
+                        
+                        <div class="recipients-container">
+                            <h4>Recipients:</h4>
+                            <p>Your excuse letter will be sent to:</p>
+                            <div class="recipient-list" id="recipientList">
+                                <!-- Recipients will be displayed here -->
+                            </div>
+                        </div>
+                        
+                        <div class="btn-container">
+                            <button type="button" class="btn btn-primary" onclick="previewLetter()">Preview Letter</button>
+                            <button type="button" class="btn btn-success" onclick="submitRequest()">Submit Request</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Preview Tab -->
+                <div class="inner-tab-content" id="preview-content">
+                    <h3 class="panel-title">Letter Preview</h3>
+                    <div class="letter-preview" id="letterPreview">
+                        <!-- Letter preview will be generated here -->
+                        <p>Please fill out the form and click "Preview Letter" to see your letter.</p>
+                    </div>
+                    
+                    <div class="btn-container">
+                        <button type="button" class="btn btn-primary" onclick="switchInnerTab('form')">Back to Form</button>
+                        <button type="button" class="btn btn-success" onclick="submitRequest()">Submit Request</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Request History Tab -->
+        <div class="tab-content" id="request-history-content">
+            <div class="panel">
+                <h3 class="panel-title">Request History</h3>
+                
+                <div id="historyList">
+                    <!-- Request history will be displayed here -->
+                    <p id="noHistory">You haven't submitted any excuse requests yet.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- File Viewer Modal -->
+    <div id="fileViewerModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeFileViewer()">&times;</span>
+            <h3 class="modal-title" id="fileViewerTitle">File Viewer</h3>
+            <div class="modal-body" id="fileViewerContent">
+                <!-- File content will be displayed here -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // File storage - using an object to store file data
+        let uploadedFiles = [];
+        
+        // Function to generate a unique request ID
+        function generateRequestId() {
+            return 'req-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+        }
+        
+        // Get current logged in student
+        function getLoggedInStudent() {
+            const loggedInStudent = JSON.parse(sessionStorage.getItem('loggedInStudent'));
+            
+            if (!loggedInStudent) {
+                // Redirect to login page if not logged in
+                window.location.href = 'student-login.html';
+                return null;
+            }
+            
+            // Try to get additional student information from enrolled students database
+            const enrolledStudents = JSON.parse(localStorage.getItem('enrolledStudents')) || [];
+            const fullStudentInfo = enrolledStudents.find(student => 
+                student.studentNumber === loggedInStudent.studentNumber
+            ) || loggedInStudent;
+            
+            return fullStudentInfo;
+        }
+        
+        // Function to populate subject dropdown
+        function populateSubjects() {
+            const student = getLoggedInStudent();
+            if (!student) return;
+            
+            // Get all instructor schedules
+            const allSchedules = JSON.parse(localStorage.getItem('instructorSchedules')) || [];
+            
+            // Filter schedules for this student's course, year level, and section
+            const studentSchedules = allSchedules.filter(schedule => 
+                schedule.institute === student.institute &&
+                schedule.course === student.course &&
+                schedule.yearLevel === student.yearLevel &&
+                schedule.section === student.section
+            );
+            
+            // Sort by subject code
+            studentSchedules.sort((a, b) => a.subjectCode.localeCompare(b.subjectCode));
+            
+            // Populate dropdown
+            const subjectSelect = document.getElementById('subject');
+            subjectSelect.innerHTML = '<option value="">Select a subject</option>';
+            
+            const addedSubjects = new Set(); // To prevent duplicates
+            
+            studentSchedules.forEach(subject => {
+                // Create a unique key for the subject
+                const subjectKey = `${subject.subjectCode}-${subject.subjectTitle}`;
+                
+                if (!addedSubjects.has(subjectKey)) {
+                    addedSubjects.add(subjectKey);
+                    
+                    const option = document.createElement('option');
+                    option.value = JSON.stringify(subject);
+                    option.textContent = `${subject.subjectCode}: ${subject.subjectTitle}`;
+                    subjectSelect.appendChild(option);
+                }
+            });
+            
+            // Add change event listener
+            subjectSelect.addEventListener('change', updateRecipients);
+        }
+        
+        // Function to update recipients based on selected subject
+        function updateRecipients() {
+            const selectedSubjectStr = document.getElementById('subject').value;
+            if (!selectedSubjectStr) {
+                document.getElementById('recipientList').innerHTML = '';
+                return;
+            }
+            
+            const selectedSubject = JSON.parse(selectedSubjectStr);
+            const recipientList = document.getElementById('recipientList');
+            recipientList.innerHTML = '';
+            
+            // Add subject instructor
+            const instructorItem = document.createElement('div');
+            instructorItem.className = 'recipient-item';
+            instructorItem.innerHTML = `
+                <div class="recipient-name">${selectedSubject.instructorName}</div>
+                <div class="recipient-role">Course Instructor</div>
+                <div class="recipient-email">${selectedSubject.instructorName.toLowerCase().replace(/\s+/g, '.')}@cca.edu.ph</div>
+            `;
+            recipientList.appendChild(instructorItem);
+            
+            // Get admin roles for program coordinator and dean
+            const adminRoles = JSON.parse(localStorage.getItem('adminRoles')) || [];
+            
+            // Find program coordinator for this course
+            const coordinator = adminRoles.find(admin => 
+                admin.roleType === 'Coordinator' && 
+                admin.course === selectedSubject.course
+            );
+            
+            if (coordinator) {
+                const coordinatorItem = document.createElement('div');
+                coordinatorItem.className = 'recipient-item';
+                coordinatorItem.innerHTML = `
+                    <div class="recipient-name">${coordinator.firstName} ${coordinator.lastName}</div>
+                    <div class="recipient-role">Program Coordinator - ${coordinator.course}</div>
+                    <div class="recipient-email">${coordinator.emailAddress}</div>
+                `;
+                recipientList.appendChild(coordinatorItem);
+            }
+            
+            // Find dean for this institute
+            const dean = adminRoles.find(admin => 
+                admin.roleType === 'Dean' && 
+                admin.institute === selectedSubject.institute
+            );
+            
+            if (dean) {
+                const deanItem = document.createElement('div');
+                deanItem.className = 'recipient-item';
+                deanItem.innerHTML = `
+                    <div class="recipient-name">${dean.firstName} ${dean.lastName}</div>
+                    <div class="recipient-role">Acting Dean - ${dean.institute}</div>
+                    <div class="recipient-email">${dean.emailAddress}</div>
+                `;
+                recipientList.appendChild(deanItem);
+            }
+        }
+        
+        // Function to show alert
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alert-container');
+            alertContainer.innerHTML = `
+                <div class="alert alert-${type}">
+                    ${message}
+                </div>
+            `;
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 5000);
+        }
+        
+        // Function to get file icon based on file type
+        function getFileIcon(fileType) {
+            if (fileType.startsWith('image/')) {
+                return '📷';
+            } else if (fileType === 'application/pdf') {
+                return '📄';
+            } else if (fileType.includes('word') || fileType.includes('document')) {
+                return '📝';
+            } else if (fileType.includes('excel') || fileType.includes('spreadsheet')) {
+                return '📊';
+            } else if (fileType.includes('powerpoint') || fileType.includes('presentation')) {
+                return '📊';
+            } else {
+                return '📎';
+            }
+        }
+        
+        // Function to handle multiple file uploads
+        function handleFileUpload(event) {
+            const files = event.target.files;
+            const fileList = document.getElementById('fileList');
+            const fileCount = document.getElementById('fileCount');
+            
+            // Check if total files would exceed limit
+            if (uploadedFiles.length + files.length > 10) {
+                showAlert('You can only upload up to 10 files. Please remove some files before adding more.', 'danger');
+                return;
+            }
+            
+            // Process each file
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const fileId = Date.now() + '-' + i;
+                
+                // Store file data (including the actual file for viewing)
+                uploadedFiles.push({
+                    id: fileId,
+                    name: file.name,
+                    type: file.type,
+                    size: file.size,
+                    file: file // Store the actual file object
+                });
+                
+                // Create file list item
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <div class="file-name">
+                        <span class="file-type-icon">${getFileIcon(file.type)}</span>
+                        ${file.name}
+                    </div>
+                    <div class="file-actions">
+                        <button class="file-action-btn file-view" onclick="viewFile('${fileId}')">View</button>
+                        <button class="file-action-btn file-remove" onclick="removeFile('${fileId}')">Remove</button>
+                    </div>
+                `;
+                
+                fileList.appendChild(fileItem);
+            }
+            
+            // Update file count display
+            fileCount.textContent = `${uploadedFiles.length} of 10 files selected`;
+            
+            // Clear the file input to allow selecting the same files again if needed
+            event.target.value = '';
+        }
+        
+        // Function to remove a file
+function removeFile(fileId) {
+    // Find the index of the file in the array
+    const fileIndex = uploadedFiles.findIndex(file => file.id === fileId);
+    
+    if (fileIndex !== -1) {
+        // Remove the file from the array
+        uploadedFiles.splice(fileIndex, 1);
+        
+        // Update the displayed file list
+        const fileList = document.getElementById('fileList');
+        const fileItems = fileList.getElementsByClassName('file-item');
+        
+        // Find and remove the corresponding file item in the DOM
+        for (let i = 0; i < fileItems.length; i++) {
+            const removeButton = fileItems[i].querySelector(`.file-action-btn.file-remove[onclick="removeFile('${fileId}')"]`);
+            if (removeButton) {
+                fileItems[i].remove();
+                break;
+            }
+        }
+        
+        // Update file count display
+        document.getElementById('fileCount').textContent = 
+            uploadedFiles.length > 0 ? `${uploadedFiles.length} of 10 files selected` : 'No files chosen';
+    }
+}
+
+// Function to view a file
+function viewFile(fileId) {
+    const file = uploadedFiles.find(file => file.id === fileId);
+    if (!file) return;
+    
+    const modal = document.getElementById('fileViewerModal');
+    const modalTitle = document.getElementById('fileViewerTitle');
+    const modalContent = document.getElementById('fileViewerContent');
+    
+    // Set modal title
+    modalTitle.textContent = file.name;
+    modalContent.innerHTML = '';
+    
+    // Handle different file types
+    if (file.type.startsWith('image/')) {
+        // For images, create an image element
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(file.file);
+        modalContent.appendChild(img);
+    } else if (file.type === 'application/pdf') {
+        // For PDFs, use iframe
+        const iframe = document.createElement('iframe');
+        iframe.src = URL.createObjectURL(file.file);
+        iframe.style.width = '100%';
+        iframe.style.height = '70vh';
+        modalContent.appendChild(iframe);
+    } else {
+        // For other files, show a message
+        modalContent.innerHTML = `
+            <p>Preview not available for this file type.</p>
+            <p>File Type: ${file.type}</p>
+            <p>File Size: ${(file.size / 1024).toFixed(2)} KB</p>
+        `;
+    }
+    
+    // Show modal
+    modal.style.display = 'block';
+}
+
+// Close file viewer modal
+function closeFileViewer() {
+    document.getElementById('fileViewerModal').style.display = 'none';
+}
+
+// Function to switch between main tabs
+function switchTab(tabId) {
+    // Update tab styles
+    const tabs = document.getElementsByClassName('tab');
+    for (let i = 0; i < tabs.length; i++) {
+        tabs[i].classList.remove('active');
+    }
+    const clickedTab = event.target;
+    clickedTab.classList.add('active');
+    
+    // Update content visibility
+    const tabContents = document.getElementsByClassName('tab-content');
+    for (let i = 0; i < tabContents.length; i++) {
+        tabContents[i].classList.remove('active');
+    }
+    document.getElementById(tabId + '-content').classList.add('active');
+    
+    // If switching to history tab, load history
+    if (tabId === 'request-history') {
+        loadRequestHistory();
+    }
+}
+
+// Function to switch between inner tabs (form and preview)
+function switchInnerTab(tabId) {
+    // Update inner tab styles
+    const innerTabs = document.querySelectorAll('.inner-tabs .tab');
+    innerTabs.forEach(tab => tab.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    // Update inner content visibility
+    const innerContents = document.querySelectorAll('.inner-tab-content');
+    innerContents.forEach(content => content.classList.remove('active'));
+    document.getElementById(tabId + '-content').classList.add('active');
+    
+    // If switching to preview tab, update preview
+    if (tabId === 'preview') {
+        previewLetter();
+    }
+}
+
+// Function to preview the letter
+function previewLetter() {
+    // Get form values
+    const selectedSubjectStr = document.getElementById('subject').value;
+    const absenceStartWeek = document.getElementById('absenceStartWeek').value;
+    const absenceEndWeek = document.getElementById('absenceEndWeek').value;
+    const reason = document.getElementById('reason').value;
+    const otherReason = document.getElementById('otherReason').value;
+    const explanation = document.getElementById('explanation').value;
+    
+    // Validate form
+    if (!selectedSubjectStr || !absenceStartWeek || !absenceEndWeek || !reason || !explanation) {
+        showAlert('Please fill in all required fields before previewing the letter.', 'danger');
+        return;
+    }
+    
+    // Parse selected subject
+    const selectedSubject = JSON.parse(selectedSubjectStr);
+    
+    // Get student info
+    const student = getLoggedInStudent();
+    if (!student) return;
+    
+    // Get today's date in format: April 17, 2023
+    const today = new Date();
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const formattedDate = today.toLocaleDateString('en-US', options);
+    
+    // Create letter content
+    const letterContent = `
+        <div class="letter-header">
+            <p>${formattedDate}</p>
+        </div>
+        
+        <div class="letter-subject">
+            LETTER OF EXCUSE FOR ABSENCE
+        </div>
+        
+        <p>Dear Faculty and Administration,</p>
+        
+        <p>I, ${student.firstName} ${student.lastName}, with Student Number ${student.studentNumber}, enrolled in ${student.course} - ${student.yearLevel}, ${student.section}, would like to formally request that my absence during Week${absenceStartWeek === absenceEndWeek ? '' : 's'} ${absenceStartWeek}${absenceStartWeek !== absenceEndWeek ? ' to ' + absenceEndWeek : ''} in ${selectedSubject.subjectCode}: ${selectedSubject.subjectTitle} be excused.</p>
+        
+        <p>The reason for my absence was: ${reason === 'Others' ? otherReason : reason}</p>
+        
+        <p>${explanation}</p>
+        
+        <p>I have attached supporting documentation to validate my excuse. I understand the importance of attendance and assure you that I have taken measures to catch up on any missed work or assignments.</p>
+        
+        <p>Thank you for your understanding and consideration of this matter.</p>
+        
+        <div class="letter-closing">
+            <p>Respectfully yours,</p>
+        </div>
+        
+        <div class="letter-signature">
+            <p>${student.firstName} ${student.lastName}<br>
+            Student Number: ${student.studentNumber}<br>
+            Contact Number: ${student.contactNumber || 'N/A'}<br>
+            Email: ${student.emailAddress || `${student.studentNumber}@student.cca.edu.ph`}</p>
+        </div>
+    `;
+    
+    // Update letter preview
+    document.getElementById('letterPreview').innerHTML = letterContent;
+    
+    // If called directly (not through tab switch), switch to preview tab
+    if (document.querySelector('.inner-tabs .tab.active').textContent !== 'Preview Letter') {
+        switchInnerTab('preview');
+    }
+}
+
+// Function to submit excuse request
+function submitRequest() {
+    // Get form values
+    const selectedSubjectStr = document.getElementById('subject').value;
+    const absenceStartWeek = document.getElementById('absenceStartWeek').value;
+    const absenceEndWeek = document.getElementById('absenceEndWeek').value;
+    const reason = document.getElementById('reason').value;
+    const otherReason = document.getElementById('otherReason').value;
+    const explanation = document.getElementById('explanation').value;
+    
+    // Validate form
+    if (!selectedSubjectStr || !absenceStartWeek || !absenceEndWeek || !reason || !explanation) {
+        showAlert('Please fill in all required fields before submitting.', 'danger');
+        return;
+    }
+    
+    if (reason === 'Others' && !otherReason) {
+        showAlert('Please specify the reason for your absence.', 'danger');
+        return;
+    }
+    
+    // Parse selected subject
+    const selectedSubject = JSON.parse(selectedSubjectStr);
+    
+    // Get student info
+    const student = getLoggedInStudent();
+    if (!student) return;
+    
+    // Create request object
+    const request = {
+        id: generateRequestId(),
+        studentNumber: student.studentNumber,
+        studentName: `${student.firstName} ${student.lastName}`,
+        subjectCode: selectedSubject.subjectCode,
+        subjectTitle: selectedSubject.subjectTitle,
+        course: student.course,
+        yearLevel: student.yearLevel,
+        section: student.section,
+        instructorName: selectedSubject.instructorName,
+        absenceStartWeek: absenceStartWeek,
+        absenceEndWeek: absenceEndWeek,
+        reason: reason === 'Others' ? otherReason : reason,
+        explanation: explanation,
+        attachments: uploadedFiles.map(file => ({
+            id: file.id,
+            name: file.name,
+            type: file.type,
+            size: file.size
+            // Note: Actual file objects cannot be stored in localStorage
+            // In a real application, files would be uploaded to a server
+        })),
+        dateSubmitted: new Date().toISOString(),
+        status: 'Pending',
+        approvals: [],
+        comments: []
+    };
+    
+    // Get existing requests from localStorage
+    const existingRequests = JSON.parse(localStorage.getItem('excuseRequests')) || [];
+    
+    // Add new request
+    existingRequests.push(request);
+    
+    // Save updated requests
+    localStorage.setItem('excuseRequests', JSON.stringify(existingRequests));
+    
+    // Show success message
+    showAlert('Your excuse request has been submitted successfully!', 'success');
+    
+    // Reset form
+    document.getElementById('excuseForm').reset();
+    uploadedFiles = [];
+    document.getElementById('fileList').innerHTML = '';
+    document.getElementById('fileCount').textContent = 'No files chosen';
+    document.getElementById('recipientList').innerHTML = '';
+    
+    // Switch to history tab
+    setTimeout(() => {
+        const historyTab = document.querySelector('.tab:not(.active)');
+        historyTab.click();
+    }, 1500);
+}
+
+// Function to load request history
+function loadRequestHistory() {
+    const historyList = document.getElementById('historyList');
+    const noHistory = document.getElementById('noHistory');
+    
+    // Get student info
+    const student = getLoggedInStudent();
+    if (!student) return;
+    
+    // Get requests from localStorage
+    const allRequests = JSON.parse(localStorage.getItem('excuseRequests')) || [];
+    
+    // Filter requests for this student
+    const studentRequests = allRequests.filter(req => req.studentNumber === student.studentNumber);
+    
+    // Sort by submission date (newest first)
+    studentRequests.sort((a, b) => new Date(b.dateSubmitted) - new Date(a.dateSubmitted));
+    
+    // Check if student has any requests
+    if (studentRequests.length === 0) {
+        noHistory.style.display = 'block';
+        return;
+    }
+    
+    // Hide "no history" message
+    noHistory.style.display = 'none';
+    
+    // Clear history list
+    historyList.innerHTML = '';
+    
+    // Display each request
+    studentRequests.forEach(request => {
+        // Format date
+        const submittedDate = new Date(request.dateSubmitted);
+        const formattedDate = submittedDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        // Get status class
+        let statusClass = '';
+        switch (request.status) {
+            case 'Approved':
+                statusClass = 'history-status-approved';
+                break;
+            case 'Rejected':
+                statusClass = 'history-status-rejected';
+                break;
+            default:
+                statusClass = 'history-status-pending';
+        }
+        
+        // Create history item
+        const historyItem = document.createElement('div');
+        historyItem.className = 'history-item';
+        historyItem.innerHTML = `
+            <div class="history-header">
+                <div>
+                    <span class="history-title">${request.subjectCode}: ${request.subjectTitle}</span>
+                    <span class="history-status ${statusClass}">${request.status}</span>
+                </div>
+                <div class="history-date">Submitted: ${formattedDate}</div>
+            </div>
+            <div class="history-details">
+                <p><strong>Weeks:</strong> ${request.absenceStartWeek}${request.absenceStartWeek !== request.absenceEndWeek ? ' to ' + request.absenceEndWeek : ''}</p>
+                <p><strong>Reason:</strong> ${request.reason}</p>
+                <p><strong>Explanation:</strong> ${request.explanation}</p>
+            </div>
+        `;
+        
+        // Add attachments if any
+        if (request.attachments && request.attachments.length > 0) {
+            const attachmentsDiv = document.createElement('div');
+            attachmentsDiv.className = 'history-attachments';
+            attachmentsDiv.innerHTML = '<p><strong>Attachments:</strong></p>';
+            
+            request.attachments.forEach(attachment => {
+                const attachmentItem = document.createElement('div');
+                attachmentItem.className = 'history-attachment-item';
+                attachmentItem.innerHTML = `
+                    <span class="file-type-icon">${getFileIcon(attachment.type)}</span>
+                    ${attachment.name}
+                `;
+                attachmentsDiv.appendChild(attachmentItem);
+            });
+            
+            historyItem.appendChild(attachmentsDiv);
+        }
+        
+        // Add comments if any
+        if (request.comments && request.comments.length > 0) {
+            const commentsDiv = document.createElement('div');
+            commentsDiv.className = 'history-comments';
+            commentsDiv.innerHTML = '<p><strong>Comments:</strong></p>';
+            
+            request.comments.forEach(comment => {
+                const commentItem = document.createElement('div');
+                commentItem.className = 'history-comment-item';
+                commentItem.innerHTML = `
+                    <p><em>${comment.author} (${new Date(comment.date).toLocaleDateString()}):</em> ${comment.text}</p>
+                `;
+                commentsDiv.appendChild(commentItem);
+            });
+            
+            historyItem.appendChild(commentsDiv);
+        }
+        
+        historyList.appendChild(historyItem);
+    });
+}
+
+// Event listener for reason dropdown
+document.getElementById('reason').addEventListener('change', function() {
+    const otherReasonGroup = document.getElementById('otherReasonGroup');
+    if (this.value === 'Others') {
+        otherReasonGroup.style.display = 'block';
+    } else {
+        otherReasonGroup.style.display = 'none';
+    }
+});
+
+// Event listener for file upload
+document.getElementById('supportingDocs').addEventListener('change', handleFileUpload);
+
+// Handle clicks outside the modal to close it
+window.addEventListener('click', function(event) {
+    const modal = document.getElementById('fileViewerModal');
+    if (event.target === modal) {
+        closeFileViewer();
+    }
+});
+
+// Logout function
+function logout() {
+    sessionStorage.removeItem('loggedInStudent');
+    window.location.href = 'student-login.html';
+}
+
+// Initialize the page
+function initPage() {
+    // Check if user is logged in
+    const student = getLoggedInStudent();
+    if (!student) return;
+    
+    // Populate subject dropdown
+    populateSubjects();
+    
+    // Add event listeners for week dropdowns to ensure end week is not before start week
+    const startWeekSelect = document.getElementById('absenceStartWeek');
+    const endWeekSelect = document.getElementById('absenceEndWeek');
+    
+    startWeekSelect.addEventListener('change', function() {
+        const startValue = parseInt(this.value);
+        
+        // Update end week options
+        for (let i = 0; i < endWeekSelect.options.length; i++) {
+            const option = endWeekSelect.options[i];
+            if (option.value === '') continue; // Skip placeholder option
+            
+            const optionValue = parseInt(option.value);
+            option.disabled = optionValue < startValue;
+        }
+        
+        // If current end week is now invalid, reset it
+        if (endWeekSelect.value !== '' && parseInt(endWeekSelect.value) < startValue) {
+            endWeekSelect.value = startValue;
+        }
+    });
+    
+    // Initialize data for testing if needed
+    initTestData();
+}
+
+// Initialize test data for demonstration
+function initTestData() {
+    // Only add test data if none exists
+    if (!localStorage.getItem('instructorSchedules')) {
+        // Create sample instructor schedules
+        const sampleSchedules = [
+            {
+                id: 'sched-1',
+                institute: 'Institute of Computing Studies',
+                course: 'Bachelor of Science in Information Technology',
+                yearLevel: '3rd Year',
+                section: 'A',
+                subjectCode: 'IT301',
+                subjectTitle: 'Web Development',
+                instructorName: 'Juan Dela Cruz',
+                scheduleDay: 'Monday',
+                scheduleTime: '9:00 AM - 12:00 PM',
+                room: 'Computer Lab 1'
+            },
+            {
+                id: 'sched-2',
+                institute: 'Institute of Computing Studies',
+                course: 'Bachelor of Science in Information Technology',
+                yearLevel: '3rd Year',
+                section: 'A',
+                subjectCode: 'IT302',
+                subjectTitle: 'Database Management',
+                instructorName: 'Maria Santos',
+                scheduleDay: 'Tuesday',
+                scheduleTime: '1:00 PM - 4:00 PM',
+                room: 'Computer Lab 2'
+            },
+            {
+                id: 'sched-3',
+                institute: 'Institute of Computing Studies',
+                course: 'Bachelor of Science in Information Technology',
+                yearLevel: '3rd Year',
+                section: 'A',
+                subjectCode: 'IT303',
+                subjectTitle: 'Network Security',
+                instructorName: 'Pedro Reyes',
+                scheduleDay: 'Wednesday',
+                scheduleTime: '9:00 AM - 12:00 PM',
+                room: 'Computer Lab 3'
+            }
+        ];
+        
+        localStorage.setItem('instructorSchedules', JSON.stringify(sampleSchedules));
+        
+        // Create sample admin roles
+        const sampleAdminRoles = [
+            {
+                id: 'admin-1',
+                firstName: 'Carlos',
+                lastName: 'Magno',
+                roleType: 'Coordinator',
+                institute: 'Institute of Computing Studies',
+                course: 'Bachelor of Science in Information Technology',
+                emailAddress: 'carlos.magno@cca.edu.ph'
+            },
+            {
+                id: 'admin-2',
+                firstName: 'Elena',
+                lastName: 'Cruz',
+                roleType: 'Dean',
+                institute: 'Institute of Computing Studies',
+                emailAddress: 'elena.cruz@cca.edu.ph'
+            }
+        ];
+        
+        localStorage.setItem('adminRoles', JSON.stringify(sampleAdminRoles));
+        
+        // Create sample enrolled students
+        const sampleStudents = [
+            {
+                studentNumber: '2021-0001',
+                firstName: 'John',
+                lastName: 'Smith',
+                institute: 'Institute of Computing Studies',
+                course: 'Bachelor of Science in Information Technology',
+                yearLevel: '3rd Year',
+                section: 'A',
+                contactNumber: '09123456789',
+                emailAddress: '2021-0001@student.cca.edu.ph'
+            }
+        ];
+        
+        localStorage.setItem('enrolledStudents', JSON.stringify(sampleStudents));
+        
+        // Create sample student login (for demo purposes)
+        const sampleLogin = {
+            studentNumber: '2021-0001',
+            firstName: 'John',
+            lastName: 'Smith',
+            institute: 'Institute of Computing Studies',
+            course: 'Bachelor of Science in Information Technology',
+            yearLevel: '3rd Year',
+            section: 'A'
+        };
+        
+        // Only set if not already logged in
+        if (!sessionStorage.getItem('loggedInStudent')) {
+            sessionStorage.setItem('loggedInStudent', JSON.stringify(sampleLogin));
+        }
+    }
+}
+
+// Initialize when the page loads
+window.addEventListener('DOMContentLoaded', initPage);
+</script>
+</body>
+</html>

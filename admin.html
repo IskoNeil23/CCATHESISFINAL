@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="Student.css">
+<style>
+   .sidebar {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color:darkgreen;
+    overflow-x: hidden;
+    padding-top: 60px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.sidebar a {
+    padding: 10px 15px;
+    text-decoration: none;
+    color: white;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidebar a:hover {
+    background-color:wheat;
+}
+
+    .sidebar a.active {
+        background-color: wheat; 
+        color: rgb(0, 0, 0);
+        font-weight: bold;
+    }
+    
+    /* Form and table styles from the original page */
+    .form-container {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 15px;
+    }
+
+    .form-group {
+        margin-right: 20px;
+        margin-bottom: 15px;
+        flex: 1 0 200px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .form-group input, .form-group select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .btn-container {
+        margin-top: 20px;
+        text-align: right;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .btn-primary {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .btn-secondary {
+        background-color: #f0f0f0;
+        color: #333;
+        margin-right: 10px;
+    }
+
+    /* Table styles */
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .data-table th, .data-table td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+    }
+
+    .data-table th {
+        background-color: #f2f2f2;
+        position: sticky;
+        top: 0;
+    }
+
+    .data-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .data-table tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .table-container {
+        overflow-x: auto;
+        max-height: 500px;
+        overflow-y: auto;
+    }
+
+    .section-title {
+        margin-top: 30px;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #eee;
+    }
+
+    /* Action buttons in table */
+    .action-btns {
+        display: flex;
+        gap: 5px;
+    }
+
+    .action-btn {
+        padding: 5px 10px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .edit-btn {
+        background-color: #2196F3;
+        color: white;
+    }
+
+    .delete-btn {
+        background-color: #f44336;
+        color: white;
+    }
+
+    .generate-btn {
+        background-color: #FF9800;
+        color: white;
+    }
+
+    .reset-btn {
+        background-color: #9C27B0;
+        color: white;
+    }
+
+    /* Search and filters */
+    .filters-container {
+        background-color: #f9f9f9;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .search-box {
+        flex: 1;
+        margin-right: 15px;
+        min-width: 200px;
+    }
+
+    .search-box input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .filter-group {
+        margin-right: 15px;
+        min-width: 150px;
+    }
+
+    .filter-group select {
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        width: 100%;
+    }
+
+    /* Add necessary space for sidebar */
+    #main {
+        transition: margin-left .5s;
+        padding: 20px;
+    }
+    
+    /* Database action buttons */
+    .db-actions {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .db-actions button {
+        padding: 10px 15px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    
+    .db-actions button.import-btn {
+        background-color: #2196F3;
+    }
+    
+    .db-actions button.generate-accounts-btn {
+        background-color: #FF9800;
+    }
+    
+    /* Hidden file input */
+    #fileInput {
+        display: none;
+    }
+    
+    /* Last saved indicator */
+    .last-saved {
+        font-style: italic;
+        color: #666;
+        margin-top: 5px;
+    }
+    
+    /* Modal styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+    }
+    
+    .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 800px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .close-modal {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    
+    .close-modal:hover,
+    .close-modal:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    
+    /* Password strength indicator */
+    .password-strength {
+        margin-top: 5px;
+        height: 5px;
+        border-radius: 3px;
+    }
+    
+    .strength-weak {
+        background-color: #f44336;
+        width: 33%;
+    }
+    
+    .strength-medium {
+        background-color: #FF9800;
+        width: 66%;
+    }
+    
+    .strength-strong {
+        background-color: #4CAF50;
+        width: 100%;
+    }
+    
+    /* Copy button for passwords */
+    .copy-btn {
+        padding: 2px 8px;
+        background-color: #2196F3;
+        color: white;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 12px;
+        margin-left: 5px;
+    }
+    
+    /* Export accounts button */
+    .export-accounts-btn {
+        background-color: #673AB7;
+        color: white;
+    }
+
+    /* Top navigation bar */
+
+
+    .nav-left {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+
+    .logout-btn:hover {
+        background-color: #d32f2f;
+    }
+
+    /* Admin info in top bar */
+    .admin-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .admin-name {
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+
+<div id="mySidebar" class="sidebar">
+    <img class="navlog" src="cca-logo.png" alt="">
+    <h1>City College of Angeles</h1>  
+    <a class="active">Student Accounts</a>
+    <a href="admininstructor.html">Instructors Accounts</a>
+    <a href="admin-CCA-Officials.html">Admin Roles Accounts</a>
+</div>
+<!-- Top navigation bar with logout button -->
+<div id="topNav" class="topnav shifted">
+    <div class="nav-left">
+        <img src="cca-logo.png" alt="CCA Logo" height="50">
+        <h3>City College of Angeles - Student Accounts</h3>
+    </div>
+    <div class="admin-info">
+        <button class="logout-btn" onclick="logout()">Log Out</button>
+    </div>
+</div>
+
+<div id="main" style="margin-left: 250px">
+    <div id="pageContent" class="page-content">
+        <h2 class="section-title">Student Account Management</h2>
+        
+        <!-- Database action buttons -->
+        <div class="db-actions">
+            <button onclick="generateAllAccounts()" class="generate-accounts-btn">Generate All Missing Accounts</button>
+            <button onclick="exportAccounts()" class="export-accounts-btn">Export Accounts List</button>
+            <button onclick="resetAllPasswords()" class="import-btn">Reset All Passwords</button>
+        </div>
+        <div class="last-saved" id="lastSaved"></div>
+        
+        <!-- Search and Filters -->
+        <div class="filters-container">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search by name, student number, email..." onkeyup="filterAccounts()">
+            </div>
+            <div class="filter-group">
+                <select id="instituteFilter" onchange="filterAccounts()">
+                    <option value="">All Institutes</option>
+                    <option value="ISCLIS">ISCLIS</option>
+                    <option value="IBM">IBM</option>
+                    <option value="IEAS">IEAS</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <select id="accountStatusFilter" onchange="filterAccounts()">
+                    <option value="">All Account Status</option>
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                    <option value="None">No Account</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Table to display student accounts -->
+        <div class="table-container">
+            <table class="data-table" id="accountsTable">
+                <thead>
+                    <tr>
+                        <th>Student Number</th>
+                        <th>Full Name</th>
+                        <th>Email</th>
+                        <th>Username</th>
+                        <th>Password</th>
+                        <th>Account Status</th>
+                        <th>Institute</th>
+                        <th>Course</th>
+                        <th>Created Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="accountsTableBody">
+                    <!-- Student account records will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Account Details Modal -->
+<div id="accountModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeAccountModal()">&times;</span>
+        <h2>Student Account Details</h2>
+        <form id="accountForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="modalStudentNumber">Student Number</label>
+                    <input type="text" id="modalStudentNumber" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="modalFullName">Full Name</label>
+                    <input type="text" id="modalFullName" readonly>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="modalEmail">Email</label>
+                    <input type="email" id="modalEmail" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="modalUsername">Username</label>
+                    <input type="text" id="modalUsername" readonly>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="modalPassword">Password</label>
+                    <div style="display: flex;">
+                        <input type="text" id="modalPassword">
+                        <button type="button" class="copy-btn" onclick="copyPassword()">Copy</button>
+                    </div>
+                    <div id="passwordStrength" class="password-strength"></div>
+                </div>
+                <div class="form-group">
+                    <label for="modalStatus">Account Status</label>
+                    <select id="modalStatus">
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                </div>
+            </div>
+            <div class="btn-container">
+                <button type="button" class="btn btn-secondary" onclick="generateRandomPassword()">Generate New Password</button>
+                <button type="button" class="btn btn-primary" onclick="saveAccountChanges()">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Global variables
+let currentAccountIndex = -1;
+
+// Check login status
+function checkLoginStatus() {
+    // Check if user is logged in as admin
+    const loggedInAdmin = sessionStorage.getItem('loggedInAdmin');
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+    
+    if (!loggedInAdmin || !currentUser) {
+        // Set the logout flag
+        sessionStorage.setItem('loggedOut', 'true');
+        // Redirect to login page
+        window.location.replace('student-login.html');
+        return false;
+    }
+    
+    // Display admin name
+    const adminNameElement = document.getElementById('adminName');
+    if (adminNameElement && currentUser) {
+        adminNameElement.textContent = `${currentUser.firstName} ${currentUser.lastName}`;
+    }
+    
+    return true;
+}
+
+// Function to update the last saved indicator
+function updateLastSaved() {
+    const lastSaved = localStorage.getItem('lastAccountsSave');
+    if (lastSaved) {
+        document.getElementById('lastSaved').textContent = 'Last accounts save: ' + new Date(lastSaved).toLocaleString();
+    }
+}
+
+// Function to load student accounts data
+function loadAccounts() {
+    // Check login status first
+    if (!checkLoginStatus()) return;
+    
+    const students = JSON.parse(localStorage.getItem('enrolledStudents')) || [];
+    const accounts = JSON.parse(localStorage.getItem('studentAccounts')) || [];
+    const tableBody = document.getElementById('accountsTableBody');
+    tableBody.innerHTML = '';
+    
+    if (students.length === 0) {
+        const noDataRow = document.createElement('tr');
+        noDataRow.innerHTML = '<td colspan="10" style="text-align: center;">No students enrolled yet</td>';
+        tableBody.appendChild(noDataRow);
+        return;
+    }
+    
+    students.forEach((student, index) => {
+        const account = accounts.find(acc => acc.studentNumber === student.studentNumber) || {
+            accountStatus: 'None',
+            username: '',
+            password: '',
+            createdDate: ''
+        };
+        
+        const row = document.createElement('tr');
+        const fullName = `${student.lastName}, ${student.firstName} ${student.middleName ? student.middleName.charAt(0) + '.' : ''}`;
+        
+        row.innerHTML = `
+            <td>${student.studentNumber}</td>
+            <td>${fullName}</td>
+            <td>${student.email}</td>
+            <td>${account.username || '-'}</td>
+            <td>${account.password ? '••••••••' : '-'}</td>
+            <td>${account.accountStatus}</td>
+            <td>${student.institute}</td>
+            <td>${student.course}</td>
+            <td>${account.createdDate || '-'}</td>
+            <td>
+    <div class="action-btns">
+        ${account.accountStatus === 'None' ? 
+            `<button class="action-btn generate-btn" onclick="generateAccount(${index})">Generate</button>` : 
+            `<button class="action-btn edit-btn" onclick="editAccount(${index})">Edit</button>
+             <button class="action-btn reset-btn" onclick="resetPassword(${index})">Reset</button>
+             <button class="action-btn delete-btn" onclick="deleteAccount(${index})">Delete</button>`}
+    </div>
+</td>
+        `;
+        
+        tableBody.appendChild(row);
+    });
+    
+    updateLastSaved();
+}
+
+// Function to filter accounts based on search and filter criteria
+function filterAccounts() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const instituteFilter = document.getElementById('instituteFilter').value;
+    const statusFilter = document.getElementById('accountStatusFilter').value;
+    
+    const rows = document.getElementById('accountsTableBody').getElementsByTagName('tr');
+    
+    for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        const studentNumber = row.cells[0].textContent.toLowerCase();
+        const fullName = row.cells[1].textContent.toLowerCase();
+        const email = row.cells[2].textContent.toLowerCase();
+        const username = row.cells[3].textContent.toLowerCase();
+        const accountStatus = row.cells[5].textContent;
+        const institute = row.cells[6].textContent;
+        
+        const matchesSearch = studentNumber.includes(searchTerm) || 
+                            fullName.includes(searchTerm) || 
+                            email.includes(searchTerm) || 
+                            username.includes(searchTerm);
+        
+        const matchesInstitute = instituteFilter === '' || institute === instituteFilter;
+        const matchesStatus = statusFilter === '' || accountStatus === statusFilter;
+        
+        row.style.display = (matchesSearch && matchesInstitute && matchesStatus) ? '' : 'none';
+    }
+}
+
+// Function to generate account for a student
+function generateAccount(index) {
+    const students = JSON.parse(localStorage.getItem('enrolledStudents')) || [];
+    const accounts = JSON.parse(localStorage.getItem('studentAccounts')) || [];
+    const student = students[index];
+    
+    if (!student) return;
+    
+    // Check if account already exists
+    const existingAccount = accounts.find(acc => acc.studentNumber === student.studentNumber);
+    if (existingAccount) return;
+    
+    // Generate username (first letter of first name + last name + last 4 digits of student number)
+    const firstNameLetter = student.firstName.charAt(0).toLowerCase();
+    const lastName = student.lastName.toLowerCase().replace(/\s/g, '');
+    const last4Digits = student.studentNumber.slice(-4);
+    const username = `${firstNameLetter}${lastName}${last4Digits}`;
+    
+    // Generate random password
+    const password = generateStrongPassword();
+    
+    // Create new account
+    const newAccount = {
+        studentNumber: student.studentNumber,
+        username: username,
+        password: password,
+        accountStatus: 'Active',
+        createdDate: new Date().toISOString().split('T')[0]
+    };
+    
+    accounts.push(newAccount);
+    localStorage.setItem('studentAccounts', JSON.stringify(accounts));
+    localStorage.setItem('lastAccountsSave', new Date().toISOString());
+    
+    // Reload accounts display
+    loadAccounts();
+}
+
+// Function to generate a strong random password
+function generateStrongPassword() {
+    const length = 10;
+    const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
+    let password = "";
+    
+    // Ensure at least one of each type
+    password += getRandomChar("ABCDEFGHIJKLMNOPQRSTUVWXYZ"); // uppercase
+    password += getRandomChar("abcdefghijklmnopqrstuvwxyz"); // lowercase
+    password += getRandomChar("0123456789"); // digit
+    password += getRandomChar("!@#$%^&*"); // special
+    
+    // Fill the rest
+    for (let i = password.length; i < length; i++) {
+        password += charset.charAt(Math.floor(Math.random() * charset.length));
+    }
+    
+    // Shuffle the password
+    return password.split('').sort(() => 0.5 - Math.random()).join('');
+}
+
+// Helper function to get a random character from a string
+function getRandomChar(str) {
+    return str.charAt(Math.floor(Math.random() * str.length));
+}
+
+// Function to edit an account
+function editAccount(index) {
+    const students = JSON.parse(localStorage.getItem('enrolledStudents')) || [];
+    const accounts = JSON.parse(localStorage.getItem('studentAccounts')) || [];
+    const student = students[index];
+    
+    if (!student) return;
+    
+    const account = accounts.find(acc => acc.studentNumber === student.studentNumber);
+    if (!account) return;
+    
+    // Store current account index for save function
+    currentAccountIndex = index;
+    
+    // Populate modal with account details
+    document.getElementById('modalStudentNumber').value = student.studentNumber;
+    document.getElementById('modalFullName').value = `${student.lastName}, ${student.firstName} ${student.middleName ? student.middleName.charAt(0) + '.' : ''}`;
+    document.getElementById('modalEmail').value = student.email;
+    document.getElementById('modalUsername').value = account.username;
+    document.getElementById('modalPassword').value = account.password;
+    document.getElementById('modalStatus').value = account.accountStatus;
+    
+    // Check password strength
+    checkPasswordStrength(account.password);
+    
+    // Show modal
+    document.getElementById('accountModal').style.display = 'block';
+}
+
+// Function to save account changes
+function saveAccountChanges() {
+    if (currentAccountIndex === -1) return;
+    
+    const students = JSON.parse(localStorage.getItem('enrolledStudents')) || [];
+    const accounts = JSON.parse(localStorage.getItem('studentAccounts')) || [];
+    const student = students[currentAccountIndex];
+    
+    if (!student) return;
+    
+    const accountIndex = accounts.findIndex(acc => acc.studentNumber === student.studentNumber);
+    if (accountIndex === -1) return;
+    
+    // Update account details
+    accounts[accountIndex].password = document.getElementById('modalPassword').value;
+    accounts[accountIndex].accountStatus = document.getElementById('modalStatus').value;
+    
+    // Save changes
+    localStorage.setItem('studentAccounts', JSON.stringify(accounts));
+    localStorage.setItem('lastAccountsSave', new Date().toISOString());
+    
+    // Close modal and reload accounts
+    closeAccountModal();
+    loadAccounts();
+}
+
+// Function to close account modal
+function closeAccountModal() {
+    document.getElementById('accountModal').style.display = 'none';
+    currentAccountIndex = -1;
+}
+
+// Function to generate random password in modal
+function generateRandomPassword() {
+    const newPassword = generateStrongPassword();
+    document.getElementById('modalPassword').value = newPassword;
+    checkPasswordStrength(newPassword);
+}
+
+// Function to check password strength and update indicator
+function checkPasswordStrength(password) {
+    const strengthIndicator = document.getElementById('passwordStrength');
+    if (!password) {
+        strengthIndicator.className = 'password-strength';
+        return;
+    }
+    
+    // Check strength (simple version)
+    let strength = 0;
+    if (password.length >= 8) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
+    
+    // Update indicator
+    strengthIndicator.className = 'password-strength';
+    if (strength === 4) {
+        strengthIndicator.classList.add('strength-strong');
+    } else if (strength >= 2) {
+        strengthIndicator.classList.add('strength-medium');
+    } else {
+        strengthIndicator.classList.add('strength-weak');
+    }
+}
+
+// Function to copy password to clipboard
+function copyPassword() {
+    const passwordField = document.getElementById('modalPassword');
+    passwordField.select();
+    document.execCommand('copy');
+    
+    // Show brief "Copied" message
+    const copyBtn = document.querySelector('.copy-btn');
+    const originalText = copyBtn.textContent;
+    copyBtn.textContent = 'Copied!';
+    setTimeout(() => {
+        copyBtn.textContent = originalText;
+    }, 1500);
+}
+
+// Function to reset password for an account
+function resetPassword(index) {
+    const students = JSON.parse(localStorage.getItem('enrolledStudents')) || [];
+    const accounts = JSON.parse(localStorage.getItem('studentAccounts')) || [];
+    const student = students[index];
+    
+    if (!student) return;
+    
+    const accountIndex = accounts.findIndex(acc => acc.studentNumber === student.studentNumber);
+    if (accountIndex === -1) return;
+    
+    // Generate new password
+    accounts[accountIndex].password = generateStrongPassword();
+    
+    // Save changes
+    localStorage.setItem('studentAccounts', JSON.stringify(accounts));
+    localStorage.setItem('lastAccountsSave', new Date().toISOString());
+    
+    // Reload accounts
+    loadAccounts();
+    
+    // Show confirmation
+    alert(`Password reset for ${student.firstName} ${student.lastName}`);
+}
+
+// Function to delete an account
+function deleteAccount(index) {
+    const students = JSON.parse(localStorage.getItem('enrolledStudents')) || [];
+    const accounts = JSON.parse(localStorage.getItem('studentAccounts')) || [];
+    const student = students[index];
+    
+    if (!student) return;
+    
+    if (!confirm(`Are you sure you want to delete the account for ${student.firstName} ${student.lastName}?`)) {
+        return;
+    }
+    
+    // Remove account
+    const newAccounts = accounts.filter(acc => acc.studentNumber !== student.studentNumber);
+    
+    // Save changes
+    localStorage.setItem('studentAccounts', JSON.stringify(newAccounts));
+    localStorage.setItem('lastAccountsSave', new Date().toISOString());
+    
+    // Reload accounts
+    loadAccounts();
+}
+
+// Function to generate accounts for all students without accounts
+function generateAllAccounts() {
+    const students = JSON.parse(localStorage.getItem('enrolledStudents')) || [];
+    const accounts = JSON.parse(localStorage.getItem('studentAccounts')) || [];
+    let newAccountsCount = 0;
+    
+    students.forEach(student => {
+        // Check if account already exists
+        const existingAccount = accounts.find(acc => acc.studentNumber === student.studentNumber);
+        if (existingAccount) return;
+        
+        // Generate username (first letter of first name + last name + last 4 digits of student number)
+        const firstNameLetter = student.firstName.charAt(0).toLowerCase();
+        const lastName = student.lastName.toLowerCase().replace(/\s/g, '');
+        const last4Digits = student.studentNumber.slice(-4);
+        const username = `${firstNameLetter}${lastName}${last4Digits}`;
+        
+        // Generate random password
+        const password = generateStrongPassword();
+        
+        // Create new account
+        const newAccount = {
+            studentNumber: student.studentNumber,
+            username: username,
+            password: password,
+            accountStatus: 'Active',
+            createdDate: new Date().toISOString().split('T')[0]
+        };
+        
+        accounts.push(newAccount);
+        newAccountsCount++;
+    });
+    
+    if (newAccountsCount > 0) {
+        localStorage.setItem('studentAccounts', JSON.stringify(accounts));
+        localStorage.setItem('lastAccountsSave', new Date().toISOString());
+        alert(`Generated ${newAccountsCount} new student accounts`);
+    } else {
+        alert('All students already have accounts');
+    }
+    
+    // Reload accounts display
+    loadAccounts();
+}
+
+// Function to reset all passwords
+function resetAllPasswords() {
+    if (!confirm('Are you sure you want to reset ALL student passwords? This cannot be undone.')) {
+        return;
+    }
+    
+    const accounts = JSON.parse(localStorage.getItem('studentAccounts')) || [];
+    let resetCount = 0;
+    
+    accounts.forEach(account => {
+        account.password = generateStrongPassword();
+        resetCount++;
+    });
+    
+    if (resetCount > 0) {
+        localStorage.setItem('studentAccounts', JSON.stringify(accounts));
+        localStorage.setItem('lastAccountsSave', new Date().toISOString());
+        alert(`Reset passwords for ${resetCount} student accounts`);
+    } else {
+        alert('No student accounts found');
+    }
+    
+    // Reload accounts display
+    loadAccounts();
+}
+
+// Function to export accounts to CSV
+function exportAccounts() {
+    const students = JSON.parse(localStorage.getItem('enrolledStudents')) || [];
+    const accounts = JSON.parse(localStorage.getItem('studentAccounts')) || [];
+    
+    // Create CSV content
+    let csvContent = "Student Number,Full Name,Email,Username,Password,Account Status,Institute,Course,Created Date\n";
+    
+    students.forEach(student => {
+        const account = accounts.find(acc => acc.studentNumber === student.studentNumber) || {
+            accountStatus: 'None',
+            username: '',
+            password: '',
+            createdDate: ''
+        };
+        
+        const fullName = `${student.lastName}, ${student.firstName} ${student.middleName ? student.middleName.charAt(0) + '.' : ''}`;
+        
+        csvContent += `${student.studentNumber},"${fullName}",${student.email},${account.username},${account.password},${account.accountStatus},${student.institute},${student.course},${account.createdDate}\n`;
+    });
+    
+    // Create download link
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.setAttribute('hidden', '');
+    a.setAttribute('href', url);
+    a.setAttribute('download', 'student_accounts.csv');
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
+
+// Function to handle logout
+function logout() {
+    // Clear session storage
+    sessionStorage.removeItem('loggedInAdmin');
+    sessionStorage.removeItem('currentUser');
+    sessionStorage.setItem('loggedOut', 'true');
+    
+    // Redirect to login page
+    window.location.href = 'student-login.html';
+}
+
+// Load accounts when page loads
+window.onload = function() {
+    loadAccounts();
+};
+</script>
+
+</body>
+</html>

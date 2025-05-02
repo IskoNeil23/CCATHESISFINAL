@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="instructor.css">
+    <title>Instructor Dashboard - City College of Angeles City</title>
+
+</head>
+<body>
+    <div class="sidebar">
+        <img src="cca-logo.png" alt="CCA Logo">
+        <h1>City College of Angeles City</h1>
+        <a href="instructor-dashboard.html" class="active">Dashboard</a>
+        <a href="#">Schedule</a>
+        <a class="active">Attendance Sheet</a>
+        <a href="#">Grading Sheet</a>
+        <a href="#">Approval Letters</a>
+        
+    </div>
+    
+    <div class="topnav">
+        <div class="nav-left">
+            <img src="cca-logo.png" alt="CCA Logo">
+            <h3>Instructor Portal</h3>
+        </div>
+        <button class="logout-btn" onclick="logout()">Log Out</button>
+    </div>
+    
+    <div class="main-content">
+        <div class="welcome-card">
+            <h2 id="welcomeMessage">Welcome!</h2>
+            <p id="instructorInfo"></p>
+        </div>
+        
+        <div class="dashboard-content">
+            <div class="dashboard-card">
+                <h3>Active Classes</h3>
+                <p>You have no active classes at the moment.</p>
+            </div>
+            
+            <div class="dashboard-card">
+                <h3>Notifications</h3>
+                <p>No new notifications.</p>
+            </div>
+            
+            <div class="dashboard-card">
+                <h3>Upcoming Events</h3>
+                <p>No upcoming events.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to check if instructor is logged in
+        function checkLogin() {
+            const loggedInInstructor = JSON.parse(sessionStorage.getItem('loggedInInstructor'));
+            
+            if (!loggedInInstructor) {
+                // Not logged in, redirect to login page
+                window.location.href = 'instructor-login.html';
+                return;
+            }
+            
+            // Set welcome message with instructor's name
+            const welcomeElement = document.getElementById('welcomeMessage');
+            welcomeElement.textContent = `Hello, ${loggedInInstructor.firstName}!`;
+            
+            // Set additional instructor info
+            const infoElement = document.getElementById('instructorInfo');
+            infoElement.textContent = `Welcome to your instructor dashboard. You are logged in as ${loggedInInstructor.firstName} ${loggedInInstructor.middleName ? loggedInInstructor.middleName + ' ' : ''}${loggedInInstructor.lastName} (${loggedInInstructor.email}).`;
+        }
+        
+        // Function for logout
+        function logout() {
+            if (confirm('Are you sure you want to log out?')) {
+                // Clear session storage
+                sessionStorage.removeItem('loggedInInstructor');
+                
+                // Redirect to login page
+                window.location.href = 'instructor-login.html';
+            }
+        }
+        
+        // Run on page load
+        window.onload = function() {
+            checkLogin();
+        };
+    </script>
+</body>
+</html>

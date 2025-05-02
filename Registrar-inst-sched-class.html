@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="Student.css">
+<style>
+    /* Sidebar styling */
+    .sidebar a.active {
+        background-color: wheat; 
+        color: rgb(0, 0, 0);
+        font-weight: bold;
+    }
+    
+    /* Schedule assignment styles */
+    .assignment-container {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+    
+    .filters-container {
+        background-color: #f9f9f9;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+    
+    .filter-group {
+        margin-right: 15px;
+        min-width: 150px;
+        margin-bottom: 10px;
+    }
+    
+    .filter-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    
+    .filter-group select, .filter-group input {
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        width: 100%;
+    }
+    
+    .section-container {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+    
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        background-color: #f2f2f2;
+        padding: 10px;
+        border-radius: 5px;
+    }
+    
+    .section-header h3 {
+        margin: 0;
+    }
+    
+    .schedule-form {
+        background-color: #f9f9f9;
+        padding: 15px;
+        border-radius: 5px;
+        margin-top: 15px;
+    }
+    
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+    }
+    
+    .form-group {
+        flex: 1 0 200px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    
+    .form-group input, .form-group select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    
+    .btn-container {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 15px;
+    }
+    
+    .btn {
+        padding: 8px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-left: 10px;
+        border: none;
+    }
+    
+    .btn-primary {
+        background-color: #4CAF50;
+        color: white;
+    }
+    
+    .btn-secondary {
+        background-color: #f2f2f2;
+        color: #333;
+        border: 1px solid #ddd;
+    }
+    
+    .btn-danger {
+        background-color: #f44336;
+        color: white;
+    }
+    
+    .schedule-list {
+        margin-top: 20px;
+    }
+    
+    .schedule-item {
+        background-color: #fff;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .schedule-details {
+        flex: 1;
+    }
+    
+    .schedule-actions {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+    
+    .data-table th, .data-table td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+    }
+    
+    .data-table th {
+        background-color: #f2f2f2;
+        position: sticky;
+        top: 0;
+    }
+    
+    .data-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+    
+    .data-table tr:hover {
+        background-color: #f1f1f1;
+    }
+    
+    .badge {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 10px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+    
+    .badge-lecture {
+        background-color: #2196F3;
+        color: white;
+    }
+    
+    .badge-laboratory {
+        background-color: #FF9800;
+        color: white;
+    }
+    
+    .time-detail {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .week-days {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-top: 10px;
+    }
+    
+    .day-checkbox {
+        display: flex;
+        align-items: center;
+        margin-right: 10px;
+    }
+    
+    .day-checkbox input {
+        margin-right: 5px;
+    }
+    
+    .students-toggle {
+        cursor: pointer;
+        color: #2196F3;
+        font-weight: bold;
+    }
+    
+    .students-list {
+        display: none;
+        margin-top: 10px;
+    }
+    
+    .students-list.show {
+        display: block;
+    }
+    
+    /* Print styles */
+    @media print {
+        .no-print {
+            display: none;
+        }
+    }
+</style>
+</head>
+<body>
+
+<div id="mySidebar" class="sidebar">
+    <img class="navlog" src="cca-logo.png" alt="">
+    <h1>City College of Angeles City</h1>  
+    <a href="RegistrarEnrolledStudents.html">Enrolled Students</a>
+    <a href="RegistrarClassRecords.html">Class Records</a>
+    <a href="RegistrarInstructorManagement.html">Instructors Management</a>
+    <a class="active">Instructor Schedules</a>
+</div>
+
+<!-- Top navigation bar with logout button -->
+<div id="topNav" class="topnav shifted">
+    <div class="nav-left">
+        <img src="cca-logo.png" alt="CCA Logo" height="50">
+        <h3>City College of Angeles City - Instructor Schedule Assignment</h3>
+    </div>
+    <button class="logout-btn" onclick="logout()">Log Out</button>
+</div>
+
+<div id="main" style="margin-left: 250px">
+    <div id="pageContent" class="page-content">
+        <h2>Assign Instructor Schedules</h2>
+        
+        <!-- Instructor selection -->
+        <div class="assignment-container">
+            <h3>Select Instructor</h3>
+            <div class="filters-container">
+                <div class="filter-group">
+                    <label for="instructorFilter">Instructor</label>
+                    <select id="instructorFilter" onchange="loadInstructorDetails()">
+                        <option value="">-- Select Instructor --</option>
+                        <!-- Will be populated dynamically -->
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="instructorInstitute">Institute</label>
+                    <input type="text" id="instructorInstitute" readonly>
+                </div>
+                <div class="filter-group">
+                    <label for="instructorDepartment">Department</label>
+                    <input type="text" id="instructorDepartment" readonly>
+                </div>
+            </div>
+            
+            <!-- Instructor's current schedule summary -->
+            <div id="currentScheduleSummary">
+                <h4>Current Teaching Load: <span id="teachingLoadHours">0</span> hours per week</h4>
+                <button class="btn btn-primary" onclick="printInstructorSchedule()">Print Schedule</button>
+            </div>
+        </div>
+        
+        <!-- Section assignment -->
+        <div class="assignment-container">
+            <h3>Assign Class Sections</h3>
+            
+            <!-- Section filters -->
+            <div class="filters-container">
+                <div class="filter-group">
+                    <label for="instituteFilter">Institute</label>
+                    <select id="instituteFilter" onchange="updateCourseOptions()">
+                        <option value="">All Institutes</option>
+                        <option value="ISCLIS">ISCLIS</option>
+                        <option value="IBM">IBM</option>
+                        <option value="IEAS">IEAS</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="courseFilter">Course</label>
+                    <select id="courseFilter" onchange="updateSectionOptions()">
+                        <option value="">All Courses</option>
+                        <!-- Will be populated based on institute selection -->
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="yearFilter">Year Level</label>
+                    <select id="yearFilter" onchange="updateSectionOptions()">
+                        <option value="">All Year Levels</option>
+                        <option value="1">1st Year</option>
+                        <option value="2">2nd Year</option>
+                        <option value="3">3rd Year</option>
+                        <option value="4">4th Year</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="sectionFilter">Section</label>
+                    <select id="sectionFilter" onchange="loadSectionDetails()">
+                        <option value="">All Sections</option>
+                        <!-- Will be populated based on course and year selections -->
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Selected section details -->
+            <div id="sectionDetailsContainer" style="display: none;">
+                <div class="section-container">
+                    <div class="section-header">
+                        <h3 id="sectionTitle">Section Details</h3>
+                        <span id="studentCount">0 Students</span>
+                    </div>
+                    
+                    <div class="section-details">
+                        <p><strong>Institute:</strong> <span id="sectionInstitute"></span></p>
+                        <p><strong>Course:</strong> <span id="sectionCourse"></span></p>
+                        <p><strong>Year Level:</strong> <span id="sectionYearLevel"></span></p>
+                        <p><strong>Section:</strong> <span id="sectionName"></span></p>
+                        
+                        <!-- Toggle to show/hide student list -->
+                        <p class="students-toggle" onclick="toggleStudentsList()">Show Student List</p>
+                        <div id="studentsList" class="students-list">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>Student Number</th>
+                                        <th>Last Name</th>
+                                        <th>First Name</th>
+                                        <th>Middle Name</th>
+                                        <th>Sex</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="studentsTableBody">
+                                    <!-- Will be populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Schedule assignment form -->
+                    <h4>Create Schedule</h4>
+                    <div class="schedule-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="subjectCode">Subject Code</label>
+                                <input type="text" id="subjectCode" placeholder="e.g., CS101">
+                            </div>
+                            <div class="form-group">
+                                <label for="subjectName">Subject Name</label>
+                                <input type="text" id="subjectName" placeholder="e.g., Introduction to Programming">
+                            </div>
+                            <div class="form-group">
+                                <label for="classType">Class Type</label>
+                                <select id="classType">
+                                    <option value="Lecture">Lecture</option>
+                                    <option value="Laboratory">Laboratory</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="roomNumber">Room Number</label>
+                                <input type="text" id="roomNumber" placeholder="e.g., Room 101">
+                            </div>
+                            <div class="form-group">
+                                <label for="startTime">Start Time</label>
+                                <input type="time" id="startTime">
+                            </div>
+                            <div class="form-group">
+                                <label for="endTime">End Time</label>
+                                <input type="time" id="endTime">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group" style="flex-basis: 100%;">
+                                <label>Days</label>
+                                <div class="week-days">
+                                    <label class="day-checkbox"><input type="checkbox" value="Monday"> Monday</label>
+                                    <label class="day-checkbox"><input type="checkbox" value="Tuesday"> Tuesday</label>
+                                    <label class="day-checkbox"><input type="checkbox" value="Wednesday"> Wednesday</label>
+                                    <label class="day-checkbox"><input type="checkbox" value="Thursday"> Thursday</label>
+                                    <label class="day-checkbox"><input type="checkbox" value="Friday"> Friday</label>
+                                    <label class="day-checkbox"><input type="checkbox" value="Saturday"> Saturday</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="btn-container">
+                            <button class="btn btn-secondary" onclick="clearScheduleForm()">Clear</button>
+                            <button class="btn btn-primary" onclick="addSchedule()">Add Schedule</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Current schedules -->
+        <div class="assignment-container">
+            <h3>Current Schedules</h3>
+            <div id="schedulesContainer" class="schedule-list">
+                <!-- Will be populated dynamically -->
+                <p id="noSchedulesMessage">No schedules assigned yet.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Store for courses by institute
+const coursesByInstitute = {
+    "ISCLIS": [
+        "Bachelor of Science in Computer Science",
+        "Bachelor of Science in Information Systems",
+        "Associate in Computer Technology",
+        "Bachelor of Library and Information Science"
+    ],
+    "IBM": [
+        "Bachelor of Science in Tourism Management",
+        "Bachelor of Science in Entrepreneurship",
+        "Bachelor of Science in Accountancy"
+    ],
+    "IEAS": [
+        "Bachelor of Arts in English Language Studies",
+        "Bachelor of Science in Psychology",
+        "Bachelor of Science in Mathematics",
+        "Bachelor of Physical Education",
+        "Bachelor of Special Needs Education",
+        "Bachelor of Technical-Vocational Teacher Education Major in Food and Service Management"
+    ]
+};
+
+// Store for departments by institute
+const departmentsByInstitute = {
+    "ISCLIS": ["Computer Science", "Information Technology", "Library Science"],
+    "IBM": ["Tourism", "Business Management", "Accountancy"],
+    "IEAS": ["Languages", "Social Sciences", "Mathematics", "Education"]
+};
+
+// Sample subject data (in a real system, this would be stored in database)
+const subjectsByProgram = {
+    "Computer Science": [
+        { code: "CS101", name: "Introduction to Programming", type: "Lecture" },
+        { code: "CS102", name: "Introduction to Programming Lab", type: "Laboratory" },
+        { code: "CS201", name: "Data Structures", type: "Lecture" },
+        { code: "CS202", name: "Data Structures Lab", type: "Laboratory" }
+    ],
+    "Information Systems": [
+        { code: "IS101", name: "Information Systems Fundamentals", type: "Lecture" },
+        { code: "IS102", name: "Database Management", type: "Lecture" },
+        { code: "IS103", name: "Database Management Lab", type: "Laboratory" }
+    ]
+};
+
+// Function to populate instructor dropdown
+function populateInstructorDropdown() {
+    const instructors = JSON.parse(localStorage.getItem('instructors')) || [];
+    const instructorAccounts = JSON.parse(localStorage.getItem('instructorAccounts')) || [];
+    const instructorSelect = document.getElementById('instructorFilter');
+    
+    // Clear current options except the first one
+    while (instructorSelect.options.length > 1) {
+        instructorSelect.remove(1);
+    }
+    
+    // Get instructors with accounts
+    const instructorsWithAccounts = instructors.filter(instructor => 
+        instructorAccounts.some(account => account.instructorId === instructor.instructorId)
+    );
+    
+    if (instructorsWithAccounts.length === 0) {
+        const option = document.createElement('option');
+        option.value = "";
+        option.textContent = "No instructors with accounts found";
+        option.disabled = true;
+        instructorSelect.appendChild(option);
+        return;
+    }
+    
+    // Sort instructors by last name
+    instructorsWithAccounts.sort((a, b) => a.lastName.localeCompare(b.lastName));
+    
+    // Add options for each instructor
+    instructorsWithAccounts.forEach(instructor => {
+        const account = instructorAccounts.find(acc => acc.instructorId === instructor.instructorId);
+        if (account) {
+            const option = document.createElement('option');
+            option.value = instructor.instructorId;
+            option.textContent = `${instructor.lastName}, ${instructor.firstName} (${account.email})`;
+            option.dataset.email = account.email;
+            option.dataset.institute = instructor.institute || "N/A";
+            option.dataset.department = instructor.department || "N/A";
+            instructorSelect.appendChild(option);
+        }
+    });
+}
+
+// Function to load instructor details when selected
+function loadInstructorDetails() {
+    const instructorSelect = document.getElementById('instructorFilter');
+    const selectedOption = instructorSelect.options[instructorSelect.selectedIndex];
+    
+    if (selectedOption.value) {
+        const institute = selectedOption.dataset.institute;
+        const department = selectedOption.dataset.department;
+        
+        document.getElementById('instructorInstitute').value = institute;
+        document.getElementById('instructorDepartment').value = department;
+        
+        // Load instructor's current schedules
+        loadInstructorSchedules(selectedOption.value);
+    } else {
+        document.getElementById('instructorInstitute').value = "";
+        document.getElementById('instructorDepartment').value = "";
+        document.getElementById('schedulesContainer').innerHTML = '<p id="noSchedulesMessage">No schedules assigned yet.</p>';
+    }
+}
+
+// Function to update course dropdown based on institute selection
+function updateCourseOptions() {
+    const instituteSelect = document.getElementById('instituteFilter');
+    const courseSelect = document.getElementById('courseFilter');
+    
+    // Clear current options
+    courseSelect.innerHTML = '<option value="">All Courses</option>';
+    
+    const selectedInstitute = instituteSelect.value;
+    if (selectedInstitute) {
+        const courses = coursesByInstitute[selectedInstitute];
+        
+        // Add new options based on selected institute
+        courses.forEach(course => {
+            const option = document.createElement('option');
+            option.value = course;
+            option.textContent = course;
+            courseSelect.appendChild(option);
+        });
+    }
+    
+    // Update section options
+    updateSectionOptions();
+}
+
+// Function to update section dropdown
+function updateSectionOptions() {
+    const students = JSON.parse(localStorage.getItem('enrolledStudents')) || [];
+    const sectionSelect = document.getElementById('sectionFilter');
+    const yearFilter = document.getElementById('yearFilter').value;
+    const instituteFilter = document.getElementById('instituteFilter').value;
+    const courseFilter = document.getElementById('courseFilter').value;
+    
+    // Clear current options
+    sectionSelect.innerHTML = '<option value="">All Sections</option>';
+    
+    // Get unique sections based on filters
+    const sections = new Set();
+    
+    students.forEach(student => {
+        if (
+            (yearFilter === '' || student.yearLevel === yearFilter) &&
+            (instituteFilter === '' || student.institute === instituteFilter) &&
+            (courseFilter === '' || student.course === courseFilter)
+        ) {
+            sections.add(student.section);
+        }
+    });
+    
+    // Add section options
+    [...sections].sort().forEach(section => {
+        const option = document.createElement('option');
+        option.value = section;
+        option.textContent = section;
+        sectionSelect.appendChild(option);
+    });
+}
+
+// Function to load section details and show students
+function loadSectionDetails() {
+    const students = JSON.parse(localStorage.getItem('enrolledStudents')) || [];
+    const sectionFilter = document.getElementById('sectionFilter').value;
+    const yearFilter = document.getElementById('yearFilter').value;
+    const instituteFilter = document.getElementById('instituteFilter').value;
+    const courseFilter = document.getElementById('courseFilter').value;
+    
+    if (!sectionFilter || !yearFilter || !instituteFilter || !courseFilter) {
+        document.getElementById('sectionDetailsContainer').style.display = 'none';
+        return;
+    }
+    
+    // Filter students by section, year, institute, and course
+    const sectionStudents = students.filter(student => 
+        student.section === sectionFilter &&
+        student.yearLevel === yearFilter &&
+        student.institute === instituteFilter &&
+        student.course === courseFilter
+    );
+    
+    if (sectionStudents.length === 0) {
+        document.getElementById('sectionDetailsContainer').style.display = 'none';
+        return;
+    }
+    
+    // Show section details container
+    document.getElementById('sectionDetailsContainer').style.display = 'block';
+    
+    // Set section details
+    document.getElementById('sectionTitle').textContent = `${instituteFilter} - Year ${yearFilter} Section ${sectionFilter}`;
+    document.getElementById('studentCount').textContent = `${sectionStudents.length} Students`;
+    document.getElementById('sectionInstitute').textContent = instituteFilter;
+    document.getElementById('sectionCourse').textContent = courseFilter;
+    document.getElementById('sectionYearLevel').textContent = yearFilter;
+    document.getElementById('sectionName').textContent = sectionFilter;
+    
+    // Populate students table
+    const studentsTableBody = document.getElementById('studentsTableBody');
+    studentsTableBody.innerHTML = '';
+    
+    // Sort students by last name
+    sectionStudents.sort((a, b) => a.lastName.localeCompare(b.lastName));
+    
+    // Add each student to the table
+    sectionStudents.forEach((student, index) => {
+        const row = document.createElement('tr');
+        
+        // Add cells for each column
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${student.studentNumber}</td>
+            <td>${student.lastName}</td>
+            <td>${student.firstName}</td>
+            <td>${student.middleName || ''}</td>
+            <td>${student.sex}</td>
+        `;
+        
+        studentsTableBody.appendChild(row);
+    });
+}
+
+// Function to toggle students list visibility
+function toggleStudentsList() {
+    const studentsList = document.getElementById('studentsList');
+    const toggleButton = document.querySelector('.students-toggle');
+    
+    if (studentsList.classList.contains('show')) {
+        studentsList.classList.remove('show');
+        toggleButton.textContent = 'Show Student List';
+    } else {
+        studentsList.classList.add('show');
+        toggleButton.textContent = 'Hide Student List';
+    }
+}
+
+// Function to add a schedule
+function addSchedule() {
+    // Get instructor ID
+    const instructorSelect = document.getElementById('instructorFilter');
+    const instructorId = instructorSelect.value;
+    
+    if (!instructorId) {
+        alert('Please select an instructor.');
+        return;
+    }
+    
+    // Get section details
+    const instituteFilter = document.getElementById('instituteFilter').value;
+    const courseFilter = document.getElementById('courseFilter').value;
+    const yearFilter = document.getElementById('yearFilter').value;
+    const sectionFilter = document.getElementById('sectionFilter').value;
+    
+    if (!instituteFilter || !courseFilter || !yearFilter || !sectionFilter) {
+        alert('Please select a section.');
+        return;
+    }
+    
+    // Get schedule details
+    const subjectCode = document.getElementById('subjectCode').value;
+    const subjectName = document.getElementById('subjectName').value;
+    const classType = document.getElementById('classType').value;
+    const roomNumber = document.getElementById('roomNumber').value;
+    const startTime = document.getElementById('startTime').value;
+    const endTime = document.getElementById('endTime').value;
+    
+    // Get selected days
+    const dayCheckboxes = document.querySelectorAll('.day-checkbox input:checked');
+    const selectedDays = Array.from(dayCheckboxes).map(cb => cb.value);
+    
+    // Validate inputs
+    if (!subjectCode || !subjectName || !roomNumber || !startTime || !endTime || selectedDays.length === 0) {
+        alert('Please fill in all required fields.');
+        return;
+    }
+    
+    // Check if end time is after start time
+    if (startTime >= endTime) {
+        alert('End time must be after start time.');
+        return;
+    }
+    
+    // Create schedule object
+    const scheduleKey = `${instituteFilter}-${courseFilter}-${yearFilter}-${sectionFilter}`;
+    const schedule = {
+        id: Date.now().toString(), // Generate unique ID
+        instructorId: instructorId,
+        institute: instituteFilter,
+        course: courseFilter,
+        yearLevel: yearFilter,
+        section: sectionFilter,
+        subjectCode: subjectCode,
+        subjectName: subjectName,
+        classType: classType,
+        roomNumber: roomNumber,
+        startTime: startTime,
+        endTime: endTime,
+        days: selectedDays,
+        sectionKey: scheduleKey
+    };
+    
+    // Get existing schedules from localStorage
+    const instructorSchedules = JSON.parse(localStorage.getItem('instructorSchedules')) || [];
+    
+    // Check for scheduling conflicts
+    const hasConflict = checkScheduleConflicts(schedule, instructorSchedules);
+    if (hasConflict) {
+        return;
+    }
+    
+    // Add new schedule to array
+    instructorSchedules.push(schedule);
+    
+    // Save to localStorage
+    localStorage.setItem('instructorSchedules', JSON.stringify(instructorSchedules));
+    
+    // Update schedules display
+    loadInstructorSchedules(instructorId);
+    
+    // Clear form
+    clearScheduleForm();
+    
+    alert('Schedule added successfully!');
+}
+
+// Function to check for scheduling conflicts
+function checkScheduleConflicts(newSchedule, allSchedules) {
+    // Room conflict: Same room, same time, same day
+    const roomConflicts = allSchedules.filter(schedule => 
+        schedule.roomNumber === newSchedule.roomNumber &&
+        schedule.id !== newSchedule.id &&
+        hasTimeOverlap(schedule, newSchedule) &&
+        hasDayOverlap(schedule, newSchedule)
+    );
+    
+    if (roomConflicts.length > 0) {
+        alert(`Room conflict: ${newSchedule.roomNumber} is already booked at that time on ${getDayOverlap(newSchedule, roomConflicts[0])}.`);
+        return true;
+    }
+    
+    // Instructor conflict: Same instructor, same time, same day
+    const instructorConflicts = allSchedules.filter(schedule =>
+        schedule.instructorId === newSchedule.instructorId &&
+        schedule.id !== newSchedule.id &&
+        hasTimeOverlap(schedule, newSchedule) &&
+        hasDayOverlap(schedule, newSchedule)
+    );
+    
+    if (instructorConflicts.length > 0) {
+        alert(`Instructor schedule conflict: Instructor already has a class at that time on ${getDayOverlap(newSchedule, instructorConflicts[0])}.`);
+        return true;
+    }
+    
+    // Section conflict: Same section, same time, same day
+    const sectionConflicts = allSchedules.filter(schedule =>
+        schedule.sectionKey === newSchedule.sectionKey &&
+        schedule.id !== newSchedule.id &&
+        hasTimeOverlap(schedule, newSchedule) &&
+        hasDayOverlap(schedule, newSchedule)
+    );
+    
+    if (sectionConflicts.length > 0) {
+        alert(`Section schedule conflict: This section already has a class at that time on ${getDayOverlap(newSchedule, sectionConflicts[0])}.`);
+        return true;
+    }
+    
+    return false;
+}
+
+// Helper to check if two schedules overlap in time
+function hasTimeOverlap(schedule1, schedule2) {
+    return (schedule1.startTime < schedule2.endTime && schedule1.endTime > schedule2.startTime);
+}
+
+// Helper to check if two schedules overlap in days
+function hasDayOverlap(schedule1, schedule2) {
+    return schedule1.days.some(day => schedule2.days.includes(day));
+}
+
+// Helper to get the overlapping days
+function getDayOverlap(schedule1, schedule2) {
+    const overlap = schedule1.days.filter(day => schedule2.days.includes(day));
+    return overlap.join(', ');
+}
+
+// Function to clear schedule form
+function clearScheduleForm() {
+    document.getElementById('subjectCode').value = '';
+    document.getElementById('subjectName').value = '';
+    document.getElementById('classType').selectedIndex = 0;
+    document.getElementById('roomNumber').value = '';
+    document.getElementById('startTime').value = '';
+    document.getElementById('endTime').value = '';
+    
+    // Uncheck all day checkboxes
+    const dayCheckboxes = document.querySelectorAll('.day-checkbox input');
+    dayCheckboxes.forEach(cb => cb.checked = false);
+}
+
+// Function to load instructor schedules
+function loadInstructorSchedules(instructorId) {
+    const instructorSchedules = JSON.parse(localStorage.getItem('instructorSchedules')) || [];
+    const instructorName = document.getElementById('instructorFilter').options[document.getElementById('instructorFilter').selectedIndex].textContent;
+    
+    // Filter schedules for this instructor
+    const filteredSchedules = instructorSchedules.filter(schedule => schedule.instructorId === instructorId);
+    
+    // Update teaching load hours
+    const totalHours = calculateTeachingHours(filteredSchedules);
+    document.getElementById('teachingLoadHours').textContent = totalHours;
+    
+    // Get schedules container
+    const schedulesContainer = document.getElementById('schedulesContainer');
+    
+    // Display message if no schedules
+    if (filteredSchedules.length === 0) {
+        schedulesContainer.innerHTML = '<p id="noSchedulesMessage">No schedules assigned yet.</p>';
+        return;
+    }
+    
+    // Group schedules by section
+    const schedulesBySection = {};
+    filteredSchedules.forEach(schedule => {
+        const sectionKey = `${schedule.institute}-${schedule.yearLevel}-${schedule.section}`;
+        if (!schedulesBySection[sectionKey]) {
+            schedulesBySection[sectionKey] = [];
+        }
+        schedulesBySection[sectionKey].push(schedule);
+    });
+    
+    // Clear current schedules
+    schedulesContainer.innerHTML = '';
+    
+    // Display schedules grouped by section
+    Object.keys(schedulesBySection).sort().forEach(sectionKey => {
+        const sectionSchedules = schedulesBySection[sectionKey];
+        const firstSchedule = sectionSchedules[0];
+        
+        // Create section header
+        const sectionHeader = document.createElement('div');
+        sectionHeader.className = 'section-container';
+        sectionHeader.innerHTML = `
+            <div class="section-header">
+                <h3>${firstSchedule.institute} - Year ${firstSchedule.yearLevel} Section ${firstSchedule.section}</h3>
+                <span>${firstSchedule.course}</span>
+            </div>
+        `;
+        
+        // Create table for schedules
+        const scheduleTable = document.createElement('table');
+        scheduleTable.className = 'data-table';
+        scheduleTable.innerHTML = `
+            <thead>
+                <tr>
+                    <th>Subject</th>
+                    <th>Type</th>
+                    <th>Room</th>
+                    <th>Time</th>
+                    <th>Days</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        `;
+        
+        // Add schedule rows
+        const tableBody = scheduleTable.querySelector('tbody');
+        sectionSchedules.forEach(schedule => {
+            const row = document.createElement('tr');
+            
+            // Format time
+            const formattedStartTime = formatTime(schedule.startTime);
+            const formattedEndTime = formatTime(schedule.endTime);
+            
+            row.innerHTML = `
+                <td>${schedule.subjectCode} - ${schedule.subjectName}</td>
+                <td><span class="badge badge-${schedule.classType.toLowerCase()}">${schedule.classType}</span></td>
+                <td>${schedule.roomNumber}</td>
+                <td>${formattedStartTime} - ${formattedEndTime}</td>
+                <td>${schedule.days.join(', ')}</td>
+                <td>
+                    <button class="btn btn-danger" onclick="deleteSchedule('${schedule.id}')">Delete</button>
+                </td>
+            `;
+            
+            tableBody.appendChild(row);
+        });
+        
+        // Add table to section container
+        sectionHeader.appendChild(scheduleTable);
+        schedulesContainer.appendChild(sectionHeader);
+    });
+}
+
+// Function to calculate total teaching hours per week
+function calculateTeachingHours(schedules) {
+    let totalMinutes = 0;
+    
+    schedules.forEach(schedule => {
+        // Calculate minutes per session
+        const startTime = schedule.startTime.split(':');
+        const endTime = schedule.endTime.split(':');
+        
+        const startMinutes = parseInt(startTime[0]) * 60 + parseInt(startTime[1]);
+        const endMinutes = parseInt(endTime[0]) * 60 + parseInt(endTime[1]);
+        
+        const sessionMinutes = endMinutes - startMinutes;
+        
+        // Multiply by number of days per week
+        totalMinutes += sessionMinutes * schedule.days.length;
+    });
+    
+    // Convert minutes to hours with one decimal place
+    return (totalMinutes / 60).toFixed(1);
+}
+
+// Function to format time in 12-hour format
+function formatTime(timeString) {
+    const [hours, minutes] = timeString.split(':');
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const hour12 = hour % 12 || 12;
+    
+    return `${hour12}:${minutes} ${ampm}`;
+}
+
+// Function to delete a schedule
+function deleteSchedule(scheduleId) {
+    if (confirm('Are you sure you want to delete this schedule?')) {
+        const instructorSchedules = JSON.parse(localStorage.getItem('instructorSchedules')) || [];
+        const instructorId = document.getElementById('instructorFilter').value;
+        
+        // Filter out the schedule to delete
+        const updatedSchedules = instructorSchedules.filter(schedule => schedule.id !== scheduleId);
+        
+        // Save updated schedules to localStorage
+        localStorage.setItem('instructorSchedules', JSON.stringify(updatedSchedules));
+        
+        // Reload instructor schedules
+        loadInstructorSchedules(instructorId);
+        
+        alert('Schedule deleted successfully!');
+    }
+}
+
+// Function to print instructor schedule
+function printInstructorSchedule() {
+    const instructorId = document.getElementById('instructorFilter').value;
+    const instructorName = document.getElementById('instructorFilter').options[document.getElementById('instructorFilter').selectedIndex].textContent;
+    
+    if (!instructorId) {
+        alert('Please select an instructor.');
+        return;
+    }
+    
+    // Get instructor schedules
+    const instructorSchedules = JSON.parse(localStorage.getItem('instructorSchedules')) || [];
+    const filteredSchedules = instructorSchedules.filter(schedule => schedule.instructorId === instructorId);
+    
+    if (filteredSchedules.length === 0) {
+        alert('No schedules to print.');
+        return;
+    }
+    
+    // Create a new window for printing
+    const printWindow = window.open('', '_blank');
+    
+    // Group schedules by day
+    const schedulesByDay = {
+        'Monday': [],
+        'Tuesday': [],
+        'Wednesday': [],
+        'Thursday': [],
+        'Friday': [],
+        'Saturday': []
+    };
+    
+    filteredSchedules.forEach(schedule => {
+        schedule.days.forEach(day => {
+            schedulesByDay[day].push(schedule);
+        });
+    });
+    
+    // Sort schedules for each day by start time
+    Object.keys(schedulesByDay).forEach(day => {
+        schedulesByDay[day].sort((a, b) => a.startTime.localeCompare(b.startTime));
+    });
+    
+    // Create HTML for print window
+    const printContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Instructor Schedule - ${instructorName}</title>
+            <style>
+                body { font-family: Arial, sans-serif; padding: 20px; }
+                h1, h2 { text-align: center; }
+                table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                th { background-color: #f2f2f2; }
+                .day-header { background-color: #e6e6e6; font-weight: bold; }
+                .no-print { display: none; }
+                .badge {
+                    display: inline-block;
+                    padding: 3px 8px;
+                    border-radius: 10px;
+                    font-size: 12px;
+                    font-weight: bold;
+                }
+                .badge-lecture { background-color: #2196F3; color: white; }
+                .badge-laboratory { background-color: #FF9800; color: white; }
+                @media print {
+                    .no-print { display: none; }
+                    button { display: none; }
+                }
+            </style>
+        </head>
+        <body>
+            <h1>City College of Angeles City</h1>
+            <h2>Schedule for ${instructorName}</h2>
+            <p><strong>Institute:</strong> ${document.getElementById('instructorInstitute').value}</p>
+            <p><strong>Department:</strong> ${document.getElementById('instructorDepartment').value}</p>
+            <p><strong>Total Teaching Hours:</strong> ${document.getElementById('teachingLoadHours').textContent} hours per week</p>
+            
+            <button class="no-print" onclick="window.print()">Print Schedule</button>
+            
+            ${Object.keys(schedulesByDay).map(day => {
+                const daySchedules = schedulesByDay[day];
+                if (daySchedules.length === 0) return '';
+                
+                return `
+                    <h3 class="day-header">${day}</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Subject</th>
+                                <th>Type</th>
+                                <th>Room</th>
+                                <th>Section</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${daySchedules.map(schedule => `
+                                <tr>
+                                    <td>${formatTime(schedule.startTime)} - ${formatTime(schedule.endTime)}</td>
+                                    <td>${schedule.subjectCode} - ${schedule.subjectName}</td>
+                                    <td><span class="badge badge-${schedule.classType.toLowerCase()}">${schedule.classType}</span></td>
+                                    <td>${schedule.roomNumber}</td>
+                                    <td>${schedule.institute} - Year ${schedule.yearLevel} Section ${schedule.section}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            }).join('')}
+            
+            <div class="no-print">
+                <button onclick="window.print()">Print Schedule</button>
+                <button onclick="window.close()">Close</button>
+            </div>
+        </body>
+        </html>
+    `;
+    
+    // Write to print window
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+}
+
+// Function to populate mock data (for testing only)
+function populateMockData() {
+    // Check if we already have data
+    const hasInstructors = localStorage.getItem('instructors');
+    const hasStudents = localStorage.getItem('enrolledStudents');
+    
+    if (hasInstructors && hasStudents) {
+        return; // Data already exists
+    }
+    
+    // Sample instructors
+    const instructors = [
+        {
+            instructorId: "INST001",
+            firstName: "Juan",
+            lastName: "Dela Cruz",
+            middleName: "Santos",
+            sex: "Male",
+            institute: "ISCLIS",
+            department: "Computer Science"
+        },
+        {
+            instructorId: "INST002",
+            firstName: "Maria",
+            lastName: "Garcia",
+            middleName: "Reyes",
+            sex: "Female",
+            institute: "ISCLIS",
+            department: "Information Technology"
+        },
+        {
+            instructorId: "INST003",
+            firstName: "Robert",
+            lastName: "Mendoza",
+            middleName: "Lim",
+            sex: "Male",
+            institute: "IBM",
+            department: "Business Management"
+        }
+    ];
+    
+    // Sample instructor accounts
+    const instructorAccounts = [
+        {
+            instructorId: "INST001",
+            email: "jdelacruz@cca.edu.ph",
+            password: "password123" // In a real system, this would be hashed
+        },
+        {
+            instructorId: "INST002",
+            email: "mgarcia@cca.edu.ph",
+            password: "password123"
+        },
+        {
+            instructorId: "INST003",
+            email: "rmendoza@cca.edu.ph",
+            password: "password123"
+        }
+    ];
+    
+    // Sample students
+    const students = [
+        {
+            studentNumber: "2022-00001",
+            firstName: "Ana",
+            lastName: "Reyes",
+            middleName: "Santos",
+            sex: "Female",
+            institute: "ISCLIS",
+            course: "Bachelor of Science in Computer Science",
+            yearLevel: "1",
+            section: "A"
+        },
+        {
+            studentNumber: "2022-00002",
+            firstName: "Jose",
+            lastName: "Santos",
+            middleName: "Cruz",
+            sex: "Male",
+            institute: "ISCLIS",
+            course: "Bachelor of Science in Computer Science",
+            yearLevel: "1",
+            section: "A"
+        },
+        {
+            studentNumber: "2022-00003",
+            firstName: "Miguel",
+            lastName: "Aquino",
+            middleName: "Lim",
+            sex: "Male",
+            institute: "ISCLIS",
+            course: "Bachelor of Science in Computer Science",
+            yearLevel: "1",
+            section: "A"
+        },
+        {
+            studentNumber: "2022-00004",
+            firstName: "Sophia",
+            lastName: "Gomez",
+            middleName: "Tan",
+            sex: "Female",
+            institute: "IBM",
+            course: "Bachelor of Science in Business Management",
+            yearLevel: "2",
+            section: "B"
+        }
+    ];
+    
+    // Save to localStorage
+    localStorage.setItem('instructors', JSON.stringify(instructors));
+    localStorage.setItem('instructorAccounts', JSON.stringify(instructorAccounts));
+    localStorage.setItem('enrolledStudents', JSON.stringify(students));
+}
+
+// Function to handle logout
+function logout() {
+    // In a real system, this would clear session data and redirect to login page
+    window.location.href = "index.html";
+}
+
+// Initialize the page
+document.addEventListener('DOMContentLoaded', function() {
+    // Populate mock data (for testing)
+    populateMockData();
+    
+    // Populate instructor dropdown
+    populateInstructorDropdown();
+    
+    // Initialize course filter
+    updateCourseOptions();
+    
+    // Initialize section filter
+    updateSectionOptions();
+});

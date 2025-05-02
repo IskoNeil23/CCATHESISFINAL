@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <title>Administrative Login - City College of Angeles City</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        .login-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo {
+            max-width: 120px;
+            margin-bottom: 10px;
+        }
+        
+        h1 {
+            color: darkgreen;
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        
+        button {
+            background-color: darkgreen;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 12px;
+            width: 100%;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #006400;
+        }
+        
+        .error-message {
+            color: #f44336;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+        
+        .login-role {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #555;
+            font-style: italic;
+        }
+        
+        .links {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .links a {
+            color: darkgreen;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .links a:hover {
+            text-decoration: underline;
+        }
+        
+        .show-password {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        
+        .role-selector {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .role-btn {
+            background-color: #f0f0f0;
+            color: #333;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 8px 12px;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .role-btn.active {
+            background-color: darkgreen;
+            color: white;
+            border-color: darkgreen;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo-container">
+            <img src="cca-logo.png" alt="CCA Logo" class="logo">
+            <h1>City College of Angeles City</h1>
+            <h2>Administrative Portal Login</h2>
+        </div>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                <div class="show-password">
+                    <input type="checkbox" id="showPassword"> <label for="showPassword">Show password</label>
+                </div>
+            </div>
+            
+            <button type="submit">Login</button>
+            
+            <div id="errorMessage" class="error-message">
+                Invalid username or password. Please try again.
+            </div>
+            
+            <div id="loginRole" class="login-role"></div>
+            
+            <div class="links">
+                <a href="instructor-login.html">Instructor Login</a> | <a href="student-login.html">Student Login</a>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        // Toggle password visibility
+        document.getElementById('showPassword').addEventListener('change', function() {
+            const passwordField = document.getElementById('password');
+            passwordField.type = this.checked ? 'text' : 'password';
+        });
+        
+        // Login form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // Get admin accounts from local storage
+            const adminAccounts = JSON.parse(localStorage.getItem('adminAccounts')) || [];
+            
+            // Find matching account
+            const account = adminAccounts.find(acc => 
+                acc.username === username && acc.password === password
+            );
+            
+            if (account) {
+                // Get admin roles to determine the role type
+                const adminRoles = JSON.parse(localStorage.getItem('adminRoles')) || [];
+                const role = adminRoles.find(role => role.roleId === account.roleId);
+                
+                if (role) {
+                    // Store login info in session storage for the dashboard
+                    sessionStorage.setItem('currentUser', JSON.stringify({
+                        roleId: role.roleId,
+                        firstName: role.firstName,
+                        lastName: role.lastName,
+                        roleType: role.roleType,
+                        position: role.position,
+                        email: role.emailAddress,
+                        institute: role.institute,
+                        course: role.course
+                    }));
+
+                    // Redirect based on role type
+                    switch(role.roleType) {
+                        case 'Admin':
+                            window.location.href = 'admin.html';
+                            break;
+                        case 'Registrar':
+                            window.location.href = 'RegistrarEnrolledStudents.html';
+                            break;
+                        case 'Dean':
+                            window.location.href = 'Dean-dashboard.html';
+                            break;
+                        case 'Coordinator':
+                            window.location.href = 'Program-Coordinator-Dashboard.html';
+                            break;
+                        default:
+                            window.location.href = 'admin-dashboard.html';
+                    }
+                } else {
+                    // Role not found error
+                    errorMessage.textContent = "Account exists but role information is missing.";
+                    errorMessage.style.display = 'block';
+                    
+                    // Hide error after 3 seconds
+                    setTimeout(() => {
+                        errorMessage.style.display = 'none';
+                    }, 3000);
+                }
+            } else {
+                // Invalid credentials
+                errorMessage.style.display = 'block';
+                
+                // Clear password field
+                document.getElementById('password').value = '';
+                
+                // Focus on username
+                document.getElementById('username').focus();
+                
+                // Hide error after 3 seconds
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 3000);
+            }
+        });
+        
+        // Username input event listener for role detection
+        document.getElementById('username').addEventListener('input', function() {
+            const username = this.value.trim();
+            const loginRoleElement = document.getElementById('loginRole');
+            
+            if (username === '') {
+                loginRoleElement.textContent = '';
+                return;
+            }
+            
+            // Get admin accounts from local storage
+            const adminAccounts = JSON.parse(localStorage.getItem('adminAccounts')) || [];
+            const account = adminAccounts.find(acc => acc.username === username);
+            
+            if (account) {
+                // Get admin roles to determine the role type
+                const adminRoles = JSON.parse(localStorage.getItem('adminRoles')) || [];
+                const role = adminRoles.find(role => role.roleId === account.roleId);
+                
+                if (role) {
+                    loginRoleElement.textContent = `Logging in as: ${role.position}`;
+                } else {
+                    loginRoleElement.textContent = '';
+                }
+            } else {
+                loginRoleElement.textContent = '';
+            }
+        });
+        
+        // For demo purposes - populate some test accounts if needed
+        window.addEventListener('load', function() {
+            const adminAccounts = JSON.parse(localStorage.getItem('adminAccounts')) || [];
+            const adminRoles = JSON.parse(localStorage.getItem('adminRoles')) || [];
+            
+            // Check if we have accounts in storage
+            if (adminAccounts.length === 0) {
+                console.log("No admin accounts found in storage. Create some accounts in the admin panel first.");
+                
+                // For testing purposes, you could uncomment this section to create demo accounts
+                /*
+                // Create test roles if none exist
+                if (adminRoles.length === 0) {
+                    const testRoles = [
+                        {
+                            roleId: 'ADM100001',
+                            roleType: 'Registrar',
+                            firstName: 'John',
+                            lastName: 'Doe',
+                            emailAddress: 'registrar@cca.edu.ph',
+                            position: 'Registrar'
+                        },
+                        {
+                            roleId: 'ADM100002',
+                            roleType: 'Dean',
+                            institute: 'ICSLIS',
+                            firstName: 'Jane',
+                            lastName: 'Smith',
+                            emailAddress: 'dean@cca.edu.ph',
+                            position: 'Acting Dean of ICSLIS'
+                        },
+                        {
+                            roleId: 'ADM100003',
+                            roleType: 'Coordinator',
+                            institute: 'ICSLIS',
+                            course: 'Bachelor of Science in Computer Science',
+                            firstName: 'Robert',
+                            lastName: 'Johnson',
+                            emailAddress: 'coordinator@cca.edu.ph',
+                            position: 'Program Coordinator - Bachelor of Science in Computer Science (ICSLIS)'
+                        }
+                    ];
+                    
+                    localStorage.setItem('adminRoles', JSON.stringify(testRoles));
+                    
+                    // Create test accounts
+                    const testAccounts = [
+                        {
+                            roleId: 'ADM100001',
+                            username: 'registrar',
+                            password: 'password123',
+                            email: 'registrar@cca.edu.ph',
+                            status: 'Active',
+                            generatedDate: new Date().toISOString().split('T')[0]
+                        },
+                        {
+                            roleId: 'ADM100002',
+                            username: 'dean',
+                            password: 'password123',
+                            email: 'dean@cca.edu.ph',
+                            status: 'Active',
+                            generatedDate: new Date().toISOString().split('T')[0]
+                        },
+                        {
+                            roleId: 'ADM100003',
+                            username: 'coordinator',
+                            password: 'password123',
+                            email: 'coordinator@cca.edu.ph',
+                            status: 'Active',
+                            generatedDate: new Date().toISOString().split('T')[0]
+                        }
+                    ];
+                    
+                    localStorage.setItem('adminAccounts', JSON.stringify(testAccounts));
+                    console.log("Created test accounts for demo purposes.");
+                }
+                */
+            } else {
+                console.log(`${adminAccounts.length} admin accounts found in storage.`);
+            }
+        });
+    </script>
+</body>
+</html>

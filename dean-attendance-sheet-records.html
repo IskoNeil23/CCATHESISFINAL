@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="instructor.css">
+    <title>Dean Attendance Sheet - City College of Angeles</title>
+    <style>
+        .main-content {
+            margin-left: 250px;
+            padding: 80px 20px 20px;
+        }
+        
+        .welcome-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .welcome-card h2 {
+            margin-top: 0;
+            color: darkgreen;
+        }
+        
+        .filters-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .filters-container h3 {
+            margin-top: 0;
+            color: darkgreen;
+            margin-bottom: 15px;
+        }
+        
+        .filter-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .filter-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        
+        .filter-select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .action-btns {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 15px;
+        }
+        
+        .filter-btn, .export-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .filter-btn {
+            background-color: darkgreen;
+            color: white;
+        }
+        
+        .export-btn {
+            background-color: #2196F3;
+            color: white;
+        }
+        
+        .attendance-sheet-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: auto;
+        }
+        
+        .container-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .container-header h3 {
+            margin: 0;
+            color: darkgreen;
+        }
+        
+        .no-results {
+            padding: 40px 20px;
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .class-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        
+        .info-item {
+            margin: 0;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .attendance-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+        
+        .attendance-table th, .attendance-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        
+        .attendance-table th {
+            background-color: #f2f2f2;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+        
+        .attendance-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .attendance-table tr:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .student-name {
+            text-align: left;
+            white-space: nowrap;
+            font-weight: bold;
+            position: sticky;
+            left: 0;
+            background-color: #f2f2f2;
+            z-index: 1;
+        }
+        
+        .student-email {
+            text-align: left;
+            white-space: nowrap;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            position: sticky;
+            left: 200px;
+            background-color: #f2f2f2;
+            z-index: 1;
+        }
+        
+        .attendance-status {
+            font-weight: bold;
+        }
+        
+        .attendance-status.present {
+            color: #155724;
+        }
+        
+        .attendance-status.absent {
+            color: #721c24;
+        }
+        
+        .attendance-status.late {
+            color: #856404;
+        }
+        
+        .attendance-status.excused {
+            color: #0c5460;
+        }
+        
+        .summary-box {
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .summary-box.fa {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .summary-box.good {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+            color: darkgreen;
+        }
+        
+        .stat-label {
+            color: #555;
+            font-size: 14px;
+        }
+        
+        .view-details {
+            margin-top: 10px;
+            color: #2196F3;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        
+        .accordion {
+            background-color: #f9f9f9;
+            color: #333;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 16px;
+            transition: 0.4s;
+            border-radius: 4px;
+            margin-bottom: 5px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .accordion:hover {
+            background-color: #e9e9e9;
+        }
+        
+        .accordion:after {
+            content: '\02795';
+            font-size: 13px;
+            color: #777;
+        }
+        
+        .accordion.active:after {
+            content: "\2796";
+        }
+        
+        .panel {
+            padding: 0 18px;
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            border-radius: 0 0 4px 4px;
+            margin-bottom: 10px;
+        }
+        
+        .panel.active {
+            max-height: 1500px;
+            padding: 18px;
+            border: 1px solid #ddd;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px 0;
+            color: #666;
+        }
+        
+        @media (max-width: 768px) {
+            .filter-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <img src="cca-logo.png" alt="CCA Logo">
+        <h1>City College of Angeles</h1>
+        <a href="Dean-dashboard.html">Dashboard</a>
+        <a href="dean-class-records.html">Class Details</a>
+        <a class="active" href="dean-attendance-sheet-records.html">Attendance Sheet</a>
+        <a>Grading Sheet</a>
+        <a href="dean-approval-letter.html">Approval Letters</a>
+    </div>
+    
+    <div class="topnav">
+        <div class="nav-left">
+            <img src="cca-logo.png" alt="CCA Logo">
+            <h3>Dean Portal - Attendance Records</h3>
+        </div>
+        <button class="logout-btn" onclick="logout()">Log Out</button>
+    </div>
+    
+    <div class="main-content">
+        <div class="welcome-card">
+            <h2>Attendance Sheet Records</h2>
+            <p>Welcome to the attendance monitoring system. As a Dean, you can view and export attendance records for all classes in your institute.</p>
+        </div>
+        
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-label">Total Classes</div>
+                <div class="stat-value" id="totalClasses">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Students at Risk (FA)</div>
+                <div class="stat-value" id="studentsAtRisk">0</div>
+                <div class="view-details" onclick="showAtRiskStudents()">View Details</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Average Attendance Rate</div>
+                <div class="stat-value" id="averageAttendance">0%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Most Absent Class</div>
+                <div class="stat-value" id="mostAbsent">-</div>
+            </div>
+        </div>
+        
+        <div class="filters-container">
+            <h3>Filter Attendance Records</h3>
+            <div class="filter-group">
+                <div class="filter-item">
+                    <label class="filter-label">Course</label>
+                    <select id="courseFilter" class="filter-select">
+                        <option value="">All Courses</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label class="filter-label">Year Level</label>
+                    <select id="yearLevelFilter" class="filter-select">
+                        <option value="">All Year Levels</option>
+                        <option value="1">1st Year</option>
+                        <option value="2">2nd Year</option>
+                        <option value="3">3rd Year</option>
+                        <option value="4">4th Year</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label class="filter-label">Section</label>
+                    <select id="sectionFilter" class="filter-select">
+                        <option value="">All Sections</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label class="filter-label">Subject</label>
+                    <select id="subjectFilter" class="filter-select">
+                        <option value="">All Subjects</option>
+                    </select>
+                </div>
+            </div>
+            <div class="filter-group">
+                <div class="filter-item">
+                    <label class="filter-label">Instructor</label>
+                    <select id="instructorFilter" class="filter-select">
+                        <option value="">All Instructors</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label class="filter-label">Status</label>
+                    <select id="statusFilter" class="filter-select">
+                        <option value="">All Statuses</option>
+                        <option value="good">Good Standing</option>
+                        <option value="fa">Failure due to Absences</option>
+                    </select>
+                </div>
+            </div>
+            <div class="action-btns">
+                <button class="filter-btn" onclick="applyFilters()">Apply Filters</button>
+                <button class="export-btn" onclick="exportFilteredRecords()">Export Filtered Data</button>
+            </div>
+        </div>
+        
+        <div id="classesContainer">
+            <div class="loading">Loading attendance data...</div>
+        </div>
+        
+        <div id="atRiskStudentsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000;">
+            <div style="position: relative; width: 80%; max-width: 800px; background-color: white; margin: 100px auto; padding: 20px; border-radius: 8px; max-height: 80vh; overflow-y: auto;">
+                <span onclick="document.getElementById('atRiskStudentsModal').style.display='none'" style="position: absolute; right: 20px; top: 10px; font-size: 24px; cursor: pointer;">&times;</span>
+                <h3>Students at Risk (FA Status)</h3>
+                <table class="attendance-table">
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Course</th>
+                            <th>Year & Section</th>
+                            <th>Subject</th>
+                            <th>Absences</th>
+                            <th>Instructor</th>
+                        </tr>
+                    </thead>
+                    <tbody id="atRiskStudentsTable">
+                        <!-- At-risk students will be listed here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let allClasses = [];
+        let allInstructors = [];
+        let allCourses = [];
+        let allSubjects = [];
+        let allSections = [];
+        let atRiskStudents = [];
+        let currentDeanInstitute = '';
+        
+        // Function to check if dean is logged in
+        function checkLogin() {
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            
+            if (!currentUser) {
+                // Redirect to login if not logged in
+                window.location.href = 'student-login.html';
+                return false;
+            }
+            
+            // Verify the user is a Dean
+            if (currentUser.roleType !== 'Dean') {
+                alert('Access denied. You must be logged in as a Dean to access this page.');
+                sessionStorage.removeItem('currentUser');
+                window.location.href = 'student-login.html';
+                return false;
+            }
+            
+            // Get dean's institute
+            const adminRoles = JSON.parse(localStorage.getItem('adminRoles')) || [];
+            const deanRole = adminRoles.find(r => r.roleId === currentUser.roleId);
+            
+            if (deanRole && deanRole.institute) {
+                currentDeanInstitute = deanRole.institute;
+                return currentUser;
+            } else {
+                alert('Could not determine your institute. Please contact the system administrator.');
+                return false;
+            }
+        }
+        
+        // Function to load instructors
+        function loadInstructors() {
+            const instructorAccounts = JSON.parse(localStorage.getItem('instructorAccounts')) || [];
+            const instructorRoles = JSON.parse(localStorage.getItem('instructorRoles')) || [];
+            
+            // Combine data from both arrays
+            return instructorRoles.map(role => {
+                const account = instructorAccounts.find(acc => acc.roleId === role.roleId) || {};
+                return {
+                    ...role,
+                    username: account.username
+                };
+            }).filter(instructor => instructor.institute === currentDeanInstitute);
+        }
+        
+        // Function to load schedules for the dean's institute
+        function loadSchedules() {
+            const allSchedules = JSON.parse(localStorage.getItem('instructorSchedules')) || [];
+            return allSchedules.filter(schedule => schedule.institute === currentDeanInstitute);
+        }
+        
+        // Function to load students for a specific class
+        function getStudentsForClass(institute, course, yearLevel, section) {
+            const allStudents = JSON.parse(localStorage.getItem('enrolledStudents')) || [];
+            
+            // Filter students for the specified class
+            return allStudents.filter(student => 
+                student.institute === institute &&
+                student.course === course &&
+                student.yearLevel === yearLevel &&
+                student.section === section
+            );
+        }
+        
+        // Function to load attendance data for a class
+        function loadAttendanceData(institute, course, yearLevel, section, subjectCode) {
+            const attendanceKey = `attendance_${institute}_${course}_${yearLevel}_${section}_${subjectCode}`;
+            return JSON.parse(localStorage.getItem(attendanceKey)) || {};
+        }
+        
+        // Function to calculate attendance summary for a student
+        function calculateAttendanceSummary(studentAttendance) {
+            if (!studentAttendance) return { status: 'good', lateCount: 0, absentCount: 0 };
+            
+            let lateCount = 0;
+            let absentCount = 0;
+            let presentCount = 0;
+            let excusedCount = 0;
+            let totalMarked = 0;
+            
+            // Count different attendance statuses
+            Object.values(studentAttendance).forEach(status => {
+                if (status === 'null') return;
+                totalMarked++;
+                if (status === 'present') presentCount++;
+                if (status === 'absent') absentCount++;
+                if (status === 'late') lateCount++;
+                if (status === 'excused') excusedCount++;
+            });
+            
+            // Convert lates to absents (3 lates = 1 absent)
+            const additionalAbsents = Math.floor(lateCount / 3);
+            const totalAbsents = absentCount + additionalAbsents;
+            
+            // Determine status (4 or more absents = FA)
+            const status = totalAbsents >= 4 ? 'fa' : 'good';
+            
+            // Calculate attendance rate
+            const attendanceRate = totalMarked > 0 ? 
+                ((presentCount + excusedCount + lateCount * 0.7) / totalMarked * 100).toFixed(1) : 100;
+            
+            return {
+                status,
+                lateCount,
+                absentCount: totalAbsents,
+                presentCount,
+                excusedCount,
+                totalMarked,
+                attendanceRate
+            };
+        }
+        
+        // Function to load attendance data for all classes in the dean's institute
+        function loadAllAttendanceData() {
+            const schedules = loadSchedules();
+            const instructors = loadInstructors();
+            allInstructors = instructors;
+            
+            // Extract unique values for filters
+            allCourses = [...new Set(schedules.map(s => s.course))];
+            allSubjects = [...new Set(schedules.map(s => `${s.subjectCode}: ${s.subjectTitle}`))];
+            allSections = [...new Set(schedules.map(s => s.section))];
+            
+            // Populate filter dropdowns
+            populateFilterDropdowns(instructors, allCourses, allSubjects, allSections);
+            
+            // Process each class for attendance data
+            const classesList = [];
+            let totalStudentsAtRisk = 0;
+            let totalAttendanceSum = 0;
+            let totalAttendanceCount = 0;
+            let mostAbsentClass = { absentRate: 0, class: '' };
+            
+            schedules.forEach(schedule => {
+                // Get students for this class
+                const students = getStudentsForClass(
+                    schedule.institute, 
+                    schedule.course, 
+                    schedule.yearLevel, 
+                    schedule.section
+                );
+                
+                // Get attendance data
+                const attendanceData = loadAttendanceData(
+                    schedule.institute, 
+                    schedule.course, 
+                    schedule.yearLevel, 
+                    schedule.section,
+                    schedule.subjectCode
+                );
+                
+                // Get instructor name
+                const instructor = instructors.find(i => i.email === schedule.instructorEmail) || {};
+                const instructorName = instructor.firstName && instructor.lastName ? 
+                    `${instructor.firstName} ${instructor.middleName ? instructor.middleName + ' ' : ''}${instructor.lastName}` : 
+                    schedule.instructorEmail;
+                
+                // Process student attendance
+                let classAtRiskCount = 0;
+                let classAttendanceSum = 0;
+                let classAbsentSum = 0;
+                
+                const studentsWithAttendance = students.map(student => {
+                    const studentAttendance = attendanceData[student.studentNumber] || {};
+                    const summary = calculateAttendanceSummary(studentAttendance);
+                    
+                    // Count students at risk
+                    if (summary.status === 'fa') {
+                        classAtRiskCount++;
+                        totalStudentsAtRisk++;
+                        
+                        // Add to at-risk students list
+                        atRiskStudents.push({
+                            name: `${student.lastName}, ${student.firstName} ${student.middleName || ''}`,
+                            studentNumber: student.studentNumber,
+                            course: schedule.course,
+                            yearSection: `${schedule.yearLevel}-${schedule.section}`,
+                            subject: `${schedule.subjectCode}: ${schedule.subjectTitle}`,
+                            absences: summary.absentCount,
+                            instructor: instructorName
+                        });
+                    }
+                    
+                    // Add to attendance rate calculations
+                    classAttendanceSum += parseFloat(summary.attendanceRate);
+                    classAbsentSum += summary.absentCount;
+                    
+                    return {
+                        ...student,
+                        attendance: studentAttendance,
+                        summary
+                    };
+                });
+                
+                // Calculate class average attendance rate
+                const classAttendanceRate = students.length > 0 ? 
+                    (classAttendanceSum / students.length).toFixed(1) : 0;
+                
+                // Update total attendance statistics
+                totalAttendanceSum += parseFloat(classAttendanceRate);
+                totalAttendanceCount++;
+                
+                // Check if this is the most absent class
+                const classAbsentRate = students.length > 0 ? classAbsentSum / students.length : 0;
+                if (classAbsentRate > mostAbsentClass.absentRate) {
+                    mostAbsentClass = {
+                        absentRate: classAbsentRate,
+                        class: `${schedule.subjectCode} (${schedule.yearLevel}-${schedule.section})`
+                    };
+                }
+                
+                // Format time in 12-hour format
+                const formatTime = (timeString) => {
+                    const [hours, minutes] = timeString.split(':');
+                    const hour = parseInt(hours);
+                    const amPm = hour >= 12 ? 'PM' : 'AM';
+                    const formattedHour = hour % 12 === 0 ? 12 : hour % 12;
+                    return `${formattedHour}:${minutes} ${amPm}`;
+                };
+                
+                // Create class object with all data
+                classesList.push({
+                    id: `${schedule.institute}_${schedule.course}_${schedule.yearLevel}_${schedule.section}_${schedule.subjectCode}`,
+                    institute: schedule.institute,
+                    course: schedule.course,
+                    yearLevel: schedule.yearLevel,
+                    section: schedule.section,
+                    subjectCode: schedule.subjectCode,
+                    subjectTitle: schedule.subjectTitle,
+                    subjectFull: `${schedule.subjectCode}: ${schedule.subjectTitle}`,
+                    dayOfWeek: schedule.dayOfWeek,
+                    startTime: schedule.startTime,
+                    endTime: schedule.endTime,
+                    formattedTime: `${schedule.dayOfWeek}, ${formatTime(schedule.startTime)} - ${formatTime(schedule.endTime)}`,
+                    roomNumber: schedule.roomNumber,
+                    instructor: instructorName,
+                    instructorEmail: schedule.instructorEmail,
+                    students: studentsWithAttendance,
+                    attendanceData: attendanceData,
+                    atRiskCount: classAtRiskCount,
+                    atRiskPercentage: students.length > 0 ? (classAtRiskCount / students.length * 100).toFixed(1) : 0,
+                    attendanceRate: classAttendanceRate,
+                    classType: schedule.classType,
+                    units: schedule.units
+                });
+            });
+            
+            // Update global variable
+            allClasses = classesList;
+            
+            // Update dashboard stats
+            document.getElementById('totalClasses').textContent = classesList.length;
+            document.getElementById('studentsAtRisk').textContent = totalStudentsAtRisk;
+            document.getElementById('averageAttendance').textContent = totalAttendanceCount > 0 ? 
+                (totalAttendanceSum / totalAttendanceCount).toFixed(1) + '%' : '0%';
+            document.getElementById('mostAbsent').textContent = mostAbsentClass.class || '-';
+            
+            // Display all classes
+            displayClassesList(classesList);
+        }
+        
+        // Function to populate filter dropdowns
+        function populateFilterDropdowns(instructors, courses, subjects, sections) {
+            // Populate course dropdown
+            const courseDropdown = document.getElementById('courseFilter');
+            courseDropdown.innerHTML = '<option value="">All Courses</option>';
+            courses.sort().forEach(course => {
+                const option = document.createElement('option');
+                option.value = course;
+                option.textContent = course;
+                courseDropdown.appendChild(option);
+            });
+            
+            // Populate subject dropdown
+            const subjectDropdown = document.getElementById('subjectFilter');
+            subjectDropdown.innerHTML = '<option value="">All Subjects</option>';
+            subjects.sort().forEach(subject => {
+                const option = document.createElement('option');
+                option.value = subject;
+                option.textContent = subject;
+                subjectDropdown.appendChild(option);
+            });
+            
+            // Populate section dropdown
+            const sectionDropdown = document.getElementById('sectionFilter');
+            sectionDropdown.innerHTML = '<option value="">All Sections</option>';
+            sections.sort().forEach(section => {
+                const option = document.createElement('option');
+                option.value = section;
+                option.textContent = section;
+                sectionDropdown.appendChild(option);
+            });
+            
+            // Populate instructor dropdown
+            const instructorDropdown = document.getElementById('instructorFilter');
+            instructorDropdown.innerHTML = '<option value="">All Instructors</option>';
+            
+            // Sort instructors by last name
+            instructors.sort((a, b) => a.lastName.localeCompare(b.lastName));
+            
+            instructors.forEach(instructor => {
+                const option = document.createElement('option');
+                option.value = instructor.email;
+                option.textContent = `${instructor.lastName}, ${instructor.firstName} ${instructor.middleName || ''}`;
+                instructorDropdown.appendChild(option);
+            });
+        }
+        
+        // Function to display classes in accordion format
+        function displayClassesList(classes) {
+            const container = document.getElementById('classesContainer');
+            container.innerHTML = '';
+            
+            if (classes.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results">
+                        <h3>No classes match your filters</h3>
+                        <p>Try adjusting your filter criteria to see more results.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Sort classes by year level and section
+            classes.sort((a, b) => {
+                if (a.yearLevel !== b.yearLevel) {
+                    return a.yearLevel - b.yearLevel;
+                }
+                return a.section.localeCompare(b.section);
+            });
+            
+            classes.forEach(classData => {
+                // Create accordion for class
+                const accordion = document.createElement('button');
+                accordion.className = 'accordion';
+                accordion.innerHTML = `
+                    <span>${classData.subjectCode}: ${classData.subjectTitle} - Year ${classData.yearLevel}, Section ${classData.section}</span>
+                    <span>Students: ${classData.students.length} | Risk: ${classData.atRiskCount} (${classData.atRiskPercentage}%)</span>
+                `;
+                
+                // Create panel for accordion
+                const panel = document.createElement('div');
+                panel.className = 'panel';
+                
+                // Class info
+                panel.innerHTML = `
+                    <div class="class-info">
+                        <p class="info-item"><span class="info-label">Subject:</span> ${classData.subjectCode}: ${classData.subjectTitle}</p>
+                        <p class="info-item"><span class="info-label">Schedule:</span> ${classData.formattedTime}</p>
+                        <p class="info-item"><span class="info-label">Room:</span> ${classData.roomNumber}</p>
+                        <p class="info-item"><span class="info-label">Type:</span> ${classData.classType}</p>
+                        <p class="info-item"><span class="info-label">Units:</span> ${classData.units}</p>
+                        <p class="info-item"><span class="info-label">Course:</span> ${classData.course}</p>
+                        <p class="info-item"><span class="info-label">Year Level:</span> ${classData.yearLevel}</p>
+                        <p class="info-item"><span class="info-label">Section:</span> ${classData.section}</p>
+                        <p class="info-item"><span class="info-label">Institute:</span> ${classData.institute}</p>
+                        <p class="info-item"><span class="info-label">Instructor:</span> ${classData.instructor}</p>
+                        <p class="info-item"><span class="info-label">Attendance Rate:</span> ${classData.attendanceRate}%</p>
+                    </div>
+                    
+                    <div class="container-header">
+                        <h3>Attendance Sheet</h3>
+                        <button class="export-btn" onclick="exportSingleClass('${classData.id}')">Export</button>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="attendance-table">
+                            <thead>
+                                <tr>
+                                    <th class="student-name">Student</th>
+                                    <th class="student-email">Student Number</th>
+                                    <th>Status</th>
+                                    <th>Attendance</th>
+                                    <th>Late</th>
+                                    <th>Absent</th>
+                                    <th>Excused</th>
+                                    <th>FA Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="students-${classData.id}">
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                
+                container.appendChild(accordion);
+                container.appendChild(panel);
+                
+                // Populate students table
+                const studentsTable = document.getElementById(`students-${classData.id}`);
+                
+                // Sort students by name
+                classData.students.sort((a, b) => {
+                    return a.lastName.localeCompare(b.lastName);
+                });
+                
+                classData.students.forEach(student => {
+                    const tr = document.createElement('tr');
+                    
+                    // Status class based on attendance summary
+                    const statusClass = student.summary.status === 'fa' ? 'summary-box fa' : 'summary-box good';
+                    
+                    tr.innerHTML = `
+                        <td class="student-name">${student.lastName}, ${student.firstName} ${student.middleName || ''}</td>
+                        <td class="student-email">${student.studentNumber}</td>
+                        <td class="${statusClass}">${student.summary.status === 'fa' ? 'AT RISK' : 'GOOD'}</td>
+                        <td>${student.summary.attendanceRate}%</td>
+                        <td>${student.summary.lateCount}</td>
+                        <td>${student.summary.absentCount}</td>
+                        <td>${student.summary.excusedCount || 0}</td>
+                        <td>${student.summary.status === 'fa' ? 'YES' : 'NO'}</td>
+                    `;
+                    
+                    studentsTable.appendChild(tr);
+                });
+            });
+            
+            // Add accordion functionality
+            const accordions = document.getElementsByClassName("accordion");
+            for (let i = 0; i < accordions.length; i++) {
+                accordions[i].addEventListener("click", function() {
+                    this.classList.toggle("active");
+                    const panel = this.nextElementSibling;
+                    if (panel.style.maxHeight) {
+                        panel.style.maxHeight = null;
+                        panel.classList.remove("active");
+                    } else {
+                        panel.style.maxHeight = panel.scrollHeight + "px";
+                        panel.classList.add("active");
+                    }
+                });
+            }
+        }
+        
+        // Function to apply filters
+        function applyFilters() {
+            const courseFilter = document.getElementById('courseFilter').value;
+            const yearLevelFilter = document.getElementById('yearLevelFilter').value;
+            const sectionFilter = document.getElementById('sectionFilter').value;
+            const subjectFilter = document.getElementById('subjectFilter').value;
+            const instructorFilter = document.getElementById('instructorFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            
+            // Filter classes
+            const filteredClasses = allClasses.filter(classData => {
+                // Apply course filter
+                if (courseFilter && classData.course !== courseFilter) {
+                    return false;
+                }
+                
+                // Apply year level filter
+                if (yearLevelFilter && classData.yearLevel.toString() !== yearLevelFilter) {
+                    return false;
+                }
+                
+                // Apply section filter
+                if (sectionFilter && classData.section !== sectionFilter) {
+                    return false;
+                }
+                
+                // Apply subject filter
+                if (subjectFilter && classData.subjectFull !== subjectFilter) {
+                    return false;
+                }
+                
+                // Apply instructor filter
+                if (instructorFilter && classData.instructorEmail !== instructorFilter) {
+                    return false;
+                }
+                
+                // Apply status filter
+                if (statusFilter) {
+                    if (statusFilter === 'fa' && classData.atRiskCount === 0) {
+                        return false;
+                    }
+                    if (statusFilter === 'good' && classData.atRiskCount > 0) {
+                        return false;
+                    }
+                }
+                
+                return true;
+            });
+            
+            // Display filtered classes
+            displayClassesList(filteredClasses);
+        }
+        
+        // Function to export filtered records
+        function exportFilteredRecords() {
+            const courseFilter = document.getElementById('courseFilter').value;
+            const yearLevelFilter = document.getElementById('yearLevelFilter').value;
+            const sectionFilter = document.getElementById('sectionFilter').value;
+            const subjectFilter = document.getElementById('subjectFilter').value;
+            const instructorFilter = document.getElementById('instructorFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            
+            // Filter classes
+            const filteredClasses = allClasses.filter(classData => {
+                // Apply course filter
+                if (courseFilter && classData.course !== courseFilter) {
+                    return false;
+                }
+                
+                // Apply year level filter
+                if (yearLevelFilter && classData.yearLevel.toString() !== yearLevelFilter) {
+                    return false;
+                }
+                
+                // Apply section filter
+                if (sectionFilter && classData.section !== sectionFilter) {
+                    return false;
+                }
+                
+                // Apply subject filter
+                if (subjectFilter && classData.subjectFull !== subjectFilter) {
+                    return false;
+                }
+                
+                // Apply instructor filter
+                if (instructorFilter && classData.instructorEmail !== instructorFilter) {
+                    return false;
+                }
+                
+                // Apply status filter
+                if (statusFilter) {
+                    if (statusFilter === 'fa' && classData.atRiskCount === 0) {
+                        return false;
+                    }
+                    if (statusFilter === 'good' && classData.atRiskCount > 0) {
+                        return false;
+                    }
+                }
+                
+                return true;
+            });
+            
+            // Prepare CSV content
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Course,Year Level,Section,Subject Code,Subject Title,Instructor,Student Name,Student Number,Attendance Rate,Late Count,Absent Count,Excused Count,FA Status\n";
+            
+            filteredClasses.forEach(classData => {
+                classData.students.forEach(student => {
+                    // Apply status filter if needed
+                    if (statusFilter === 'fa' && student.summary.status !== 'fa') {
+                        return;
+                    }
+                    if (statusFilter === 'good' && student.summary.status !== 'good') {
+                        return;
+                    }
+                    
+                    const row = [
+                        classData.course,
+                        classData.yearLevel,
+                        classData.section,
+                        classData.subjectCode,
+                        classData.subjectTitle,
+                        classData.instructor,
+                        `${student.lastName}, ${student.firstName} ${student.middleName || ''}`,
+                        student.studentNumber,
+                        student.summary.attendanceRate + '%',
+                        student.summary.lateCount,
+                        student.summary.absentCount,
+                        student.summary.excusedCount || 0,
+                        student.summary.status === 'fa' ? 'YES' : 'NO'
+                    ];
+                    
+                    csvContent += row.join(',') + '\n';
+                });
+            });
+            
+            // Create download link
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "attendance_report.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        // Function to export single class attendance
+        function exportSingleClass(classId) {
+            const classData = allClasses.find(c => c.id === classId);
+            if (!classData) return;
+            
+            // Prepare CSV content
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += `Attendance Report - ${classData.subjectCode}: ${classData.subjectTitle}\n`;
+            csvContent += `Course: ${classData.course}, Year ${classData.yearLevel}, Section ${classData.section}\n`;
+            csvContent += `Instructor: ${classData.instructor}\n\n`;
+            csvContent += "Student Name,Student Number,Attendance Rate,Late Count,Absent Count,Excused Count,FA Status\n";
+            
+            classData.students.forEach(student => {
+                const row = [
+                    `${student.lastName}, ${student.firstName} ${student.middleName || ''}`,
+                    student.studentNumber,
+                    student.summary.attendanceRate + '%',
+                    student.summary.lateCount,
+                    student.summary.absentCount,
+                    student.summary.excusedCount || 0,
+                    student.summary.status === 'fa' ? 'YES' : 'NO'
+                ];
+                
+                csvContent += row.join(',') + '\n';
+            });
+            
+            // Create download link
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `attendance_${classData.subjectCode}_${classData.yearLevel}${classData.section}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        // Function to display at-risk students modal
+        function showAtRiskStudents() {
+            const atRiskTable = document.getElementById('atRiskStudentsTable');
+            atRiskTable.innerHTML = '';
+            
+            if (atRiskStudents.length === 0) {
+                atRiskTable.innerHTML = '<tr><td colspan="6">No students at risk of FA status</td></tr>';
+            } else {
+                // Sort by absences in descending order
+                atRiskStudents.sort((a, b) => b.absences - a.absences);
+                
+                atRiskStudents.forEach(student => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${student.name}</td>
+                        <td>${student.course}</td>
+                        <td>${student.yearSection}</td>
+                        <td>${student.subject}</td>
+                        <td>${student.absences}</td>
+                        <td>${student.instructor}</td>
+                    `;
+                    atRiskTable.appendChild(tr);
+                });
+            }
+            
+            document.getElementById('atRiskStudentsModal').style.display = 'block';
+        }
+        
+        // Function to logout
+        function logout() {
+            sessionStorage.removeItem('currentUser');
+            window.location.href = 'student-login.html';
+        }
+        
+        // Initialize page
+        window.onload = function() {
+            const currentUser = checkLogin();
+            if (currentUser) {
+                loadAllAttendanceData();
+            }
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,232 @@
+
+.sidebar a.active {
+    background-color:wheat; 
+    color: rgb(0, 0, 0); /* White text */
+    
+}
+h1{
+    color: white;
+}
+body {
+background-color: white;
+font-family: "Lato", sans-serif;
+margin: 0;
+padding: 0;
+}
+
+/* Top navigation bar */
+.topnav {
+width: 100%;
+background-color: darkgreen;
+overflow: hidden;
+position: fixed;
+top: 0;
+z-index: 2;
+display: flex;
+align-items: center;
+justify-content: space-between;
+transition: 0.5s;
+height: 60px;
+}
+
+.topnav .nav-left {
+display: flex;
+align-items: center;
+}
+
+.topnav img {
+height: 50px;
+margin-left: 10px;
+}
+
+.topnav h3 {
+color: white;
+margin-left: 10px;
+}
+
+.logout-btn {
+background-color: #b22222;
+color: white;
+border: none;
+padding: 8px 16px;
+margin-right: 15px;
+border-radius: 4px;
+cursor: pointer;
+font-weight: bold;
+transition: background-color 0.3s;
+}
+
+.logout-btn:hover {
+background-color: #8b0000;
+}
+
+/* Added styles to adjust the top nav when sidebar is open */
+.topnav.shifted {
+width: calc(100% - 250px);
+margin-left: 250px;
+}
+
+.sidebar {
+text-align: center;
+height: 100%;
+width: 0;
+position: fixed;
+z-index: 3;
+top: 0;
+left: 0;
+background-color: darkgreen;
+overflow-x: hidden;
+transition: 0.5s;
+padding-top: 60px;
+}
+
+.sidebar a {
+padding: 8px 8px 8px 32px;
+text-decoration: none;
+font-size: 25px;
+color: #ffffff;
+display: block;
+transition: 0.3s;
+}
+
+.sidebar a:hover {
+color: #000000;
+background-color: wheat;
+}
+
+.sidebar .closebtn {
+position: absolute;
+top: 0;
+right: 25px;
+font-size: 36px;
+margin-left: 50px;
+}
+
+.openbtn {
+font-size: 20px;
+cursor: pointer;
+background-color: transparent;
+color: rgb(0, 0, 0);
+padding: 10px 15px;
+border: none;
+}
+
+.openbtn:hover {
+background-color: white;
+}
+
+#main {
+background-color: white;
+transition: margin-left .5s;
+border-radius: 25px;
+border: 2px solid white;
+padding: 16px;
+margin-top: 60px; /* Add margin to accommodate top nav */
+}
+
+.navlog {
+height: 150px;
+text-align: center;
+align-items: center;
+width: 150px;
+}
+
+/* Page transition styles */
+.page-content {
+opacity: 1;
+transition: opacity 0.5s ease-in-out;
+}
+
+.page-content.fade-out {
+opacity: 0;
+}
+
+/* Excuse Letter specific styles */
+.letter-form {
+background-color: #f9f9f9;
+padding: 20px;
+border-radius: 10px;
+margin-top: 20px;
+}
+
+.form-group {
+margin-bottom: 15px;
+}
+
+.form-group label {
+display: block;
+margin-bottom: 5px;
+font-weight: bold;
+}
+
+.form-group input, .form-group select, .form-group textarea {
+width: 100%;
+padding: 8px;
+border: 1px solid #ddd;
+border-radius: 5px;
+}
+
+.form-group textarea {
+height: 120px;
+}
+
+.submit-btn {
+background-color: darkgreen;
+color: white;
+padding: 10px 20px;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+font-size: 16px;
+}
+
+.submit-btn:hover {
+background-color: #006400;
+}
+
+.letter-list {
+margin-top: 30px;
+}
+
+.letter-item {
+border: 1px solid #ddd;
+border-radius: 5px;
+padding: 15px;
+margin-bottom: 10px;
+background-color: white;
+}
+
+.letter-status {
+display: inline-block;
+padding: 5px 10px;
+border-radius: 15px;
+font-size: 12px;
+font-weight: bold;
+}
+
+.status-pending {
+background-color: #ffeeba;
+color: #856404;
+}
+
+.status-approved {
+background-color: #d4edda;
+color: #155724;
+}
+
+.status-rejected {
+background-color: #f8d7da;
+color: #721c24;
+}
+
+.file-preview {
+max-width: 100%;
+margin-top: 10px;
+border: 1px solid #ddd;
+padding: 10px;
+border-radius: 5px;
+}
+
+.letter-actions {
+margin-top: 10px;
+}

@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="instructor.css">
+    <style>
+        .approval-panel {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .panel-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin: 0;
+        }
+        
+        .filter-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .filter-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        
+        .filter-group select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        
+        .search-box {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        
+        .approval-status-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .status-filter-btn {
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .status-filter-btn.active {
+            background-color: darkgreen;
+            color: white;
+            border-color: darkgreen;
+        }
+        
+        .approval-list {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        
+        .approval-list th, .approval-list td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .approval-list th {
+            background-color: #f2f2f2;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .approval-list tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .approval-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .approval-badge.pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .approval-badge.approved {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .approval-badge.rejected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+            color: white;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        
+        .view-btn {
+            background-color: #17a2b8;
+        }
+        
+        .approve-btn {
+            background-color: #28a745;
+        }
+        
+        .reject-btn {
+            background-color: #dc3545;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .pagination button {
+            padding: 6px 12px;
+            margin: 0 5px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .pagination button.active {
+            background-color: darkgreen;
+            color: white;
+            border-color: darkgreen;
+        }
+        
+        .pagination button:hover:not(.active) {
+            background-color: #f9f9f9;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-style: italic;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7);
+        }
+        
+        .modal-content {
+            position: relative;
+            background-color: #fefefe;
+            margin: 30px auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 900px;
+            max-height: 85vh;
+            overflow-y: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+        }
+        
+        .close-modal:hover {
+            color: #333;
+        }
+        
+        .modal-header {
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            color: #333;
+        }
+        
+        .modal-body {
+            margin-bottom: 20px;
+        }
+        
+        .modal-footer {
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            text-align: right;
+        }
+        
+        .student-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .student-info-item {
+            margin-bottom: 10px;
+        }
+        
+        .student-info-item span {
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .excuse-letter {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            font-family: 'Times New Roman', Times, serif;
+            line-height: 1.6;
+        }
+        
+        .letter-header {
+            text-align: right;
+            margin-bottom: 30px;
+        }
+        
+        .letter-subject {
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 30px;
+            text-decoration: underline;
+        }
+        
+        .letter-closing {
+            margin-top: 40px;
+        }
+        
+        .letter-signature {
+            margin-top: 50px;
+        }
+        
+        .attachments-section {
+            margin-bottom: 20px;
+        }
+        
+        .attachments-section h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .attachment-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .attachment-item {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .attachment-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .attachment-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: #555;
+        }
+        
+        .attachment-name {
+            text-align: center;
+            font-size: 14px;
+            word-break: break-word;
+        }
+        
+        .approval-section {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .approval-section h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .approval-comment {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            height: 100px;
+            resize: vertical;
+        }
+        
+        .approval-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        .file-viewer-modal {
+            display: none;
+            position: fixed;
+            z-index: 1100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+        }
+        
+        .file-viewer-content {
+            position: relative;
+            background-color: #fefefe;
+            margin: 50px auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow: auto;
+            border-radius: 8px;
+        }
+        
+        .file-viewer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .file-viewer-body {
+            text-align: center;
+        }
+        
+        .file-viewer-body img {
+            max-width: 100%;
+            max-height: 60vh;
+        }
+        
+        .file-viewer-body iframe {
+            width: 100%;
+            height: 60vh;
+        }
+        
+        .approval-history {
+            margin-top: 20px;
+            border-top: 1px solid #ddd;
+            padding-top: 15px;
+        }
+        
+        .history-item {
+            background-color: #f9f9f9;
+            border-radius: 6px;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+        }
+        
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .history-name {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .history-date {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .history-status {
+            font-weight: bold;
+        }
+        
+        .history-status.approved {
+            color: #28a745;
+        }
+        
+        .history-status.rejected {
+            color: #dc3545;
+        }
+        
+        .history-comment {
+            margin-top: 5px;
+            color: #555;
+        }
+        
+        @media screen and (max-width: 768px) {
+            .filter-controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .approval-buttons {
+                flex-direction: column;
+            }
+            
+            .action-btn {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 10px auto;
+            }
+            
+            .approval-list {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+        }
+    </style>
+    <title>City College of Angeles City - Program Coordinator Approval Letters</title>
+</head>
+<body>
+    <div class="sidebar">
+        <img src="cca-logo.png" alt="CCA Logo">
+        <h1>City College of Angeles</h1>
+        <a href="Program-Coordinator-Dashboard.html">Dashboard</a>
+        <a href="instructor-class-details.html">Class Details</a>
+        <a href="InstructorAttendancesheet.html">Attendance Sheet</a>
+        <a href="instructor-seat-plan.html">Seat Plan</a>
+        <a href="instructor-gradingsheet.html">Grading Sheet</a>
+        <a class="active" href="program-coor-approval-letter.html">Approval Letters</a>
+    </div>
+    
+    <div class="topnav">
+        <div class="nav-left">
+            <img src="cca-logo.png" alt="CCA Logo">
+            <h3>Program Coordinator Portal - Approval Letters</h3>
+        </div>
+        <button class="logout-btn" onclick="logout()">Log Out</button>
+    </div>
+    
+    <div class="main-content">
+        <div class="approval-panel">
+            <div class="panel-header">
+                <h2 class="panel-title">Student Absence Excuse Requests</h2>
+                <div class="panel-actions">
+                    <button id="refreshButton" class="btn btn-primary" onclick="loadRequests()">
+                        Refresh
+                    </button>
+                </div>
+            </div>
+            
+            <div class="filter-controls">
+                <div class="filter-group">
+                    <label for="subjectFilter">Subject:</label>
+                    <select id="subjectFilter" onchange="applyFilters()">
+                        <option value="">All Subjects</option>
+                        <!-- Will be populated dynamically -->
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="yearLevelFilter">Year Level:</label>
+                    <select id="yearLevelFilter" onchange="applyFilters()">
+                        <option value="">All Year Levels</option>
+                        <option value="1st Year">1st Year</option>
+                        <option value="2nd Year">2nd Year</option>
+                        <option value="3rd Year">3rd Year</option>
+                        <option value="4th Year">4th Year</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="sectionFilter">Section:</label>
+                    <select id="sectionFilter" onchange="applyFilters()">
+                        <option value="">All Sections</option>
+                        <!-- Will be populated dynamically -->
+                    </select>
+                </div>
+            </div>
+            
+            <input type="text" id="searchBox" class="search-box" placeholder="Search by student name or ID..." onkeyup="applyFilters()">
+            
+            <div class="approval-status-filter">
+                <button class="status-filter-btn active" data-status="all" onclick="filterByStatus(this, 'all')">All Requests</button>
+                <button class="status-filter-btn" data-status="pending" onclick="filterByStatus(this, 'pending')">Pending</button>
+                <button class="status-filter-btn" data-status="approved" onclick="filterByStatus(this, 'approved')">Approved</button>
+                <button class="status-filter-btn" data-status="rejected" onclick="filterByStatus(this, 'rejected')">Rejected</button>
+            </div>
+            
+            <div id="tableContainer">
+                <table class="approval-list">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Student ID</th>
+                            <th>Student Name</th>
+                            <th>Subject</th>
+                            <th>Week(s)</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requestsTableBody">
+                        <!-- Will be populated dynamically -->
+                    </tbody>
+                </table>
+                
+                <div id="noDataMessage" class="no-data" style="display: none;">
+                    No excuse requests found matching your criteria.
+                </div>
+            </div>
+            
+            <div class="pagination" id="pagination">
+                <!-- Pagination controls will be added here -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Request Details Modal -->
+    <div id="requestDetailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('requestDetailsModal')">&times;</span>
+            
+            <div class="modal-header">
+                <h2 id="modalTitle">Absence Excuse Request</h2>
+            </div>
+            
+            <div class="modal-body">
+                <div class="student-info" id="studentInfo">
+                    <!-- Student information will be populated here -->
+                </div>
+                
+                <div class="excuse-letter" id="excuseLetter">
+                    <!-- Letter content will be populated here -->
+                </div>
+                
+                <div class="attachments-section" id="attachmentsSection">
+                    <h3>Supporting Documents</h3>
+                    <div class="attachment-list" id="attachmentList">
+                        <!-- Attachments will be populated here -->
+                    </div>
+                </div>
+                
+                <div class="approval-history" id="approvalHistory">
+                    <h3>Approval History</h3>
+                    <div id="historyItems">
+                        <!-- Approval history will be populated here -->
+                    </div>
+                </div>
+                
+                <div class="approval-section" id="approvalSection">
+                    <h3>Your Decision</h3>
+                    <textarea id="approvalComment" class="approval-comment" placeholder="Enter your comments or feedback (optional)..."></textarea>
+                    
+                    <div class="approval-buttons">
+                        <button class="action-btn reject-btn" onclick="processRequest('Rejected')">Reject Request</button>
+                        <button class="action-btn approve-btn" onclick="processRequest('Approved')">Approve Request</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- File Viewer Modal -->
+    <div id="fileViewerModal" class="file-viewer-modal">
+        <div class="file-viewer-content">
+            <div class="file-viewer-header">
+                <h3 id="fileViewerTitle">File Preview</h3>
+                <span class="close-modal" onclick="closeModal('fileViewerModal')">&times;</span>
+            </div>
+            <div class="file-viewer-body" id="fileViewerBody">
+                <!-- File content will be shown here -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Global variables
+        let allRequests = [];
+        let filteredRequests = [];
+        let currentPage = 1;
+        let rowsPerPage = 10;
+        let currentStatusFilter = 'all';
+        let currentRequestId = null;
+        
+        // Check if user is logged in
+        window.addEventListener('load', function() {
+            if (!sessionStorage.getItem('currentUser')) {
+                window.location.href = 'login-CCA-Officials.html';
+                return;
+            }
+            
+            // Load user information from session storage
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            
+            // Verify this is a coordinator
+            if (currentUser.roleType !== 'Coordinator') {
+                alert('Access denied. This portal is for Program Coordinators only.');
+                sessionStorage.removeItem('currentUser');
+                window.location.href = 'login-CCA-Officials.html';
+                return;
+            }
+            
+            // Get current coordinator details
+            const adminRoles = JSON.parse(localStorage.getItem('adminRoles')) || [];
+            const coordinatorDetails = adminRoles.find(role => role.roleId === currentUser.roleId);
+            
+            if (!coordinatorDetails) {
+                alert('Error: Could not find coordinator details.');
+                return;
+            }
+            
+            // Initialize test data if needed
+            initializeTestData();
+            
+            // Load requests for this coordinator's course
+            loadRequests();
+            
+            // Populate filters
+            populateFilters();
+        });
+        
+        // Load all requests relevant to this coordinator
+        function loadRequests() {
+            // Get current coordinator details
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            const adminRoles = JSON.parse(localStorage.getItem('adminRoles')) || [];
+            const coordinatorDetails = adminRoles.find(role => role.roleId === currentUser.roleId);
+            
+            if (!coordinatorDetails) {
+                alert('Error: Could not find coordinator details.');
+                return;
+            }
+            
+            // Get all excuse requests
+            const allExcuseRequests = JSON.parse(localStorage.getItem('excuseRequests')) || [];
+            
+            // Filter requests for this coordinator's course
+            allRequests = allExcuseRequests.filter(request => 
+                request.course === coordinatorDetails.course
+            );
+            
+            // Sort requests by date (newest first)
+            allRequests.sort((a, b) => new Date(b.dateSubmitted) - new Date(a.dateSubmitted));
+            
+            // Apply current filters
+            applyFilters();
+        }
+        
+        // Populate filter dropdowns
+        function populateFilters() {
+            const subjectFilter = document.getElementById('subjectFilter');
+            const sectionFilter = document.getElementById('sectionFilter');
+            
+            // Clear existing options except the first one
+            subjectFilter.innerHTML = '<option value="">All Subjects</option>';
+            sectionFilter.innerHTML = '<option value="">All Sections</option>';
+            
+            // Get unique subjects and sections
+            const subjects = new Set();
+            const sections = new Set();
+            
+            allRequests.forEach(request => {
+                const subjectKey = `${request.subjectCode}: ${request.subjectTitle}`;
+                subjects.add(subjectKey);
+                sections.add(request.section);
+            });
+            
+            // Add subjects to dropdown
+            Array.from(subjects).sort().forEach(subject => {
+                const option = document.createElement('option');
+                option.value = subject;
+                option.textContent = subject;
+                subjectFilter.appendChild(option);
+            });
+            
+            // Add sections to dropdown
+            Array.from(sections).sort().forEach(section => {
+                const option = document.createElement('option');
+                option.value = section;
+                option.textContent = section;
+                sectionFilter.appendChild(option);
+            });
+        }
+        
+        // Apply all filters
+        function applyFilters() {
+            const subjectValue = document.getElementById('subjectFilter').value;
+            const yearLevelValue = document.getElementById('yearLevelFilter').value;
+            const sectionValue = document.getElementById('sectionFilter').value;
+            const searchValue = document.getElementById('searchBox').value.toLowerCase();
+            
+            // Filter requests
+            filteredRequests = allRequests.filter(request => {
+                const subjectKey = `${request.subjectCode}: ${request.subjectTitle}`;
+                
+                // Apply subject filter
+                if (subjectValue && subjectKey !== subjectValue) {
+                    return false;
+                }
+                
+                // Apply year level filter
+                if (yearLevelValue && request.yearLevel !== yearLevelValue) {
+                    return false;
+                }
+                
+                // Apply section filter
+                if (sectionValue && request.section !== sectionValue) {
+                    return false;
+                }
+                
+                // Apply status filter
+                if (currentStatusFilter !== 'all' && 
+                    request.status.toLowerCase() !== currentStatusFilter) {
+                    return false;
+                }
+                
+                // Apply search filter
+                if (searchValue) {
+                    const studentName = request.studentName.toLowerCase();
+                    const studentNumber = request.studentNumber.toLowerCase();
+                    
+                    if (!studentName.includes(searchValue) && 
+                        !studentNumber.includes(searchValue)) {
+                        return false;
+                    }
+                }
+                
+                return true;
+            });
+            
+            // Reset to first page
+            currentPage = 1;
+            
+            // Display filtered requests
+            displayRequests();
+            displayPagination();
+        }
+        
+        // Filter by status
+        function filterByStatus(button, status) {
+            // Update active button
+            const statusButtons = document.querySelectorAll('.status-filter-btn');
+            statusButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            
+            // Set current status filter
+            currentStatusFilter = status;
+            
+            // Apply filters
+            applyFilters();
+        }
+        
+        // Display requests in table
+        function displayRequests() {
+            const tableBody = document.getElementById('requestsTableBody');
+            const noDataMessage = document.getElementById('noDataMessage');
+            
+            // Clear table
+            tableBody.innerHTML = '';
+            
+            // Check if there are any requests
+            if (filteredRequests.length === 0) {
+                tableBody.innerHTML = '';
+                noDataMessage.style.display = 'block';
+                return;
+            }
+            
+            // Hide no data message
+            noDataMessage.style.display = 'none';
+            
+            // Calculate page range
+            const startIndex = (currentPage - 1) * rowsPerPage;
+            const endIndex = Math.min(startIndex + rowsPerPage, filteredRequests.length);
+            
+            // Display requests for current page
+            for (let i = startIndex; i < endIndex; i++) {
+                const request = filteredRequests[i];
+                
+                // Format date
+                const submittedDate = new Date(request.dateSubmitted);
+                const formattedDate = submittedDate.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                });
+                
+                // Create table row
+                const row = document.createElement('tr');
+                
+                // Get status class
+                let statusClass = '';
+                switch (request.status.toLowerCase()) {
+                    case 'approved':
+                        statusClass = 'approved';
+                        break;
+                    case 'rejected':
+                        statusClass = 'rejected';
+                        break;
+                    default:
+                        statusClass = 'pending';
+                }
+                
+                // Create row content
+                row.innerHTML = `
+                    <td>${formattedDate}</td>
+                    <td>${request.studentNumber}</td>
+                    <td>${request.studentName}</td>
+                    <td>${request.subjectCode}</td>
+                    <td>${request.absenceStartWeek}${request.absenceStartWeek !== request.absenceEndWeek ? ` - ${request.absenceEndWeek}` : ''}</td>
+                    <td><span class="approval-badge ${statusClass}">${request.status}</span></td>
+                    <td>
+                        <button class="action-btn view-btn" onclick="viewRequest('${request.id}')">View</button>
+                        ${request.status === 'Pending' ? `
+                            <button class="action-btn approve-btn" onclick="viewRequest('${request.id}', 'approve')">Approve</button>
+                            <button class="action-btn reject-btn" onclick="viewRequest('${request.id}', 'reject')">Reject</button>
+                        ` : ''}
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            }
+        }
+        
+        // Display pagination controls
+        function displayPagination() {
+            const paginationDiv = document.getElementById('pagination');
+            paginationDiv.innerHTML = '';
+            
+            // Calculate total pages
+            const totalPages = Math.ceil(filteredRequests.length / rowsPerPage);
+            
+            // Don't show pagination if only one page
+            if (totalPages <= 1) {
+                return;
+            }
+            
+            // Previous button
+            const prevButton = document.createElement('button');
+            prevButton.innerHTML = '&laquo;';
+            prevButton.disabled = currentPage === 1;
+            prevButton.onclick = () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    displayRequests();
+                    displayPagination();
+                }
+            };
+            paginationDiv.appendChild(prevButton);
+            
+            // Page numbers
+            const maxPages = 5; // Maximum number of page buttons to show
+            let startPage = Math.max(1, currentPage - Math.floor(maxPages / 2));
+            let endPage = Math.min(totalPages, startPage + maxPages - 1);
+            
+            // Adjust startPage if we're near the end
+            if (endPage - startPage + 1 < maxPages) {
+                startPage = Math.max(1, endPage - maxPages + 1);
+            }
+            
+            // First page button if not starting from page 1
+            if (startPage > 1) {
+                const firstPageButton = document.createElement('button');
+                firstPageButton.textContent = '1';
+                firstPageButton.onclick = () => {
+                    currentPage = 1;
+                    displayRequests();
+                    displayPagination();
+                };
+                paginationDiv.appendChild(firstPageButton);
+                
+                // Ellipsis if not starting from page 2
+                if (startPage > 2) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.textContent = '...';
+                    ellipsis.style.margin = '0 8px';
+                    paginationDiv.appendChild(ellipsis);
+                }
+            }
+            
+            // Page buttons
+            for (let i = startPage; i <= endPage; i++) {
+                const pageButton = document.createElement('button');
+                pageButton.textContent = i;
+                pageButton.className = i === currentPage ? 'active' : '';
+                pageButton.onclick = () => {
+                    currentPage = i;
+                    displayRequests();
+                    displayPagination();
+                };
+                paginationDiv.appendChild(pageButton);
+            }
+            
+            <!-- Continuing from where the code was cut off -->
+            // Ellipsis and last page if not ending at last page
+            if (endPage < totalPages) {
+                // Ellipsis if not ending at second-to-last page
+                if (endPage < totalPages - 1) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.textContent = '...';
+                    ellipsis.style.margin = '0 8px';
+                    paginationDiv.appendChild(ellipsis);
+                }
+                
+                // Last page button
+                const lastPageButton = document.createElement('button');
+                lastPageButton.textContent = totalPages;
+                lastPageButton.onclick = () => {
+                    currentPage = totalPages;
+                    displayRequests();
+                    displayPagination();
+                };
+                paginationDiv.appendChild(lastPageButton);
+            }
+            
+            // Next button
+            const nextButton = document.createElement('button');
+            nextButton.innerHTML = '&raquo;';
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.onclick = () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    displayRequests();
+                    displayPagination();
+                }
+            };
+            paginationDiv.appendChild(nextButton);
+        }
+        
+        // View request details
+        function viewRequest(requestId, action) {
+            // Find request
+            const request = allRequests.find(req => req.id === requestId);
+            if (!request) {
+                alert('Request not found.');
+                return;
+            }
+            
+            // Store current request ID
+            currentRequestId = requestId;
+            
+            // Populate modal with request details
+            document.getElementById('modalTitle').textContent = `Absence Excuse Request - ${request.studentName}`;
+            
+            // Populate student info
+            const studentInfo = document.getElementById('studentInfo');
+            studentInfo.innerHTML = `
+                <div class="student-info-item"><span>Student ID:</span> ${request.studentNumber}</div>
+                <div class="student-info-item"><span>Student Name:</span> ${request.studentName}</div>
+                <div class="student-info-item"><span>Course:</span> ${request.course}</div>
+                <div class="student-info-item"><span>Year & Section:</span> ${request.yearLevel} - ${request.section}</div>
+                <div class="student-info-item"><span>Subject:</span> ${request.subjectCode}: ${request.subjectTitle}</div>
+                <div class="student-info-item"><span>Absence Period:</span> Week ${request.absenceStartWeek}${request.absenceStartWeek !== request.absenceEndWeek ? ` to Week ${request.absenceEndWeek}` : ''}</div>
+                <div class="student-info-item"><span>Date Submitted:</span> ${new Date(request.dateSubmitted).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
+                <div class="student-info-item"><span>Status:</span> ${request.status}</div>
+            `;
+            
+            // Populate excuse letter
+            const excuseLetter = document.getElementById('excuseLetter');
+            excuseLetter.innerHTML = `
+                <div class="letter-header">
+                    <p>${new Date(request.dateSubmitted).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+                </div>
+                
+                <div class="letter-subject">
+                    EXCUSE LETTER
+                </div>
+                
+                <p>Dear Sir/Madam,</p>
+                
+                <p>${request.letterContent}</p>
+                
+                <div class="letter-closing">
+                    <p>Respectfully yours,</p>
+                </div>
+                
+                <div class="letter-signature">
+                    <p>${request.studentName}</p>
+                    <p>${request.studentNumber}</p>
+                </div>
+            `;
+            
+            // Populate attachments
+            const attachmentList = document.getElementById('attachmentList');
+            attachmentList.innerHTML = '';
+            
+            if (request.attachments && request.attachments.length > 0) {
+                request.attachments.forEach(attachment => {
+                    const attachmentItem = document.createElement('div');
+                    attachmentItem.className = 'attachment-item';
+                    attachmentItem.onclick = () => viewAttachment(attachment);
+                    
+                    // Determine icon based on file type
+                    let iconClass = 'fa-file';
+                    if (attachment.type.includes('image')) {
+                        iconClass = 'fa-file-image';
+                    } else if (attachment.type.includes('pdf')) {
+                        iconClass = 'fa-file-pdf';
+                    } else if (attachment.type.includes('word')) {
+                        iconClass = 'fa-file-word';
+                    }
+                    
+                    attachmentItem.innerHTML = `
+                        <div class="attachment-icon">
+                            <i class="fas ${iconClass}"></i>
+                        </div>
+                        <div class="attachment-name">${attachment.name}</div>
+                    `;
+                    
+                    attachmentList.appendChild(attachmentItem);
+                });
+            } else {
+                attachmentList.innerHTML = '<p>No attachments provided.</p>';
+            }
+            
+            // Populate approval history
+            const historyItems = document.getElementById('historyItems');
+            historyItems.innerHTML = '';
+            
+            if (request.approvalHistory && request.approvalHistory.length > 0) {
+                request.approvalHistory.forEach(history => {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'history-item';
+                    
+                    historyItem.innerHTML = `
+                        <div class="history-header">
+                            <span class="history-name">${history.approverName} (${history.approverRole})</span>
+                            <span class="history-date">${new Date(history.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                        </div>
+                        <div class="history-status ${history.status.toLowerCase()}">${history.status}</div>
+                        ${history.comment ? `<div class="history-comment">${history.comment}</div>` : ''}
+                    `;
+                    
+                    historyItems.appendChild(historyItem);
+                });
+            } else {
+                historyItems.innerHTML = '<p>No approval history yet.</p>';
+            }
+            
+            // Show/hide approval section based on request status
+            const approvalSection = document.getElementById('approvalSection');
+            approvalSection.style.display = request.status === 'Pending' ? 'block' : 'none';
+            
+            // Clear approval comment
+            document.getElementById('approvalComment').value = '';
+            
+            // Show modal
+            document.getElementById('requestDetailsModal').style.display = 'block';
+            
+            // Auto-focus on appropriate button if action is specified
+            if (action === 'approve') {
+                setTimeout(() => {
+                    const approveBtn = document.querySelector('.approve-btn');
+                    if (approveBtn) approveBtn.focus();
+                }, 300);
+            } else if (action === 'reject') {
+                setTimeout(() => {
+                    const rejectBtn = document.querySelector('.reject-btn');
+                    if (rejectBtn) rejectBtn.focus();
+                }, 300);
+            }
+        }
+        
+        // View attachment
+        function viewAttachment(attachment) {
+            // Set modal title
+            document.getElementById('fileViewerTitle').textContent = attachment.name;
+            
+            // Set file content based on type
+            const fileViewerBody = document.getElementById('fileViewerBody');
+            
+            if (attachment.type.includes('image')) {
+                fileViewerBody.innerHTML = `<img src="${attachment.url}" alt="${attachment.name}">`;
+            } else if (attachment.type.includes('pdf')) {
+                fileViewerBody.innerHTML = `<iframe src="${attachment.url}" type="application/pdf"></iframe>`;
+            } else {
+                fileViewerBody.innerHTML = `<p>Preview not available for this file type.</p>
+                                          <p><a href="${attachment.url}" target="_blank">Download File</a></p>`;
+            }
+            
+            // Show modal
+            document.getElementById('fileViewerModal').style.display = 'block';
+        }
+        
+        // Process approval/rejection
+        function processRequest(decision) {
+            // Validate current request
+            if (!currentRequestId) {
+                alert('No request selected.');
+                return;
+            }
+            
+            // Find request
+            const requestIndex = allRequests.findIndex(req => req.id === currentRequestId);
+            if (requestIndex === -1) {
+                alert('Request not found.');
+                return;
+            }
+            
+            // Get current user
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            const adminRoles = JSON.parse(localStorage.getItem('adminRoles')) || [];
+            const coordinatorDetails = adminRoles.find(role => role.roleId === currentUser.roleId);
+            
+            // Get comment
+            const comment = document.getElementById('approvalComment').value.trim();
+            
+            // Create approval history entry
+            const historyEntry = {
+                approverName: coordinatorDetails.name,
+                approverRole: 'Program Coordinator',
+                date: new Date().toISOString(),
+                status: decision,
+                comment: comment
+            };
+            
+            // Update request
+            allRequests[requestIndex].status = decision;
+            if (!allRequests[requestIndex].approvalHistory) {
+                allRequests[requestIndex].approvalHistory = [];
+            }
+            allRequests[requestIndex].approvalHistory.push(historyEntry);
+            
+            // Update all requests in localStorage
+            const allExcuseRequests = JSON.parse(localStorage.getItem('excuseRequests')) || [];
+            const globalRequestIndex = allExcuseRequests.findIndex(req => req.id === currentRequestId);
+            
+            if (globalRequestIndex !== -1) {
+                allExcuseRequests[globalRequestIndex] = allRequests[requestIndex];
+                localStorage.setItem('excuseRequests', JSON.stringify(allExcuseRequests));
+            }
+            
+            // Close modal
+            closeModal('requestDetailsModal');
+            
+            // Refresh display
+            applyFilters();
+            
+            // Show confirmation
+            alert(`Request has been ${decision.toLowerCase()} successfully.`);
+        }
+        
+        // Close modal
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        // Initialize test data if needed
+        function initializeTestData() {
+            // Check if test data already exists
+            if (localStorage.getItem('excuseRequests')) {
+                return;
+            }
+            
+            // Admin roles
+            const adminRoles = [
+                {
+                    roleId: "coor-1",
+                    name: "Prof. Maria Santos",
+                    roleType: "Coordinator",
+                    course: "Bachelor of Science in Information Technology"
+                },
+                {
+                    roleId: "coor-2",
+                    name: "Prof. Juan Dela Cruz",
+                    roleType: "Coordinator",
+                    course: "Bachelor of Science in Business Administration"
+                }
+            ];
+            
+            localStorage.setItem('adminRoles', JSON.stringify(adminRoles));
+            
+            // Sample excuse requests
+            const excuseRequests = [
+                {
+                    id: "er-001",
+                    studentNumber: "2023-0001",
+                    studentName: "John Doe",
+                    course: "Bachelor of Science in Information Technology",
+                    yearLevel: "2nd Year",
+                    section: "A",
+                    subjectCode: "IT201",
+                    subjectTitle: "Web Development",
+                    absenceStartWeek: 3,
+                    absenceEndWeek: 3,
+                    dateSubmitted: "2023-09-10T08:30:00",
+                    letterContent: "I respectfully request to be excused from my absence during week 3 due to a medical emergency. I was hospitalized for severe flu and was advised to rest for three days. I have attached my medical certificate for your reference.",
+                    status: "Pending",
+                    attachments: [
+                        {
+                            name: "Medical_Certificate.pdf",
+                            type: "application/pdf",
+                            url: "#"
+                        }
+                    ]
+                },
+                {
+                    id: "er-002",
+                    studentNumber: "2023-0002",
+                    studentName: "Jane Smith",
+                    course: "Bachelor of Science in Information Technology",
+                    yearLevel: "3rd Year",
+                    section: "B",
+                    subjectCode: "IT301",
+                    subjectTitle: "Database Management",
+                    absenceStartWeek: 4,
+                    absenceEndWeek: 5,
+                    dateSubmitted: "2023-09-15T10:45:00",
+                    letterContent: "I am writing to request an excuse for my absence during weeks 4 and 5. I represented our college in the National IT Competition held in Manila. I have attached the official invitation letter and certificate of participation.",
+                    status: "Approved",
+                    attachments: [
+                        {
+                            name: "Invitation_Letter.pdf",
+                            type: "application/pdf",
+                            url: "#"
+                        },
+                        {
+                            name: "Certificate.jpg",
+                            type: "image/jpeg",
+                            url: "#"
+                        }
+                    ],
+                    approvalHistory: [
+                        {
+                            approverName: "Prof. Maria Santos",
+                            approverRole: "Program Coordinator",
+                            date: "2023-09-16T09:20:00",
+                            status: "Approved",
+                            comment: "Participation in national competitions is encouraged and approved."
+                        }
+                    ]
+                },
+                {
+                    id: "er-003",
+                    studentNumber: "2023-0003",
+                    studentName: "Robert Garcia",
+                    course: "Bachelor of Science in Information Technology",
+                    yearLevel: "1st Year",
+                    section: "C",
+                    subjectCode: "IT101",
+                    subjectTitle: "Introduction to Computing",
+                    absenceStartWeek: 2,
+                    absenceEndWeek: 2,
+                    dateSubmitted: "2023-09-08T14:15:00",
+                    letterContent: "I would like to request an excuse for my absence during week 2 due to a family emergency. My grandmother passed away, and I had to attend her funeral in our province.",
+                    status: "Rejected",
+                    attachments: [],
+                    approvalHistory: [
+                        {
+                            approverName: "Prof. Maria Santos",
+                            approverRole: "Program Coordinator",
+                            date: "2023-09-09T11:30:00",
+                            status: "Rejected",
+                            comment: "No supporting documents provided. Please submit a death certificate or funeral notice."
+                        }
+                    ]
+                },
+                {
+                    id: "er-004",
+                    studentNumber: "2023-0004",
+                    studentName: "Maria Reyes",
+                    course: "Bachelor of Science in Information Technology",
+                    yearLevel: "4th Year",
+                    section: "A",
+                    subjectCode: "IT401",
+                    subjectTitle: "Capstone Project",
+                    absenceStartWeek: 6,
+                    absenceEndWeek: 6,
+                    dateSubmitted: "2023-09-20T09:10:00",
+                    letterContent: "I am requesting to be excused from my absence during week 6 as I attended a job interview with a major IT company. This is part of our career placement program. I have attached the interview invitation.",
+                    status: "Pending",
+                    attachments: [
+                        {
+                            name: "Interview_Invitation.pdf",
+                            type: "application/pdf",
+                            url: "#"
+                        }
+                    ]
+                },
+                {
+                    id: "er-005",
+                    studentNumber: "2023-0005",
+                    studentName: "Carlos Santos",
+                    course: "Bachelor of Science in Business Administration",
+                    yearLevel: "2nd Year",
+                    section: "B",
+                    subjectCode: "BA201",
+                    subjectTitle: "Principles of Marketing",
+                    absenceStartWeek: 3,
+                    absenceEndWeek: 4,
+                    dateSubmitted: "2023-09-12T13:20:00",
+                    letterContent: "I would like to request an excuse for my absence during weeks 3 and 4 due to dengue fever. I was confined in the hospital for 7 days. Medical certificate is attached.",
+                    status: "Approved",
+                    attachments: [
+                        {
+                            name: "Medical_Certificate.pdf",
+                            type: "application/pdf",
+                            url: "#"
+                        },
+                        {
+                            name: "Hospital_Bill.jpg",
+                            type: "image/jpeg",
+                            url: "#"
+                        }
+                    ],
+                    approvalHistory: [
+                        {
+                            approverName: "Prof. Juan Dela Cruz",
+                            approverRole: "Program Coordinator",
+                            date: "2023-09-13T10:45:00",
+                            status: "Approved",
+                            comment: "Approved due to medical emergency with complete documentation."
+                        }
+                    ]
+                }
+            ];
+            
+            localStorage.setItem('excuseRequests', JSON.stringify(excuseRequests));
+        }
+        
+        // Logout function
+        function logout() {
+            sessionStorage.removeItem('currentUser');
+            window.location.href = 'login-CCA-Officials.html';
+        }
+        
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

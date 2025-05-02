@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="Student.css">
+<style>
+ .sidebar {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color:darkgreen;
+    overflow-x: hidden;
+    padding-top: 60px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.sidebar a {
+    padding: 10px 15px;
+    text-decoration: none;
+    color: white;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidebar a:hover {
+    background-color:wheat;
+}
+
+.account-status {
+    margin-left: 10px;
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 10px;
+}
+
+.status-active {
+    background-color: #28a745;
+    color: white;
+}
+
+.status-pending {
+    background-color: #ffc107;
+    color: black;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.close-modal {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-modal:hover {
+    color: black;
+}
+
+.copied-message {
+    color: green;
+    display: none;
+    margin-left: 10px;
+}
+
+.password-field {
+    display: flex;
+    align-items: center;
+}
+
+.copy-btn {
+    margin-left: 10px;
+    padding: 5px 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.copy-btn:hover {
+    background-color: #45a049;
+}
+
+.btn-generate-all {
+    margin-bottom: 20px;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-generate-all:hover {
+    background-color: #0069d9;
+}
+
+.add-role-form {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    margin-right: 15px;
+    margin-bottom: 15px;
+    flex: 1;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 15px;
+}
+
+.form-buttons button {
+    margin-left: 10px;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-submit {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-submit:hover {
+    background-color: #218838;
+}
+
+.btn-reset {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-reset:hover {
+    background-color: #5a6268;
+}
+
+.role-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 10px;
+    background-color: #007bff;
+    color: white;
+}
+
+.role-registrar {
+    background-color: #dc3545;
+}
+
+.role-dean {
+    background-color: #6610f2;
+}
+
+.role-coordinator {
+    background-color: #fd7e14;
+}
+</style>
+</head>
+<body>
+
+<div id="mySidebar" class="sidebar">
+    <img class="navlog" src="cca-logo.png" alt="">
+    <h1>City College of Angeles</h1>  
+    <a href="admin.html">Student Accounts</a>
+    <a href="admininstructor.html">Instructors Accounts</a>
+    <a class="active">Admin Roles Accounts</a>
+</div>
+
+<!-- Top navigation bar with logout button -->
+<div id="topNav" class="topnav shifted">
+    <div class="nav-left">
+        <img src="cca-logo.png" alt="CCA Logo" height="50">
+        <h3>City College of Angeles - Admin Roles Management</h3>
+    </div>
+    <button class="logout-btn" onclick="logout()">Log Out</button>
+</div>
+
+<div id="main" style="margin-left: 250px">
+    <div id="pageContent" class="page-content">
+        <h2 class="section-title">Administrative Roles Account Management</h2>
+        
+        <!-- Add New Role Form -->
+        <div class="add-role-form">
+            <h3>Add New Administrative Role</h3>
+            <form id="addRoleForm" onsubmit="addNewRole(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="roleType">Role Type</label>
+                        <select id="roleType" required>
+                            <option value="">Select Role Type</option>
+                            <option value="Registrar">Registrar</option>
+                            <option value="Dean">Acting Dean</option>
+                            <option value="Coordinator">Program Coordinator</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="instituteGroup" style="display: none;">
+                        <label for="institute">Institute</label>
+                        <select id="institute">
+                            <option value="">Select Institute</option>
+                            <option value="ICSLIS">ICSLIS</option>
+                            <option value="IEAS">IEAS</option>
+                            <option value="IBM">IBM</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="courseGroup" style="display: none;">
+                        <label for="course">Course</label>
+                        <select id="course">
+                            <option value="">Select Course</option>
+                            <!-- Courses will be populated dynamically based on selected institute -->
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="middleName">Middle Name</label>
+                        <input type="text" id="middleName">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactNumber">Contact Number</label>
+                        <input type="text" id="contactNumber">
+                    </div>
+                </div>
+                <div class="form-buttons">
+                    <button type="reset" class="btn-reset">Reset</button>
+                    <button type="submit" class="btn-submit">Add Role</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Generate All Accounts Button -->
+        <button class="btn-generate-all" onclick="generateAllAccounts()">Generate All Missing Accounts</button>
+        
+        <!-- Admin Roles Accounts Table View -->
+        <h3 class="section-title">Administrative Role Accounts</h3>
+        <div class="table-container">
+            <table class="data-table" id="adminRolesTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Position</th>
+                        <th>Email</th>
+                        <th>Account Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="adminRolesTableBody">
+                    <!-- Admin role accounts will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Account Details Modal -->
+<div id="accountModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <h3>Administrative Role Account Details</h3>
+        <div id="accountDetails">
+            <p><strong>Name:</strong> <span id="modalName"></span></p>
+            <p><strong>Position:</strong> <span id="modalPosition"></span></p>
+            <p><strong>Email:</strong> <span id="modalEmail"></span></p>
+            <p><strong>Username:</strong> <span id="modalUsername"></span></p>
+            <div class="password-field">
+                <p><strong>Password:</strong> <span id="modalPassword"></span></p>
+                <button class="copy-btn" onclick="copyPassword()">Copy</button>
+                <span class="copied-message" id="copiedMessage">Copied!</span>
+            </div>
+            <p><strong>Status:</strong> <span id="modalStatus"></span></p>
+            <p><strong>Generated On:</strong> <span id="modalGeneratedDate"></span></p>
+        </div>
+        <div class="btn-container">
+            <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+            <button class="btn btn-primary" onclick="resetPassword()">Reset Password</button>
+            <button class="btn btn-primary" id="emailCredentialsBtn" onclick="emailCredentials()">Email Credentials</button>
+            <button class="btn btn-danger" onclick="removeRole()">Remove Role</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// Updated Course data by institute
+const coursesByInstitute = {
+    'ICSLIS': [
+        'Bachelor of Science in Computer Science',
+        'Bachelor of Science in Information Systems',
+        'Bachelor of Library and Information Science',
+        'Associate in Computer Technology'
+    ],
+    'IEAS': [
+        'Bachelor of Arts in English Language Studies',
+        'Bachelor of Science in Psychology',
+        'Bachelor of Science in Mathematics',
+        'Bachelor of Special Needs Education',
+        'Bachelor of Physical Education',
+        'Bachelor of Performing Arts',
+        'Bachelor of Technical-Vocational Teacher Education',
+        'Methods of Teaching'
+    ],
+    'IBM': [
+        'Bachelor of Science in Accountancy',
+        'Bachelor of Science in Accounting Information System',
+        'Bachelor of Science in Entrepreneurship',
+        'Bachelor of Science in Tourism Management'
+    ]
+};
+
+// Check if user is logged in, if not redirect to login page
+function checkLoginStatus() {
+    if (!sessionStorage.getItem('loggedInAdmin') && !sessionStorage.getItem('currentUser')) {
+        window.location.href = 'student-login.html';
+        return false;
+    }
+    return true;
+}
+
+// Show/hide fields based on role type selection
+document.getElementById('roleType').addEventListener('change', function() {
+    const instituteGroup = document.getElementById('instituteGroup');
+    const courseGroup = document.getElementById('courseGroup');
+    const instituteSelect = document.getElementById('institute');
+    const courseSelect = document.getElementById('course');
+    
+    // Reset and hide all fields first
+    instituteGroup.style.display = 'none';
+    courseGroup.style.display = 'none';
+    instituteSelect.required = false;
+    courseSelect.required = false;
+    
+    // Show relevant fields based on role type
+    if (this.value === 'Dean') {
+        instituteGroup.style.display = 'block';
+        instituteSelect.required = true;
+    } else if (this.value === 'Coordinator') {
+        instituteGroup.style.display = 'block';
+        courseGroup.style.display = 'block';
+        instituteSelect.required = true;
+        courseSelect.required = true;
+    }
+});
+
+// Update courses when institute changes
+document.getElementById('institute').addEventListener('change', function() {
+    const courseSelect = document.getElementById('course');
+    const selectedInstitute = this.value;
+    
+    // Clear current options
+    courseSelect.innerHTML = '<option value="">Select Course</option>';
+    
+    // Add new options based on selected institute
+    if (selectedInstitute && coursesByInstitute[selectedInstitute]) {
+        coursesByInstitute[selectedInstitute].forEach(course => {
+            const option = document.createElement('option');
+            option.value = course;
+            option.textContent = course;
+            courseSelect.appendChild(option);
+        });
+    }
+});
+
+// Function to generate a unique ID for admin roles
+function generateRoleId() {
+    return 'ADM' + Math.floor(100000 + Math.random() * 900000);
+}
+
+// Function to add a new administrative role
+function addNewRole(event) {
+    event.preventDefault();
+    
+    const roleType = document.getElementById('roleType').value;
+    const institute = document.getElementById('institute').value;
+    const course = document.getElementById('course').value;
+    const firstName = document.getElementById('firstName').value;
+    const middleName = document.getElementById('middleName').value;
+    const lastName = document.getElementById('lastName').value;
+    const email = document.getElementById('email').value;
+    const contactNumber = document.getElementById('contactNumber').value;
+    
+    // Validation for institute when role is Dean
+    if (roleType === 'Dean' && !institute) {
+        alert('Please select an institute for this role.');
+        return;
+    }
+    
+    // Validation for institute and course when role is Coordinator
+    if (roleType === 'Coordinator') {
+        if (!institute) {
+            alert('Please select an institute for this role.');
+            return;
+        }
+        if (!course) {
+            alert('Please select a course for this role.');
+            return;
+        }
+    }
+    
+    // Create position title
+    let position = roleType;
+    if (roleType === 'Dean') {
+        position = `Acting Dean of ${institute}`;
+    } else if (roleType === 'Coordinator') {
+        position = `Program Coordinator - ${course} (${institute})`;
+    }
+    
+    // Create new role object
+    const newRole = {
+        roleId: generateRoleId(),
+        roleType: roleType,
+        institute: institute,
+        course: course,
+        firstName: firstName,
+        middleName: middleName,
+        lastName: lastName,
+        emailAddress: email,
+        contactNumber: contactNumber,
+        position: position,
+        dateAdded: new Date().toISOString().split('T')[0]
+    };
+    
+    // Save to localStorage
+    const adminRoles = JSON.parse(localStorage.getItem('adminRoles')) || [];
+    
+    // Check if email already exists
+    const emailExists = adminRoles.some(role => role.emailAddress.toLowerCase() === email.toLowerCase());
+    if (emailExists) {
+        alert('An administrator with this email already exists.');
+        return;
+    }
+    
+    adminRoles.push(newRole);
+    localStorage.setItem('adminRoles', JSON.stringify(adminRoles));
+    
+    // Reset form
+    document.getElementById('addRoleForm').reset();
+    document.getElementById('instituteGroup').style.display = 'none';
+    document.getElementById('courseGroup').style.display = 'none';
+    
+    // Refresh table
+    displayRolesTable();
+    
+    alert('Administrative role added successfully!');
+}
+
+// Function to generate a random password
+function generatePassword() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+    let password = '';
+    
+    // Ensure at least one uppercase letter, one lowercase letter, one number, and one special character
+    password += chars.charAt(Math.floor(Math.random() * 26)); // uppercase
+    password += chars.charAt(Math.floor(Math.random() * 26) + 26); // lowercase
+    password += chars.charAt(Math.floor(Math.random() * 10) + 52); // number
+    password += chars.charAt(Math.floor(Math.random() * 10) + 62); // special char
+    
+    // Add random characters to reach length of 12
+    for (let i = 0; i < 8; i++) {
+        password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    
+    // Shuffle the password characters
+    return password.split('').sort(() => 0.5 - Math.random()).join('');
+}
+
+// Function to generate an account for an admin role
+function generateAccount(role) {
+    // Create username from email (part before @)
+    const username = role.emailAddress.split('@')[0];
+    
+    // Generate password
+    const password = generatePassword();
+    
+    // Create account object
+    return {
+        roleId: role.roleId,
+        username: username,
+        password: password,
+        email: role.emailAddress,
+        status: 'Active',
+        generatedDate: new Date().toISOString().split('T')[0]
+    };
+}
+
+// Function to generate accounts for all admin roles who don't have one yet
+function generateAllAccounts() {
+    const roles = JSON.parse(localStorage.getItem('adminRoles')) || [];
+    const accounts = JSON.parse(localStorage.getItem('adminAccounts')) || [];
+    
+    if (roles.length === 0) {
+        alert('No administrative roles found. Please add roles first.');
+        return;
+    }
+    
+    let newAccountsCount = 0;
+    
+    // Loop through each role
+    roles.forEach(role => {
+        // Check if role already has an account
+        const hasAccount = accounts.some(acc => acc.roleId === role.roleId);
+        
+        if (!hasAccount) {
+            // Generate new account
+            const newAccount = generateAccount(role);
+            accounts.push(newAccount);
+            newAccountsCount++;
+        }
+    });
+    
+    // Save accounts to localStorage
+    localStorage.setItem('adminAccounts', JSON.stringify(accounts));
+    
+    if (newAccountsCount > 0) {
+        alert(`Successfully generated ${newAccountsCount} new administrative account(s).`);
+    } else {
+        alert('All administrative roles already have accounts. No new accounts were generated.');
+    }
+    
+    // Refresh table
+    displayRolesTable();
+}
+
+// Function to generate or regenerate a single account
+function generateSingleAccount(roleId) {
+    const roles = JSON.parse(localStorage.getItem('adminRoles')) || [];
+    const role = roles.find(r => r.roleId === roleId);
+    
+    if (!role) {
+        alert('Administrative role not found.');
+        return;
+    }
+    
+    const accounts = JSON.parse(localStorage.getItem('adminAccounts')) || [];
+    const existingAccountIndex = accounts.findIndex(acc => acc.roleId === roleId);
+    
+    // Generate new account
+    const newAccount = generateAccount(role);
+    
+    if (existingAccountIndex !== -1) {
+        // Update existing account
+        accounts[existingAccountIndex] = newAccount;
+        alert('Account regenerated successfully.');
+    } else {
+        // Add new account
+        accounts.push(newAccount);
+        alert('Account generated successfully.');
+    }
+    
+    // Save accounts to localStorage
+    localStorage.setItem('adminAccounts', JSON.stringify(accounts));
+    
+    // Refresh table
+    displayRolesTable();
+    
+    // Show account details
+    showAccountDetails(roleId);
+}
+
+// Function to reset password for an admin role
+function resetPassword() {
+    const roleId = document.getElementById('modalName').dataset.roleId;
+    if (!roleId) return;
+    
+    if (confirm('Are you sure you want to reset the password for this administrator?')) {
+        const accounts = JSON.parse(localStorage.getItem('adminAccounts')) || [];
+        const accountIndex = accounts.findIndex(acc => acc.roleId === roleId);
+        
+        if (accountIndex !== -1) {
+            // Generate new password
+            accounts[accountIndex].password = generatePassword();
+            accounts[accountIndex].generatedDate = new Date().toISOString().split('T')[0];
+            
+            // Save accounts to localStorage
+            localStorage.setItem('adminAccounts', JSON.stringify(accounts));
+            
+            // Update modal
+            document.getElementById('modalPassword').textContent = accounts[accountIndex].password;
+            document.getElementById('modalGeneratedDate').textContent = accounts[accountIndex].generatedDate;
+            
+            alert('Password reset successfully.');
+        }
+    }
+}
+
+// Function to remove an admin role
+function removeRole() {
+    const roleId = document.getElementById('modalName').dataset.roleId;
+    if (!roleId) return;
+    
+    if (confirm('Are you sure you want to remove this administrative role? This action cannot be undone.')) {
+        // Remove role from roles list
+        const roles = JSON.parse(localStorage.getItem('adminRoles')) || [];
+        const updatedRoles = roles.filter(role => role.roleId !== roleId);
+        localStorage.setItem('adminRoles', JSON.stringify(updatedRoles));
+        
+        // Remove account if exists
+        const accounts = JSON.parse(localStorage.getItem('adminAccounts')) || [];
+        const updatedAccounts = accounts.filter(acc => acc.roleId !== roleId);
+        localStorage.setItem('adminAccounts', JSON.stringify(updatedAccounts));
+        
+        closeModal();
+        displayRolesTable();
+        
+        alert('Administrative role removed successfully.');
+    }
+}
+
+// Function to display admin roles in table format
+function displayRolesTable() {
+    const roles = JSON.parse(localStorage.getItem('adminRoles')) || [];
+    const accounts = JSON.parse(localStorage.getItem('adminAccounts')) || [];
+    const tableBody = document.getElementById('adminRolesTableBody');
+    tableBody.innerHTML = '';
+    
+    if (roles.length === 0) {
+        const row = document.createElement('tr');
+        const cell = document.createElement('td');
+        cell.colSpan = 6;
+        cell.textContent = 'No administrative roles found.';
+        cell.style.textAlign = 'center';
+        row.appendChild(cell);
+        tableBody.appendChild(row);
+        return;
+    }
+    
+    // Sort roles by type and then by last name
+    roles.sort((a, b) => {
+        if (a.roleType !== b.roleType) {
+            return a.roleType.localeCompare(b.roleType);
+        }
+        return a.lastName.localeCompare(b.lastName);
+    });
+    
+    // Add each role to the table
+    roles.forEach(role => {
+        const row = document.createElement('tr');
+        
+        // ID
+        const idCell = document.createElement('td');
+        idCell.textContent = role.roleId;
+        row.appendChild(idCell);
+        
+        // Name
+        const nameCell = document.createElement('td');
+        nameCell.textContent = `${role.lastName}, ${role.firstName} ${role.middleName ? role.middleName : ''}`.trim();
+        row.appendChild(nameCell);
+        
+        // Position
+        const positionCell = document.createElement('td');
+        let roleClass = '';
+        if (role.roleType === 'Registrar') roleClass = 'role-registrar';
+        else if (role.roleType === 'Dean') roleClass = 'role-dean';
+        else if (role.roleType === 'Coordinator') roleClass = 'role-coordinator';
+        
+        positionCell.innerHTML = `<span class="role-badge ${roleClass}">${role.position}</span>`;
+        row.appendChild(positionCell);
+        
+        // Email
+        const emailCell = document.createElement('td');
+        emailCell.textContent = role.emailAddress;
+        row.appendChild(emailCell);
+        
+        // Account Status
+        const statusCell = document.createElement('td');
+        const account = accounts.find(acc => acc.roleId === role.roleId);
+        
+        if (account) {
+            statusCell.innerHTML = `<span class="account-status status-active">Active</span>`;
+        } else {
+            statusCell.innerHTML = `<span class="account-status status-pending">No Account</span>`;
+        }
+        row.appendChild(statusCell);
+        
+        // Actions
+        const actionsCell = document.createElement('td');
+        actionsCell.className = 'action-btns';
+        
+        if (account) {
+            // View button
+            const viewBtn = document.createElement('button');
+            viewBtn.className = 'action-btn view-btn';
+            viewBtn.textContent = 'View Details';
+            viewBtn.onclick = () => showAccountDetails(role.roleId);
+            actionsCell.appendChild(viewBtn);
+        } else {
+            // Generate button
+            const generateBtn = document.createElement('button');
+            generateBtn.className = 'action-btn create-btn';
+            generateBtn.textContent = 'Generate Account';
+            generateBtn.onclick = () => generateSingleAccount(role.roleId);
+            actionsCell.appendChild(generateBtn);
+        }
+        
+        row.appendChild(actionsCell);
+        tableBody.appendChild(row);
+    });
+}
+
+// Function to show account details modal
+function showAccountDetails(roleId) {
+    const roles = JSON.parse(localStorage.getItem('adminRoles')) || [];
+    const accounts = JSON.parse(localStorage.getItem('adminAccounts')) || [];
+    
+    const role = roles.find(r => r.roleId === roleId);
+    const account = accounts.find(acc => acc.roleId === roleId);
+    
+    if (!role || !account) {
+        alert('Account information not found.');
+        return;
+    }
+    
+    const fullName = `${role.lastName}, ${role.firstName} ${role.middleName ? role.middleName : ''}`.trim();
+    
+    document.getElementById('modalName').textContent = fullName;
+    document.getElementById('modalName').dataset.roleId = roleId;
+    document.getElementById('modalPosition').textContent = role.position;
+    document.getElementById('modalEmail').textContent = account.email;
+    document.getElementById('modalUsername').textContent = account.username;
+    document.getElementById('modalPassword').textContent = account.password;
+    document.getElementById('modalStatus').textContent = account.status;
+    document.getElementById('modalGeneratedDate').textContent = account.generatedDate;
+    
+    document.getElementById('accountModal').style.display = 'block';
+}
+
+// Function to close the modal
+function closeModal() {
+    document.getElementById('accountModal').style.display = 'none';
+    document.getElementById('copiedMessage').style.display = 'none';
+}
+
+// Function to copy password to clipboard
+function copyPassword() {
+    const password = document.getElementById('modalPassword').textContent;
+    
+    navigator.clipboard.writeText(password).then(() => {
+        const copiedMessage = document.getElementById('copiedMessage');
+        copiedMessage.style.display = 'inline';
+        
+        setTimeout(() => {
+            copiedMessage.style.display = 'none';
+        }, 2000);
+    });
+}
+
+// Function to email credentials (simulated)
+function emailCredentials() {
+    const roleId = document.getElementById('modalName').dataset.roleId;
+    const roles = JSON.parse(localStorage.getItem('adminRoles')) || [];
+    const accounts = JSON.parse(localStorage.getItem('adminAccounts')) || [];
+    
+    const role = roles.find(r => r.roleId === roleId);
+    const account = accounts.find(acc => acc.roleId === roleId);
+    
+    if (!role || !account) {
+        alert('Account information not found.');
+        return;
+    }
+    
+    // In a real application, this would send an actual email
+    alert(`Email with login credentials sent to ${role.emailAddress}!`);
+}
+
+// Enhanced logout function
+function logout() {
+    if (confirm('Are you sure you want to log out?')) {
+        // Clear all session storage data
+        sessionStorage.removeItem('loggedInAdmin');
+        sessionStorage.removeItem('currentUser');
+        
+        // Set flag to indicate we've logged out
+        sessionStorage.setItem('loggedOut', 'true');
+        
+        // Redirect to login page
+        window.location.href = 'student-login.html';
+    }
+}
+
+// Prevent back navigation after logout
+function preventBackNavigation() {
+    // If we're not logged in, prevent back navigation
+    if (!sessionStorage.getItem('loggedInAdmin') && !sessionStorage.getItem('currentUser')) {
+        window.history.pushState(null, '', window.location.href);
+        window.location.href = 'student-login.html';
+    }
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    const modal = document.getElementById('accountModal');
+    if (event.target === modal) {
+        closeModal();
+    }
+}
+
+// Initialize page on load
+window.onload = function() {
+    // Check login status first
+    if (checkLoginStatus()) {
+        displayRolesTable();
+    }
+};
+
+// Add event listener for back/forward navigation
+window.addEventListener('popstate', function(event) {
+    preventBackNavigation();
+});
+
+// Push a new state to prevent going back
+window.history.pushState(null, '', window.location.href);
+</script>
+
+</body>
+</html>

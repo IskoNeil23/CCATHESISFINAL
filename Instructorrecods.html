@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Instructor Class Records</title>
+<link rel="stylesheet" href="teacher.css">
+
+</head>
+<body>
+
+<div id="mySidebar" class="sidebar">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+    <img class="navlog" src="cca-logo.png" alt="">
+    <h1>City College of Angeles City</h1>  
+    <a href="Instructorrecods.html">Schedule</a>
+    <a href="studentCOR.html">Class Records</a>
+    <a href="studentseatplan.html">Seat Plan</a>
+    <a href="studentletter.html">Student Excuse Letter</a>
+</div>
+
+<!-- Top navigation bar with logout button -->
+<div id="topNav" class="topnav">
+    <div class="nav-left">
+        <button class="openbtn" onclick="openNav()">☰</button>
+        <img src="cca-logo.png" alt="CCA Logo" height="50">
+        <h3>City College of Angeles City - Class Records</h3>
+    </div>
+    <button class="logout-btn" onclick="logout()">Log Out</button>
+</div>
+
+<div id="main">
+    <h2 class="section-title">Class Attendance Records</h2>
+    
+    <div class="controls">
+        <div class="control-group">
+            <label for="section-select">Section:</label>
+            <select id="section-select">
+                <option value="">Select Section</option>
+                <!-- Sections will be populated by JavaScript -->
+            </select>
+            <button id="new-section-btn">New Section</button>
+        </div>
+        
+        <div class="control-group">
+            <button id="add-date-btn">Add New Date</button>
+            <button id="edit-students-btn">Edit Student List</button>
+            <button id="delete-section-btn" class="delete-btn">Delete Section</button>
+        </div>
+        
+        <div class="control-group">
+            <button id="save-btn">Save Records</button>
+        </div>
+    </div>
+    
+    <div class="attendance-table">
+        <table id="attendance-table">
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <!-- Date columns will be added dynamically -->
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be populated by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="legend">
+        <div class="legend-item">
+            <div class="legend-color legend-present"></div> Present (P)
+        </div>
+        <div class="legend-item">
+            <div class="legend-color legend-absent"></div> Absent (A)
+        </div>
+        <div class="legend-item">
+            <div class="legend-color legend-unmarked"></div> Unmarked (click to mark)
+        </div>
+    </div>
+</div>
+
+<!-- Modal for new section -->
+<div id="section-modal" class="modal">
+    <div class="modal-content">
+        <h3>Create New Section</h3>
+        <label for="section-name">Section Name:</label>
+        <input type="text" id="section-name" placeholder="e.g., BSIT 2A">
+        
+        <div class="student-list">
+            <label for="student-names">Enter Student Names (one per line):</label>
+            <textarea id="student-names" placeholder="Juan Dela Cruz&#10;Maria Santos&#10;Pedro Reyes"></textarea>
+        </div>
+        
+        <div class="modal-controls">
+            <button id="cancel-section-btn">Cancel</button>
+            <button id="create-section-btn">Create Section</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for adding a new date -->
+<div id="date-modal" class="modal">
+    <div class="modal-content">
+        <h3>Add New Date</h3>
+        <label for="new-date">Select Date:<dummy.html/label>
+        <input type="date" id="new-date">
+        
+        <div class="modal-controls">
+            <button id="cancel-date-btn">Cancel</button>
+            <button id="add-date-confirm-btn">Add Date</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for editing student list -->
+<div id="edit-students-modal" class="modal">
+    <div class="modal-content">
+        <h3>Edit Student List</h3>
+        <p>Enter student names (one per line):</p>
+        <textarea id="edit-student-names" placeholder="Juan Dela Cruz&#10;Maria Santos&#10;Pedro Reyes"></textarea>
+        
+        <div class="modal-controls">
+            <button id="cancel-edit-students-btn">Cancel</button>
+            <button id="save-student-list-btn">Save Changes</button>
+        </div>
+    </div>
+</div>
+
+<script src="Classrecord.js" src="teacher.js"></script>
+</body>
+</html>
+
+when i click the Class record go to that nav bar content and create a class record where I can add section with with school year 2024-2025 or  2025-2026 or 2026-2027 then student name First name Last name and middle name when added to the class record automatically alphaticalized. the class Record Consist of 9 weeks Midterm and 9 weeks of final term if the subject is major then can have 2 class record which is Lecture and Lab

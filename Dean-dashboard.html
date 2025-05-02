@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="instructor.css">
+    <title>City College of Angeles City</title>
+    <style>
+        .user-info-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .user-info-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 32px;
+            color: darkgreen;
+            font-weight: bold;
+        }
+        
+        .user-details h2 {
+            margin: 0 0 5px 0;
+            color: #333;
+        }
+        
+        .user-details p {
+            margin: 0;
+            color: #666;
+        }
+        
+        .role-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 20px;
+            background-color: #6610f2;
+            color: white;
+            margin-top: 10px;
+        }
+        
+        .info-section {
+            margin-top: 20px;
+        }
+        
+        .info-section h3 {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            color: #444;
+        }
+        
+        .info-row {
+            display: flex;
+            margin-bottom: 12px;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            width: 180px;
+            color: #555;
+        }
+        
+        .info-value {
+            flex: 1;
+        }
+        
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 10px 0;
+            color: darkgreen;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .welcome-banner {
+            background-color: darkgreen;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .welcome-banner h2 {
+            margin-top: 0;
+        }
+        
+        .welcome-banner p {
+            margin-bottom: 0;
+            opacity: 0.9;
+        }
+        
+        .quick-actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        
+        .action-btn {
+            padding: 10px 15px;
+            background-color: #e9ecef;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            background-color: darkgreen;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <img src="cca-logo.png" alt="CCA Logo">
+        <h1>City College of Angeles</h1>
+        <a class="active">Dashboard</a>
+        <a href="dean-class-records.html">Class Details</a>
+        <a href="dean-attendance-sheet-records.html">Attendance Sheet</a>
+        <a>Grading Sheet</a>
+        <a href="dean-approval-letter.html">Approval Letters</a>
+    </div>
+    
+    <div class="topnav">
+        <div class="nav-left">
+            <img src="cca-logo.png" alt="CCA Logo">
+            <h3>Dean Portal</h3>
+        </div>
+        <button class="logout-btn" onclick="logout()">Log Out</button>
+    </div>
+    
+    <div class="main-content">
+        <div id="welcomeBanner" class="welcome-banner">
+            <h2>Welcome back, <span id="welcomeName">Dean</span>!</h2>
+            <p>Today is <span id="currentDate"></span>. Here's an overview of your institute.</p>
+        </div>
+        
+        <div class="user-info-card">
+            <div class="user-info-header">
+                <div class="user-avatar" id="userInitials">D</div>
+                <div class="user-details">
+                    <h2 id="fullName">Dean Name</h2>
+                    <p id="emailAddress">dean@email.com</p>
+                    <div class="role-badge" id="positionBadge">Acting Dean</div>
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <h3>Account Information</h3>
+                <div class="info-row">
+                    <div class="info-label">Role ID:</div>
+                    <div class="info-value" id="roleId">ADM123456</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Position:</div>
+                    <div class="info-value" id="position">Acting Dean of ICSLIS</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Institute:</div>
+                    <div class="info-value" id="institute">ICSLIS</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Username:</div>
+                    <div class="info-value" id="username">dean_username</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Contact Number:</div>
+                    <div class="info-value" id="contactNumber">Not Available</div>
+                </div>
+            </div>
+        </div>
+    
+        
+        <div class="quick-actions">
+            <button class="action-btn" onclick="location.href='dean-class-records.html'">View Classes</button>
+            <button class="action-btn" onclick="location.href='dean-attendance-sheet-records.html'">Check Attendance</button>
+            <button class="action-btn" onclick="location.href='dean-approval-letter.html'">Process Approvals</button>
+        </div>
+    </div>
+
+    <script>
+        // Display current date
+        function formatDate(date) {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+        
+        document.getElementById('currentDate').textContent = formatDate(new Date());
+        
+        // Check if user is logged in
+        window.addEventListener('load', function() {
+            // Fetch user data from session storage
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            
+            if (!currentUser) {
+                // Redirect to login if not logged in
+                window.location.href = 'student-login.html';
+                return;
+            }
+            
+            // Verify the user is a Dean
+            if (currentUser.roleType !== 'Dean') {
+                alert('Access denied. You must be logged in as a Dean to access this page.');
+                sessionStorage.removeItem('currentUser');
+                window.location.href = 'student-login.html';
+                return;
+            }
+            
+            // Display user information
+            displayUserInfo(currentUser);
+            
+            // Fetch and display additional role information
+            fetchRoleInfo(currentUser.roleId);
+        });
+        
+        function displayUserInfo(user) {
+            // Basic info from the session
+            document.getElementById('welcomeName').textContent = user.firstName;
+            document.getElementById('fullName').textContent = user.firstName + ' ' + user.lastName;
+            document.getElementById('emailAddress').textContent = user.email || 'No email available';
+            document.getElementById('positionBadge').textContent = user.position || 'Acting Dean';
+            document.getElementById('position').textContent = user.position || 'Acting Dean';
+            document.getElementById('roleId').textContent = user.roleId || 'Not Available';
+            
+            // Set initials for avatar
+            if (user.firstName && user.lastName) {
+                document.getElementById('userInitials').textContent = 
+                    user.firstName.charAt(0).toUpperCase() + user.lastName.charAt(0).toUpperCase();
+            }
+        }
+        
+        function fetchRoleInfo(roleId) {
+            // Get admin roles from local storage
+            const adminRoles = JSON.parse(localStorage.getItem('adminRoles')) || [];
+            const adminAccounts = JSON.parse(localStorage.getItem('adminAccounts')) || [];
+            
+            // Find the role that matches this user
+            const role = adminRoles.find(r => r.roleId === roleId);
+            const account = adminAccounts.find(a => a.roleId === roleId);
+            
+            if (role) {
+                // Update with complete information from admin roles
+                document.getElementById('fullName').textContent = 
+                    `${role.firstName} ${role.middleName ? role.middleName + ' ' : ''}${role.lastName}`;
+                document.getElementById('emailAddress').textContent = role.emailAddress;
+                document.getElementById('position').textContent = role.position;
+                document.getElementById('institute').textContent = role.institute || 'Not Available';
+                document.getElementById('contactNumber').textContent = role.contactNumber || 'Not Available';
+                
+                // Set initials for avatar
+                document.getElementById('userInitials').textContent = 
+                    role.firstName.charAt(0).toUpperCase() + role.lastName.charAt(0).toUpperCase();
+            }
+            
+            if (account) {
+                document.getElementById('username').textContent = account.username;
+            }
+        }
+
+        // Prevent back button after logout
+        window.history.pushState(null, null, window.location.href);
+        window.addEventListener('popstate', function() {
+            window.history.pushState(null, null, window.location.href);
+        });
+
+        // Enhanced logout function
+        function logout() {
+            if (confirm('Are you sure you want to log out?')) {
+                // Clear session storage
+                sessionStorage.removeItem('currentUser');
+                
+                // Redirect to login page
+                window.location.replace('Registrar-Login.html');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="instructor.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Attendance Sheet - City College of Angeles</title>
+    <style>
+        .main-content {
+            margin-left: 240px;
+            padding: 90px 30px 30px;
+        }
+        
+        .class-header {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .class-header h2 {
+            margin-top: 0;
+            color: #006400;
+            font-size: 22px;
+        }
+        
+        .class-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .detail-item {
+            border-left: 3px solid #006400;
+            padding-left: 10px;
+        }
+        
+        .detail-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        
+        .detail-value {
+            color: #333;
+            font-size: 15px;
+        }
+        
+        .attendance-controls {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .control-group label {
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .control-group select {
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background-color: white;
+        }
+        
+        .btn {
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            border: none;
+        }
+        
+        .btn-primary {
+            background-color: #006400;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #004d00;
+        }
+        
+        .btn-secondary {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .attendance-table-container {
+            overflow-x: auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .attendance-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        
+        .attendance-table th, 
+        .attendance-table td {
+            padding: 12px 8px;
+            text-align: center;
+            border: 1px solid #ddd;
+            position: relative;
+        }
+        
+        .attendance-table th {
+            background-color: #f5f5f5;
+            position: sticky;
+            top: 0;
+        }
+        
+        .attendance-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .attendance-table tr:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .student-info {
+            text-align: left;
+            white-space: nowrap;
+            position: sticky;
+            left: 0;
+            background: inherit;
+            z-index: 1;
+        }
+        
+        .sticky-columns {
+            position: sticky;
+            left: 0;
+            background-color: inherit;
+            z-index: 1;
+        }
+        
+        .attendance-select {
+            padding: 6px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            width: 80px;
+        }
+        
+        .result-select {
+            padding: 6px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            width: 100px;
+        }
+        
+        .attendance-present {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+        
+        .attendance-absent {
+            background-color: #f2dede;
+            color: #a94442;
+        }
+        
+        .attendance-excused {
+            background-color: #fcf8e3;
+            color: #8a6d3b;
+        }
+        
+        .result-good {
+            background-color: #dff0d8;
+            color: #3c763d;
+            font-weight: bold;
+        }
+        
+        .result-fa {
+            background-color: #f2dede;
+            color: #a94442;
+            font-weight: bold;
+        }
+        
+        .result-drop {
+            background-color: #d9edf7;
+            color: #31708f;
+            font-weight: bold;
+        }
+        
+        .save-btn-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .save-btn {
+            background-color: #006400;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .save-btn:hover {
+            background-color: #004d00;
+        }
+        
+        .legend {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .legend h3 {
+            margin-top: 0;
+            color: #555;
+        }
+        
+        .legend-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        
+        .message-container {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .success-message {
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+        }
+        
+        .warning-message {
+            background-color: #fcf8e3;
+            color: #8a6d3b;
+            border: 1px solid #faebcc;
+        }
+        
+        .error-message {
+            background-color: #f2dede;
+            color: #a94442;
+            border: 1px solid #ebccd1;
+        }
+        
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #006400;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .status-indicator {
+            padding: 3px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .status-enrolled {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+        
+        .status-uw {
+            background-color: #f2dede;
+            color: #a94442;
+        }
+        
+        .status-loa {
+            background-color: #fcf8e3;
+            color: #8a6d3b;
+        }
+        
+        .status-od {
+            background-color: #d9edf7;
+            color: #31708f;
+        }
+        
+        /* Back button styling */
+        .back-button {
+            position: fixed;
+            top: 80px;
+            left: 250px;
+            z-index: 100;
+            background-color: #006400;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .back-button:hover {
+            background-color: #004d00;
+        }
+        
+        @media print {
+            .sidebar, .topnav, .attendance-controls, .save-btn-container, .btn, .back-button {
+                display: none !important;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            
+            .attendance-table-container {
+                box-shadow: none;
+            }
+            
+            .attendance-table th, 
+            .attendance-table td {
+                border: 1px solid #000;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 0;
+                padding-top: 60px;
+            }
+            
+            .topnav {
+                left: 0;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .class-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .attendance-controls {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .back-button {
+                left: 10px;
+                top: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <img src="cca-logo.png" alt="CCA Logo">
+        <h1>City College of Angeles</h1>
+        <a class="active" href="instructor-dashboard.html">Class Records</a>
+        <a href="instructor-approval-letters.html">Approval Letters</a>
+    </div>
+    
+    <div class="topnav">
+        <div class="nav-left">
+            <img src="cca-logo.png" alt="CCA Logo">
+            <h3>Instructor Portal - Attendance Sheet</h3>
+        </div>
+        <button class="logout-btn" onclick="logout()">Log Out</button>
+    </div>
+    
+    <!-- Back to Dashboard button in top left corner -->
+    <button class="back-button" onclick="goBackToDashboard()">← Back to Dashboard</button>
+    
+    <div class="main-content">
+        <div id="messageContainer" class="message-container"></div>
+        
+        <div class="class-header">
+            <h2>Class Attendance Sheet</h2>
+            <div id="classDetails" class="class-details">
+                <!-- Class details will be loaded here -->
+            </div>
+        </div>
+        
+        <div class="attendance-controls">
+            <div class="control-group">
+                <label for="studentSelector">Student:</label>
+                <select id="studentSelector" onchange="switchStudent()">
+                    <!-- Student options will be generated dynamically -->
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <button class="btn btn-primary" onclick="saveAttendance()">Save Attendance</button>
+                <button class="btn btn-secondary" onclick="printAttendance()">Print</button>
+                <button class="btn btn-secondary" onclick="exportToCSV()">Export to CSV</button>
+            </div>
+        </div>
+        
+        <div class="attendance-table-container">
+            <table id="attendanceTable" class="attendance-table">
+                <thead>
+                    <tr>
+                        <th class="sticky-columns" colspan="2">Student Information</th>
+                        <th>Week 1</th>
+                        <th>Week 2</th>
+                        <th>Week 3</th>
+                        <th>Week 4</th>
+                        <th>Week 5</th>
+                        <th>Week 6</th>
+                        <th>Week 7</th>
+                        <th>Week 8</th>
+                        <th>Week 9</th>
+                        <th>Week 10</th>
+                        <th>Week 11</th>
+                        <th>Week 12</th>
+                        <th>Week 13</th>
+                        <th>Week 14</th>
+                        <th>Week 15</th>
+                        <th>Week 16</th>
+                        <th>Week 17</th>
+                        <th>Week 18</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody id="attendanceTableBody">
+                    <!-- Attendance data will be populated here -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="save-btn-container">
+            <button class="save-btn" onclick="saveAttendance()">Save Attendance</button>
+        </div>
+        
+        <div class="legend">
+            <h3>Legend</h3>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #dff0d8;"></div>
+                    <span>Present</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #f2dede;"></div>
+                    <span>Absent</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #fcf8e3;"></div>
+                    <span>Excused</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #d9edf7;"></div>
+                    <span>Drop</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #dff0d8;"></div>
+                    <span>Good Standing</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #f2dede;"></div>
+                    <span>FA (Failure due to Absences)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Global variables to store data
+        let currentSchedule = null;
+        let enrolledStudents = [];
+        let attendanceData = {};
+        let currentStudent = null;
+        const totalWeeks = 18;
+        
+        // Function to check if instructor is logged in
+        function checkLogin() {
+            const loggedInInstructor = JSON.parse(sessionStorage.getItem('loggedInInstructor'));
+            
+            if (!loggedInInstructor) {
+                // Not logged in, redirect to login page
+                window.location.href = 'student-login.html';
+                return;
+            }
+            
+            // Load the selected schedule from session storage
+            const selectedSchedule = JSON.parse(sessionStorage.getItem('selectedSchedule'));
+            
+            if (!selectedSchedule) {
+                showMessage('No class selected. Please select a class from the dashboard.', 'error');
+                setTimeout(() => {
+                    window.location.href = 'instructor-dashboard.html';
+                }, 2000);
+                return;
+            }
+            
+            // Store current schedule globally
+            currentSchedule = selectedSchedule;
+            
+            // Load students for this class
+            loadStudentsForClass(selectedSchedule);
+            
+            // Display class details
+            displayClassDetails(selectedSchedule);
+        }
+        
+        // Function to load students for the selected class
+        function loadStudentsForClass(schedule) {
+            // Get all enrolled students from localStorage
+            const allStudents = JSON.parse(localStorage.getItem('enrolledStudents')) || [];
+            
+            // Filter students for this class based on institute, course, year level, section, and school year
+            enrolledStudents = allStudents.filter(student => 
+                student.institute === schedule.institute &&
+                student.course === schedule.course &&
+                student.yearLevel.toString() === schedule.yearLevel.toString() &&
+                student.section === schedule.section &&
+                student.schoolYear === schedule.schoolYear
+            );
+            
+            // Sort students by last name
+            enrolledStudents.sort((a, b) => a.lastName.localeCompare(b.lastName));
+            
+            // Set current student to the first student if available
+            if (enrolledStudents.length > 0) {
+                currentStudent = enrolledStudents[0].studentNumber;
+            }
+            
+            // Load attendance data for this class if it exists
+            const attendanceStorageKey = getAttendanceStorageKey(schedule);
+            const savedAttendance = JSON.parse(localStorage.getItem(attendanceStorageKey)) || {};
+            
+            if (savedAttendance && Object.keys(savedAttendance).length > 0) {
+                attendanceData = savedAttendance;
+            } else {
+                // Initialize attendance data
+                initializeAttendanceData();
+            }
+            
+            // Generate student selector options
+            generateStudentOptions();
+            
+            // Display attendance table
+            displayAttendanceTable();
+        }
+        
+        // Function to display class details
+        function displayClassDetails(schedule) {
+            const classDetailsContainer = document.getElementById('classDetails');
+            
+            // Format year level
+            const yearLevelText = getFormattedYearLevel(schedule.yearLevel);
+            
+            classDetailsContainer.innerHTML = `
+                <div class="detail-item">
+                    <div class="detail-label">Subject</div>
+                    <div class="detail-value">${schedule.subjectCode}: ${schedule.subjectTitle}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Schedule</div>
+                    <div class="detail-value">${schedule.dayOfWeek}, ${formatTime(schedule.startTime)} - ${formatTime(schedule.endTime)}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Room</div>
+                    <div class="detail-value">${schedule.roomNumber || 'N/A'}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Class</div>
+                    <div class="detail-value">${yearLevelText} Year, Section ${schedule.section}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Program</div>
+                    <div class="detail-value">${schedule.course} (${schedule.institute})</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">School Year / Semester</div>
+                    <div class="detail-value">${schedule.schoolYear} / ${schedule.semester}</div>
+                </div>
+            `;
+        }
+        
+        // Function to format year level
+        function getFormattedYearLevel(yearLevel) {
+            if (!yearLevel) return 'N/A';
+            
+            const yearNum = parseInt(yearLevel);
+            if (isNaN(yearNum)) return yearLevel;
+            
+            if (yearNum === 1) return '1st';
+            if (yearNum === 2) return '2nd';
+            if (yearNum === 3) return '3rd';
+            return yearNum + 'th';
+        }
+        
+        // Format time from 24-hour to 12-hour format
+        function formatTime(timeString) {
+            if (!timeString) return 'N/A';
+            try {
+                const time = new Date(`2000-01-01T${timeString}`);
+                return time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            } catch (e) {
+                return timeString;
+            }
+        }
+        
+        // Function to generate student selector options
+        function generateStudentOptions() {
+            const studentSelector = document.getElementById('studentSelector');
+            studentSelector.innerHTML = '';
+            
+            enrolledStudents.forEach(student => {
+                const option = document.createElement('option');
+                option.value = student.studentNumber;
+                option.textContent = `${student.lastName}, ${student.firstName} ${student.middleName || ''}`.trim();
+                studentSelector.appendChild(option);
+            });
+        }
+        
+        // Function to initialize attendance data
+        function initializeAttendanceData() {
+            enrolledStudents.forEach(student => {
+                if (!attendanceData[student.studentNumber]) {
+                    attendanceData[student.studentNumber] = {
+                        studentName: `${student.lastName}, ${student.firstName} ${student.middleName || ''}`.trim(),
+                        status: student.status || 'Enrolled',
+                        weeks: {}
+                    };
+                    
+                    // Initialize all weeks
+                    for (let week = 1; week <= totalWeeks; week++) {
+                        attendanceData[student.studentNumber].weeks[week] = '';
+                    }
+                    
+                    // Initialize result
+                    attendanceData[student.studentNumber].result = 'Good';
+                }
+            });
+        }
+        
+        // Function to display attendance table
+        function displayAttendanceTable() {
+            const tableBody = document.getElementById('attendanceTableBody');
+            tableBody.innerHTML = '';
+            
+            if (!currentStudent) return;
+            
+            // Find the student object
+            const student = enrolledStudents.find(s => s.studentNumber === currentStudent);
+            
+            if (!student) return;
+            
+            const row = document.createElement('tr');
+            
+            // Student number and name
+            const studentInfoCell = document.createElement('td');
+            studentInfoCell.className = 'student-info sticky-columns';
+            studentInfoCell.colSpan = 2;
+            
+            // Add status indicator
+            const statusClass = student.status ? 
+                (student.status === 'Enrolled' ? 'status-enrolled' : 
+                student.status === 'UW' ? 'status-uw' : 
+                student.status === 'LOA' ? 'status-loa' : 
+                student.status === 'OD' ? 'status-od' : '') : '';
+            
+            studentInfoCell.innerHTML = `
+                <strong>${student.studentNumber}</strong><br>
+                ${student.lastName}, ${student.firstName} ${student.middleName || ''}
+                ${student.status && student.status !== 'Enrolled' ? 
+                    `<span class="status-indicator ${statusClass}">${student.status}</span>` : ''}
+            `;
+            row.appendChild(studentInfoCell);
+            
+            // If student attendance data doesn't exist, initialize it
+            if (!attendanceData[student.studentNumber]) {
+                attendanceData[student.studentNumber] = {
+                    studentName: `${student.lastName}, ${student.firstName} ${student.middleName || ''}`.trim(),
+                    status: student.status || 'Enrolled',
+                    weeks: {},
+                    result: 'Good'
+                };
+                
+                // Initialize all weeks
+                for (let week = 1; week <= totalWeeks; week++) {
+                    attendanceData[student.studentNumber].weeks[week] = '';
+                }
+            }
+            
+            // Attendance cells for each week
+            for (let week = 1; week <= totalWeeks; week++) {
+                const weekCell = document.createElement('td');
+                
+                // Check if student is enrolled and not in special status
+                if (student.status === 'Enrolled' || !student.status) {
+                    const attendanceValue = attendanceData[student.studentNumber].weeks[week] || '';
+                    
+                    // Add different styling based on attendance value
+                    let cellClass = '';
+                    if (attendanceValue === 'Present') cellClass = 'attendance-present';
+                    else if (attendanceValue === 'Absent') cellClass = 'attendance-absent';
+                    else if (attendanceValue === 'Excused') cellClass = 'attendance-excused';
+                    
+                    weekCell.innerHTML = `
+                        <select class="attendance-select ${cellClass}" 
+                                data-student="${student.studentNumber}" 
+                                data-week="${week}" 
+                                onchange="updateAttendanceClass(this)">
+                            <option value="" ${attendanceValue === '' ? 'selected' : ''}>-</option>
+                            <option value="Present" ${attendanceValue === 'Present' ? 'selected' : ''}>Present</option>
+                            <option value="Absent" ${attendanceValue === 'Absent' ? 'selected' : ''}>Absent</option>
+                            <option value="Excused" ${attendanceValue === 'Excused' ? 'selected' : ''}>Excused</option>
+                        </select>
+                    `;
+                } else {
+                    // For non-enrolled students, just show their status instead of attendance options
+                    weekCell.textContent = '-';
+                    weekCell.style.color = '#999';
+                }
+                
+                row.appendChild(weekCell);
+            }
+            
+            // Result cell with dropdown
+            const resultCell = document.createElement('td');
+            const result = attendanceData[student.studentNumber].result || 'Good';
+            
+            // Add different styling based on result
+            let resultClass = '';
+            if (result === 'Good') resultClass = 'result-good';
+            else if (result === 'FA') resultClass = 'result-fa';
+            else if (result === 'Drop') resultClass = 'result-drop';
+            
+            resultCell.innerHTML = `
+                <select class="result-select ${resultClass}" 
+                        data-student="${student.studentNumber}" 
+                        onchange="updateResultClass(this)">
+                    <option value="Good" ${result === 'Good' ? 'selected' : ''}>Good</option>
+                    <option value="FA" ${result === 'FA' ? 'selected' : ''}>FA</option>
+                    <option value="Drop" ${result === 'Drop' ? 'selected' : ''}>Drop</option>
+                    <option value="LOA" ${result === 'LOA' ? 'selected' : ''}>LOA</option>
+                </select>
+            `;
+            
+            row.appendChild(resultCell);
+            tableBody.appendChild(row);
+        }
+        
+        // Function to update attendance select class based on selected value
+        function updateAttendanceClass(selectElement) {
+            // Remove all attendance classes
+            selectElement.classList.remove('attendance-present', 'attendance-absent', 'attendance-excused');
+            
+            // Add class based on selected value
+            if (selectElement.value === 'Present') {
+                selectElement.classList.add('attendance-present');
+            } else if (selectElement.value === 'Absent') {
+                selectElement.classList.add('attendance-absent');
+            } else if (selectElement.value === 'Excused') {
+                selectElement.classList.add('attendance-excused');
+            }
+            
+            // Update the attendance data
+            const studentNumber = selectElement.getAttribute('data-student');
+            const week = selectElement.getAttribute('data-week');
+            
+            // Ensure student data exists
+            if (!attendanceData[studentNumber]) {
+                attendanceData[studentNumber] = {
+                    studentName: findStudentName(studentNumber),
+                    status: findStudentStatus(studentNumber),
+                    weeks: {},
+                    result: 'Good'
+                };
+            }
+            
+            // Update attendance value
+            attendanceData[studentNumber].weeks[week] = selectElement.value;
+        }
+        
+        // Function to update result select class based on selected value
+        function updateResultClass(selectElement) {
+            // Remove all result classes
+            selectElement.classList.remove('result-good', 'result-fa', 'result-drop');
+            
+            // Add class based on selected value
+            if (selectElement.value === 'Good') {
+                selectElement.classList.add('result-good');
+            } else if (selectElement.value === 'FA') {
+                selectElement.classList.add('result-fa');
+            } else if (selectElement.value === 'Drop' || selectElement.value === 'LOA') {
+                selectElement.classList.add('result-drop');
+            }
+            
+            // Update the attendance data
+            const studentNumber = selectElement.getAttribute('data-student');
+            
+            // Ensure student data exists
+            if (!attendanceData[studentNumber]) {
+                attendanceData[studentNumber] = {
+                    studentName: findStudentName(studentNumber),
+                    status: findStudentStatus(studentNumber),
+                    weeks: {},
+                    result: 'Good'
+                };
+            }
+            
+            // Update result value
+            attendanceData[studentNumber].result = selectElement.value;
+        }
+        
+        // Function to find student name by student number
+        function findStudentName(studentNumber) {
+            const student = enrolledStudents.find(s => s.studentNumber === studentNumber);
+            return student ? `${student.lastName}, ${student.firstName} ${student.middleName || ''}`.trim() : 'Unknown Student';
+        }
+        
+        // Function to find student status by student number
+        function findStudentStatus(studentNumber) {
+            const student = enrolledStudents.find(s => s.studentNumber === studentNumber);
+            return student ? (student.status || 'Enrolled') : 'Unknown';
+        }
+        
+        // Function to switch student
+        function switchStudent() {
+            const studentSelector = document.getElementById('studentSelector');
+            currentStudent = studentSelector.value;
+            
+            // Display attendance table for the selected student
+            displayAttendanceTable();
+        }
+        
+        // Function to save attendance data
+        function saveAttendance() {
+            // Show loading indicator
+            showMessage('<span class="loading-spinner"></span> Saving attendance data...', 'warning');
+            
+            // Get all attendance selections
+            const attendanceSelects = document.querySelectorAll('.attendance-select');
+            
+            // Update attendance data object
+            attendanceSelects.forEach(select => {
+                const studentNumber = select.getAttribute('data-student');
+                const week = select.getAttribute('data-week');
+                
+                // Ensure student data exists
+                if (!attendanceData[studentNumber]) {
+                    attendanceData[studentNumber] = {
+                        studentName: findStudentName(studentNumber),
+                        status: findStudentStatus(studentNumber),
+                        weeks: {},
+                        result: 'Good'
+                    };
+                }
+                
+                // Update attendance value
+                attendanceData[studentNumber].weeks[week] = select.value;
+            });
+            
+            // Get all result selections
+            const resultSelects = document.querySelectorAll('.result-select');
+            
+            // Update result values in attendance data
+            resultSelects.forEach(select => {
+                const studentNumber = select.getAttribute('data-student');
+                
+                // Ensure student data exists
+                if (!attendanceData[studentNumber]) {
+                    attendanceData[studentNumber] = {
+                        studentName: findStudentName(studentNumber),
+                        status: findStudentStatus(studentNumber),
+                        weeks: {},
+                        result: 'Good'
+                    };
+                }
+                
+                // Update result value
+                attendanceData[studentNumber].result = select.value;
+            });
+            
+            // Save to localStorage
+            const attendanceStorageKey = getAttendanceStorageKey(currentSchedule);
+            localStorage.setItem(attendanceStorageKey, JSON.stringify(attendanceData));
+            
+            // Show success message with timeout
+            setTimeout(() => {
+                showMessage('Attendance data saved successfully!', 'success');
+                // Clear message after 3 seconds
+                setTimeout(() => {
+                    clearMessage();
+                }, 3000);
+            }, 500);
+        }
+        
+        // Function to generate a unique storage key for attendance data
+        function getAttendanceStorageKey(schedule) {
+            return `attendance_${schedule.institute}_${schedule.course}_${schedule.yearLevel}_${schedule.section}_${schedule.schoolYear}_${schedule.semester}_${schedule.subjectCode}`;
+        }
+        
+        // Function to show message
+        function showMessage(message, type) {
+            const messageContainer = document.getElementById('messageContainer');
+            messageContainer.innerHTML = message;
+            messageContainer.style.display = 'block';
+            
+            // Remove any existing classes
+            messageContainer.classList.remove('success-message', 'warning-message', 'error-message');
+            
+            // Add class based on message type
+            if (type === 'success') {
+                messageContainer.classList.add('success-message');
+            } else if (type === 'warning') {
+                messageContainer.classList.add('warning-message');
+            } else if (type === 'error') {
+                messageContainer.classList.add('error-message');
+            }
+        }
+        
+        // Function to clear message
+        function clearMessage() {
+            const messageContainer = document.getElementById('messageContainer');
+            messageContainer.style.display = 'none';
+            messageContainer.innerHTML = '';
+        }
+        
+        // Function to print attendance
+        function printAttendance() {
+            window.print();
+        }
+        
+        // Function to export attendance data to CSV
+        function exportToCSV() {
+            // Create CSV content
+            let csvContent = "data:text/csv;charset=utf-8,";
+            
+            // Add header row
+            let header = "Student Number,Student Name,Status";
+            for (let week = 1; week <= totalWeeks; week++) {
+                header += `,Week ${week}`;
+            }
+            header += ",Result";
+            csvContent += header + "\r\n";
+            
+            // Add data rows
+            enrolledStudents.forEach(student => {
+                const studentNumber = student.studentNumber;
+                const studentData = attendanceData[studentNumber];
+                
+                if (studentData) {
+                    let row = `"${studentNumber}","${studentData.studentName}","${studentData.status || 'Enrolled'}"`;
+                    
+                    // Add attendance for each week
+                    for (let week = 1; week <= totalWeeks; week++) {
+                        row += `,"${studentData.weeks[week] || ''}"`;
+                    }
+                    
+                    // Add result
+                    row += `,"${studentData.result || 'Good'}"`;
+                    
+                    csvContent += row + "\r\n";
+                }
+            });
+            
+            // Create a download link
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            
+            // Generate filename with class details
+            const filename = `${currentSchedule.subjectCode}_${currentSchedule.yearLevel}${currentSchedule.section}_${currentSchedule.schoolYear}_${currentSchedule.semester}_Attendance.csv`;
+            link.setAttribute("download", filename);
+            
+            // Append link to document, click it, and remove it
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Show success message
+            showMessage('Attendance data exported to CSV successfully!', 'success');
+            setTimeout(() => {
+                clearMessage();
+            }, 3000);
+        }
+        
+        // Function to go back to dashboard
+        function goBackToDashboard() {
+            window.location.href = 'instructor-dashboard.html';
+        }
+        
+        // Function to log out
+        function logout() {
+            // Clear session storage
+            sessionStorage.removeItem('loggedInInstructor');
+            sessionStorage.removeItem('selectedSchedule');
+            
+            // Redirect to login page
+            window.location.href = 'instructor-login.html';
+        }
+        
+        // Run check login when page loads
+        window.onload = checkLogin;
+    </script>
+</body>
+</html>

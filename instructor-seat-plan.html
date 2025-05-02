@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="instructor.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seat Plan System - City College of Angeles</title>
+    <style>
+        .main-content {
+            margin-left: 250px;
+            padding: 80px 20px 20px;
+        }
+        
+        /* Specific Styles for Seatplan */
+        .card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .card h2 {
+            margin-top: 0;
+            color: #4CAF50;
+        }
+        
+        .schedule-selector {
+            margin-bottom: 20px;
+        }
+        
+        .schedule-dropdown {
+            padding: 10px;
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        
+        /* Enhanced Class Info Card Design */
+        .class-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            background-color: #f9fcf9;
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .class-info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .class-info-item i {
+            color: #4CAF50;
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .class-info-item strong {
+            color: #444;
+            margin-right: 5px;
+        }
+        
+        .class-info-value {
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .assignment-options {
+            margin: 15px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .option-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .option-btn {
+            padding: 8px 16px;
+            border: 1px solid #4CAF50;
+            background-color: white;
+            color: #4CAF50;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .option-btn:hover {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .option-btn.clear-btn {
+            border-color: #f44336;
+            color: #f44336;
+        }
+
+        .option-btn.clear-btn:hover {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        /* Modified Lab Seatplan - 5 rows with 8 columns and vertical aisles after every 2 columns */
+        .lab-seatplan .seats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr) 20px repeat(2, 1fr) 20px repeat(2, 1fr) 20px repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        /* Vertical aisle classes for labs */
+        .vertical-aisle-1 {
+            grid-column: 3;
+        }
+        
+        .vertical-aisle-2 {
+            grid-column: 6;
+        }
+        
+        .vertical-aisle-3 {
+            grid-column: 9;
+        }
+        
+        /* Modified Lecture Seatplan - 2 clusters with center aisle */
+        .lecture-seatplan .seats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr) 40px repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        /* Center aisle class for lectures */
+        .center-aisle {
+            grid-column: 5;
+        }
+        
+        .seat {
+            border: 1px solid #888;
+            height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            background-color: white;
+            transition: background-color 0.3s;
+            position: relative;
+        }
+        
+        .seat-number {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            font-size: 10px;
+            color: #777;
+        }
+        
+        .seat-name {
+            font-weight: bold;
+            text-align: center;
+            font-size: 12px;
+            padding: 0 5px;
+        }
+        
+        .seat.selected {
+            border: 2px solid #4CAF50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+        }
+        
+        .seatplan {
+            position: relative;
+            margin: 0 auto;
+            border: 2px solid #333;
+            padding: 10px;
+            background-color: #f9f9f9;
+            max-width: 800px;
+        }
+        
+        .seatplan-title {
+            text-align: center;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            margin: -10px -10px 10px -10px;
+        }
+        
+        .instructor-area {
+            background-color: #ddd;
+            padding: 10px;
+            text-align: center;
+            margin-bottom: 15px;
+            border: 1px solid #999;
+        }
+        
+        .schedule-info {
+            text-align: center;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            margin-top: 10px;
+        }
+        
+        .action-btns {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .save-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        /* Modal for selecting student */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 60%;
+            max-width: 600px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close-btn:hover {
+            color: black;
+        }
+        
+        .student-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 15px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .student-item {
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        
+        .student-item:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .student-item.selected {
+            background-color: #e8f5e9;
+            border-left: 3px solid #4CAF50;
+        }
+        
+        .student-item.assigned {
+            color: #999;
+            font-style: italic;
+        }
+        
+        .student-item:last-child {
+            border-bottom: none;
+        }
+        
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .modal-actions button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .cancel-btn {
+            background-color: #f1f1f1;
+        }
+        
+        .select-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        /* Loading overlay */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255,255,255,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4CAF50;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1002;
+        }
+
+        /* Back to dashboard button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            background-color: #f1f1f1;
+            color: #333;
+            padding: 8px 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-decoration: none;
+        }
+        
+        .back-btn:hover {
+            background-color: #e1e1e1;
+        }
+        
+        .back-btn i {
+            margin-right: 8px;
+        }
+        
+        /* Styles for when no schedule is selected */
+        .no-schedule-message {
+            text-align: center;
+            padding: 40px 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px dashed #ccc;
+        }
+        
+        .no-schedule-message h3 {
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .no-schedule-message p {
+            color: #888;
+            margin-bottom: 20px;
+        }
+        
+        .return-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .return-btn:hover {
+            background-color: #3e8e41;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <img src="cca-logo.png" alt="CCA Logo">
+        <h1>City College of Angeles</h1>
+        <a href="instructor-dashboard.html">Dashboard</a>
+        <a class="active">Class Record</a>
+        <a href="instructor-approval-letters.html">Approval Letters</a>
+    </div>
+    
+    <div class="topnav">
+        <div class="nav-left">
+            <img src="cca-logo.png" alt="CCA Logo">
+            <h3>Instructor Portal - Seat Plan</h3>
+        </div>
+        <button class="logout-btn" onclick="logout()">Log Out</button>
+    </div>
+    
+    <div class="main-content">
+        <div class="card">
+            <h2 id="welcomeMessage">Welcome!</h2>
+            <p id="instructorInfo"></p>
+        </div>
+        
+        <a href="instructor-dashboard.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+        
+        <!-- This section is shown only when no schedule is pre-selected -->
+        <div id="noScheduleSelected" class="no-schedule-message" style="display: none;">
+            <h3>No Class Selected</h3>
+            <p>Please select a class from your dashboard to view and manage the seat plan.</p>
+            <a href="instructor-dashboard.html" class="return-btn">Return to Dashboard</a>
+        </div>
+        
+        <!-- Fallback selector for when no schedule is passed from dashboard -->
+        <div id="scheduleSelector" class="card schedule-selector" style="display: none;">
+            <h2>Select a Class</h2>
+            <p>Choose a class to view and manage the seat plan:</p>
+            <select id="scheduleDropdown" class="schedule-dropdown">
+                <option value="">Select a class...</option>
+                <!-- Options will be populated from instructor's schedule -->
+            </select>
+        </div>
+        
+        <div id="classInfo" class="card" style="display: none;">
+            <h2>Current Class</h2>
+            <div id="classInfoContent">
+                <!-- Class info will be displayed here -->
+            </div>
+        </div>
+        
+        <div class="assignment-options">
+            <h3>Seat Assignment Options</h3>
+            <div class="option-buttons">
+                <button class="option-btn" onclick="enableManualAssignment()">Manual Assignment</button>
+                <button class="option-btn" onclick="assignRandomly()">Shuffle Students</button>
+                <button class="option-btn" onclick="assignAlphabetically()">Alphabetical Order</button>
+                <button class="option-btn clear-btn" onclick="clearAllAssignments()">Clear All Assignments</button>
+            </div>
+        </div>
+        
+        <div id="seatplanContainer" class="card" style="display: none;">
+            <h2>Class Seat Plan</h2>
+            
+            <div id="seatplanContent">
+                <!-- Seatplan will be dynamically generated here -->
+            </div>
+            
+            <div class="action-btns">
+                <button class="save-btn" onclick="saveSeatAssignments()">Save Seat Plan</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for seat assignment -->
+    <div id="studentModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h3>Assign Student to Seat</h3>
+            <p>Select a student to assign to this seat:</p>
+            <div class="student-list" id="studentList">
+                <!-- Student list will be populated dynamically -->
+            </div>
+            <div class="modal-actions">
+                <button class="cancel-btn" onclick="closeModal()">Cancel</button>
+                <button class="select-btn" onclick="assignSelectedStudent()">Assign Student</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Loading overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+    
+    <script>
+        // Global variables
+        let currentSchedule = null;
+        let selectedSeat = null;
+        let selectedStudent = null;
+        let seatAssignments = {};
+        let instructorSchedules = [];
+        
+        // Initialize the page
+        window.onload = function() {
+            // Load Font Awesome for icons
+            const fontAwesome = document.createElement('link');
+            fontAwesome.rel = 'stylesheet';
+            fontAwesome.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css';
+            document.head.appendChild(fontAwesome);
+            
+            // Check if instructor is logged in
+            const loggedInInstructor = checkLogin();
+            if (!loggedInInstructor) return;
+            
+            // Try to get selected schedule from session storage (passed from dashboard)
+            const selectedScheduleJSON = sessionStorage.getItem('selectedSchedule');
+            
+            // Load instructor's schedule for dropdown (as fallback)
+            instructorSchedules = loadInstructorSchedule(loggedInInstructor.email);
+            
+            if (selectedScheduleJSON) {
+                // Schedule was selected from dashboard
+                document.getElementById('scheduleSelector').style.display = 'none';
+                document.getElementById('noScheduleSelected').style.display = 'none';
+                
+                try {
+                    // Parse the selected schedule
+                    currentSchedule = JSON.parse(selectedScheduleJSON);
+                    console.log("Loaded schedule from session storage:", currentSchedule);
+                    
+                    // Display class info
+                    displayClassInfo(currentSchedule);
+                    
+                    // Show seatplan container
+                    document.getElementById('seatplanContainer').style.display = 'block';
+                    
+                    // Display seatplan
+                    displaySeatplan(currentSchedule);
+                    
+                    // Load existing seat assignments if available
+                    loadSeatAssignments(currentSchedule);
+                } catch (error) {
+                    console.error('Error parsing selected schedule:', error);
+                    showFallbackSelector();
+                }
+            } else {
+                // No schedule selected from dashboard, show message
+                document.getElementById('noScheduleSelected').style.display = 'block';
+                document.getElementById('scheduleSelector').style.display = 'none';
+            }
+        };
+        
+        // Function to show fallback selector if no schedule was passed from dashboard
+        function showFallbackSelector() {
+            document.getElementById('scheduleSelector').style.display = 'block';
+            document.getElementById('noScheduleSelected').style.display = 'none';
+            
+            // Populate the dropdown
+            populateScheduleDropdown(instructorSchedules);
+            
+            // Add event listener for schedule selection
+            document.getElementById('scheduleDropdown').addEventListener('change', function() {
+                const selectedIndex = this.value;
+                
+                if (!selectedIndex) {
+                    // Hide seatplan if no selection
+                    document.getElementById('seatplanContainer').style.display = 'none';
+                    document.getElementById('classInfo').style.display = 'none';
+                    return;
+                }
+                
+                // Get selected schedule
+                currentSchedule = instructorSchedules[selectedIndex];
+                
+                // Display class info
+                displayClassInfo(currentSchedule);
+                
+                // Show seatplan container
+                document.getElementById('seatplanContainer').style.display = 'block';
+                
+                // Display seatplan
+                displaySeatplan(currentSchedule);
+                
+                // Load existing seat assignments if available
+                loadSeatAssignments(currentSchedule);
+            });
+        }
+        
+        // Function to convert time to 12-hour format
+        function convertTo12Hour(time24) {
+            if (!time24) return '';
+            
+            const [hours, minutes] = time24.split(':');
+            let hour = parseInt(hours);
+            const suffix = hour >= 12 ? 'PM' : 'AM';
+            hour = hour % 12 || 12;
+            return `${hour}:${minutes} ${suffix}`;
+        }
+        
+        // Function to format year level
+        function formatYearLevel(yearLevel) {
+            if (yearLevel === '1') return '1st';
+            else if (yearLevel === '2') return '2nd';
+            else if (yearLevel === '3') return '3rd';
+            else if (yearLevel === '4') return '4th';
+            return yearLevel;
+        }
+        
+        // Function to display class info with improved design
+        function displayClassInfo(schedule) {
+            const container = document.getElementById('classInfoContent');
+            const classInfoCard = document.getElementById('classInfo');
+            
+            // Format year level
+            let formattedYearLevel = formatYearLevel(schedule.yearLevel);
+            
+            // Convert times to 12-hour format
+            const startTime12 = convertTo12Hour(schedule.startTime);
+            const endTime12 = convertTo12Hour(schedule.endTime);
+            
+            // Create HTML for class info with icons
+            container.innerHTML = `
+                <div class="class-details">
+                    <div class="class-info-item">
+                        <i class="fas fa-book"></i>
+                        <strong>Subject:</strong>
+                        <span class="class-info-value">${schedule.subjectCode} - ${schedule.subjectTitle}</span>
+                    </div>
+                    <div class="class-info-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <strong>Schedule:</strong>
+                        <span class="class-info-value">${schedule.dayOfWeek}, ${startTime12} - ${endTime12}</span>
+                    </div>
+                    <div class="class-info-item">
+                        <i class="fas fa-users"></i>
+                        <strong>Class:</strong>
+                        <span class="class-info-value">${formattedYearLevel} Year, Section ${schedule.section}</span>
+                    </div>
+                    <div class="class-info-item">
+                        <i class="fas fa-door-open"></i>
+                        <strong>Room:</strong>
+                        <span class="class-info-value">${schedule.roomNumber || 'N/A'}</span>
+                    </div>
+                    <div class="class-info-item">
+                        <i class="fas fa-graduation-cap"></i>
+                        <strong>Program:</strong>
+                        <span class="class-info-value">${schedule.course}, ${schedule.institute}</span>
+                    </div>
+                </div>
+            `;
+            
+            // Show class info card
+            classInfoCard.style.display = 'block';
+        }
+        
+        // Function to check if instructor is logged in
+        function checkLogin() {
+            const loggedInInstructor = JSON.parse(sessionStorage.getItem('loggedInInstructor'));
+            
+            if (!loggedInInstructor) {
+                // Not logged in, redirect to login page
+                window.location.href = 'student-login.html';
+                return false;
+            }
+            
+            // Set welcome message with instructor's name
+            const welcomeElement = document.getElementById('welcomeMessage');
+            welcomeElement.textContent = `Hello, ${loggedInInstructor.firstName}!`;
+            
+            // Set additional instructor info
+            const infoElement = document.getElementById('instructorInfo');
+            infoElement.textContent = `Welcome to your seat plan page. You are logged in as ${loggedInInstructor.firstName} ${loggedInInstructor.middleName ? loggedInInstructor.middleName + ' ' : ''}${loggedInInstructor.lastName} (${loggedInInstructor.email}).`;
+            
+            return loggedInInstructor;
+        }
+        
+        // Function to load instructor's schedule
+        function loadInstructorSchedule(instructorEmail) {
+            // Get all schedules from localStorage
+            const allSchedules = JSON.parse(localStorage.getItem('instructorSchedules')) || [];
+            
+            // Filter schedules for the current instructor
+            return allSchedules.filter(schedule => schedule.instructorEmail === instructorEmail);
+        }
+        
+        // Function to populate the schedule dropdown
+        function populateScheduleDropdown(schedules) {
+            const dropdown = document.getElementById('scheduleDropdown');
+            dropdown.innerHTML = '<option value="">Select a class...</option>';
+            
+            if (schedules.length === 0) {
+                dropdown.innerHTML += '<option disabled>No classes assigned</option>';
+                return;
+            }
+            
+            // Sort schedules by day of week and start time
+            const dayOrder = {
+                'Monday': 1,
+                'Tuesday': 2,
+                'Wednesday': 3,
+                'Thursday': 4,
+                'Friday': 5,
+                'Saturday': 6
+            };
+            
+            schedules.sort((a, b) => {
+                // First by day of week
+                const dayCompare = dayOrder[a.dayOfWeek] - dayOrder[b.dayOfWeek];
+                if (dayCompare !== 0) return dayCompare;
+                
+                // Then by start time
+                return a.startTime.localeCompare(b.startTime);
+            });
+            
+            // Add each schedule to dropdown
+            schedules.forEach((schedule, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                const formattedYearLevel = formatYearLevel(schedule.yearLevel);
+                option.textContent = `${schedule.dayOfWeek} - ${schedule.subjectCode}: ${schedule.subjectTitle} (${formattedYearLevel} Year, Section ${schedule.section})`;
+                dropdown.appendChild(option);
+            });
+        }
+        
+        // Function to get enrolled students for a specific class
+        function getStudentsForClass(institute, course, yearLevel, section) {
+            const allStudents = JSON.parse(localStorage.getItem('enrolledStudents')) || [];
+            
+            // Filter students for the specified class
+            return allStudents.filter(student => 
+                student.institute === institute &&
+                student.course === course &&
+                student.yearLevel === yearLevel &&
+                student.section === section
+            );
+        }
+        
+        // Function to generate a unique key for storing seatplan data
+        function generateSeatplanKey(schedule) {
+            // Create a unique key that includes all relevant class identifiers
+            return `seatplan_${schedule.schoolYear}_${schedule.semester}_${schedule.institute}_${schedule.course}_${schedule.yearLevel}_${schedule.section}_${schedule.subjectCode}_${schedule.dayOfWeek}_${schedule.startTime}`;
+        }
+        
+        // Function to load seat assignments for a class
+        function loadSeatAssignments(schedule) {
+            // Generate a unique key for this specific class schedule
+            const key = generateSeatplanKey(schedule);
+            
+            // Try to load existing seatplan
+            seatAssignments = JSON.parse(localStorage.getItem(key)) || {};
+            
+            console.log("Loading seat assignments with key:", key);
+            console.log("Loaded assignments:", seatAssignments);
+            
+            // Update seat display based on assignments
+            updateSeatAssignments();
+            return seatAssignments;
+        }
+        
+        // Function to save seat assignments
+        function saveSeatAssignments() {
+            if (!currentSchedule) return;
+            
+            showLoadingOverlay();
+            
+            setTimeout(() => {
+                // Generate a unique key for this specific class schedule
+                const key = generateSeatplanKey(currentSchedule);
+                
+                console.log("Saving seat assignments with key:", key);
+                console.log("Assignments to save:", seatAssignments);
+                
+                localStorage.setItem(key, JSON.stringify(seatAssignments));
+                
+                hideLoadingOverlay();
+                showNotification('Seat assignments saved successfully!');
+            }, 800); // Simulated delay
+        }
+        
+        // Function to update seat assignments in the UI
+        function updateSeatAssignments() {
+            const seats = document.querySelectorAll('.seat');
+            
+            seats.forEach(seat => {
+                const seatId = seat.getAttribute('data-seat-id');
+                const studentId = seatAssignments[seatId];
+                
+                if (studentId) {
+                    // Find student info
+                    const students = getStudentsForClass(
+                        currentSchedule.institute,
+                        currentSchedule.course,
+                        currentSchedule.yearLevel,
+                        currentSchedule.section
+                    );
+                    
+                    const student = students.find(s => s.studentNumber === studentId);
+                    
+                    if (student) {
+                        const nameElement = seat.querySelector('.seat-name');
+                        nameElement.textContent = `${student.lastName}, ${student.firstName.charAt(0)}.`;
+                    }
+                } else {
+                    // Clear the seat
+                    const nameElement = seat.querySelector('.seat-name');
+                    nameElement.textContent = 'Empty';
+                }
+            });
+        }
+        
+        // Function to display seatplan
+        function displaySeatplan(schedule) {
+            const container = document.getElementById('seatplanContent');
+            
+            // Determine seatplan type based on class type
+            const isLab = schedule.classType && schedule.classType.toLowerCase().includes('lab');
+            
+            // Create seatplan based on type
+            if (isLab) {
+                container.innerHTML = createLabSeatplan(schedule);
+            } else {
+                container.innerHTML = createLectureSeatplan(schedule);
+            }
+            
+            // Add click event listeners to seats
+            const seats = document.querySelectorAll('.seat');
+            seats.forEach(seat => {
+                seat.addEventListener('click', function() {
+                    // If manual assignment mode is active
+                    if (this.classList.contains('assignment-mode')) {
+                        // Get seat ID
+                        const seatId = this.getAttribute('data-seat-id');
+                        selectedSeat = seatId;
+                        
+                        // Remove selection from all seats
+                        document.querySelectorAll('.seat').forEach(s => {
+                            s.classList.remove('selected');
+                        });
+                        
+                        // Add selection to this seat
+                        this.classList.add('selected');
+                        
+                        // Open modal to select student
+                        openStudentModal();
+                    }
+                });
+            });
+        }
+        
+        // Function to create lab seatplan layout (5 rows with 8 columns and aisles)
+        function createLabSeatplan(schedule) {
+            const numRows = 5;
+            const numCols = 8;
+            
+            // Format year level for display
+            const formattedYearLevel = formatYearLevel(schedule.yearLevel);
+            
+            // Convert times to 12-hour format
+            const startTime12 = convertTo12Hour(schedule.startTime);
+            const endTime12 = convertTo12Hour(schedule.endTime);
+            
+            // Create seatplan HTML
+            let html = `
+                <div class="seatplan lab-seatplan">
+                    <div class="seatplan-title">
+                        <h3>${schedule.subjectCode} - ${schedule.subjectTitle}</h3>
+                        <p>${formattedYearLevel} Year, Section ${schedule.section} | ${schedule.course}</p>
+                    </div>
+                    <div class="instructor-area">
+                        <i class="fas fa-chalkboard-teacher"></i> Instructor Area
+                    </div>
+                    <div class="seats">
+            `;
+            
+            // Generate seats
+            let seatCount = 1;
+            for (let row = 1; row <= numRows; row++) {
+                for (let col = 1; col <= numCols + 3; col++) {
+                    // Skip columns that are aisles
+                    if (col === 3 || col === 6 || col === 9) {
+                        html += `<div class="vertical-aisle-${col === 3 ? '1' : (col === 6 ? '2' : '3')}"></div>`;
+                    } else {
+                        const seatId = `lab-${row}-${col}`;
+                        html += `
+                            <div class="seat" data-seat-id="${seatId}">
+                                <span class="seat-number">${seatCount}</span>
+                                <span class="seat-name">Empty</span>
+                            </div>
+                        `;
+                        seatCount++;
+                    }
+                }
+            }
+            
+            html += `
+                    </div>
+                    <div class="schedule-info">
+                        <strong>${schedule.dayOfWeek}</strong> | ${startTime12} - ${endTime12} | Room: ${schedule.roomNumber || 'N/A'}
+                    </div>
+                </div>
+            `;
+            
+            return html;
+        }
+        
+        // Function to create lecture seatplan layout (2 clusters with center aisle)
+        function createLectureSeatplan(schedule) {
+            const numRows = 6;
+            const numCols = 4; // 4 columns on each side of center aisle
+            
+            // Format year level for display
+            const formattedYearLevel = formatYearLevel(schedule.yearLevel);
+            
+            // Convert times to 12-hour format
+            const startTime12 = convertTo12Hour(schedule.startTime);
+            const endTime12 = convertTo12Hour(schedule.endTime);
+            
+            // Create seatplan HTML
+            let html = `
+                <div class="seatplan lecture-seatplan">
+                    <div class="seatplan-title">
+                        <h3>${schedule.subjectCode} - ${schedule.subjectTitle}</h3>
+                        <p>${formattedYearLevel} Year, Section ${schedule.section} | ${schedule.course}</p>
+                    </div>
+                    <div class="instructor-area">
+                        <i class="fas fa-chalkboard-teacher"></i> Instructor Area
+                    </div>
+                    <div class="seats">
+            `;
+            
+            // Generate seats
+            let seatCount = 1;
+            for (let row = 1; row <= numRows; row++) {
+                for (let col = 1; col <= numCols * 2 + 1; col++) {
+                    // Skip center column for aisle
+                    if (col === numCols + 1) {
+                        html += `<div class="center-aisle"></div>`;
+                    } else {
+                        const seatId = `lecture-${row}-${col}`;
+                        html += `
+                            <div class="seat" data-seat-id="${seatId}">
+                                <span class="seat-number">${seatCount}</span>
+                                <span class="seat-name">Empty</span>
+                            </div>
+                        `;
+                        seatCount++;
+                    }
+                }
+            }
+            
+            html += `
+                    </div>
+                    <div class="schedule-info">
+                        <strong>${schedule.dayOfWeek}</strong> | ${startTime12} - ${endTime12} | Room: ${schedule.roomNumber || 'N/A'}
+                    </div>
+                </div>
+            `;
+            
+            return html;
+        }
+        
+        // Function to open student selection modal
+        function openStudentModal() {
+            if (!currentSchedule || !selectedSeat) return;
+            
+            const modal = document.getElementById('studentModal');
+            const studentList = document.getElementById('studentList');
+            
+            // Get students for the current class
+            const students = getStudentsForClass(
+                currentSchedule.institute,
+                currentSchedule.course,
+                currentSchedule.yearLevel,
+                currentSchedule.section
+            );
+            
+            // Clear previous list
+            studentList.innerHTML = '';
+            
+            // Create list of unassigned students first, then assigned students
+            const assignedStudentIds = Object.values(seatAssignments);
+            
+            // Sort students alphabetically by last name
+            students.sort((a, b) => a.lastName.localeCompare(b.lastName));
+            
+            // Add each student to the list
+            students.forEach(student => {
+                // Create list item element
+                const listItem = document.createElement('div');
+                listItem.classList.add('student-item');
+                listItem.textContent = `${student.lastName}, ${student.firstName} ${student.middleName ? student.middleName.charAt(0) + '.' : ''} (${student.studentNumber})`;
+                
+                // Check if student is already assigned
+                const isAssigned = assignedStudentIds.includes(student.studentNumber);
+                if (isAssigned) {
+                    listItem.classList.add('assigned');
+                    listItem.textContent += ' - Assigned';
+                }
+                
+                // Add event listener for selection
+                listItem.addEventListener('click', function() {
+                    // Deselect all other students
+                    document.querySelectorAll('.student-item').forEach(item => {
+                        item.classList.remove('selected');
+                    });
+                    
+                    // Select this student
+                    this.classList.add('selected');
+                    selectedStudent = student.studentNumber;
+                });
+                
+                studentList.appendChild(listItem);
+            });
+            
+            // Show the modal
+            modal.style.display = 'block';
+        }
+        
+        // Function to close student selection modal
+        function closeModal() {
+            const modal = document.getElementById('studentModal');
+            modal.style.display = 'none';
+            selectedStudent = null;
+        }
+        
+        // Function to assign selected student to selected seat
+        function assignSelectedStudent() {
+            if (!selectedSeat || !selectedStudent) {
+                closeModal();
+                return;
+            }
+            
+            // Check if the student is already assigned to another seat
+            const existingSeatAssignment = Object.keys(seatAssignments).find(
+                seatId => seatAssignments[seatId] === selectedStudent
+            );
+            
+            // If student is already assigned, remove previous assignment
+            if (existingSeatAssignment) {
+                delete seatAssignments[existingSeatAssignment];
+            }
+            
+            // Assign the student to the selected seat
+            seatAssignments[selectedSeat] = selectedStudent;
+            
+            // Update the UI
+            updateSeatAssignments();
+            
+            // Close the modal
+            closeModal();
+        }
+        
+        // Function to enable manual assignment mode
+        function enableManualAssignment() {
+            // Add assignment mode class to all seats
+            const seats = document.querySelectorAll('.seat');
+            seats.forEach(seat => {
+                seat.classList.add('assignment-mode');
+            });
+            
+            // Show notification
+            showNotification('Manual assignment mode activated. Click on a seat to assign a student.');
+        }
+        
+        // Function to assign students randomly
+        function assignRandomly() {
+            if (!currentSchedule) return;
+            
+            showLoadingOverlay();
+            
+            setTimeout(() => {
+                // Get students for the current class
+                const students = getStudentsForClass(
+                    currentSchedule.institute,
+                    currentSchedule.course,
+                    currentSchedule.yearLevel,
+                    currentSchedule.section
+                );
+                
+                // Get all seat elements
+                const seats = document.querySelectorAll('.seat');
+                
+                // Clear existing assignments
+                seatAssignments = {};
+                
+                // Shuffle students
+                const shuffledStudents = [...students].sort(() => Math.random() - 0.5);
+                
+                // Assign students to seats
+                seats.forEach((seat, index) => {
+                    const seatId = seat.getAttribute('data-seat-id');
+                    
+                    // Assign a student if available
+                    if (index < shuffledStudents.length) {
+                        seatAssignments[seatId] = shuffledStudents[index].studentNumber;
+                    }
+                });
+                
+                // Update the UI
+                updateSeatAssignments();
+                
+                hideLoadingOverlay();
+                showNotification('Students have been randomly assigned to seats.');
+            }, 1000); // Simulated delay
+        }
+        
+        // Function to assign students alphabetically by last name
+        function assignAlphabetically() {
+            if (!currentSchedule) return;
+            
+            showLoadingOverlay();
+            
+            setTimeout(() => {
+                // Get students for the current class
+                const students = getStudentsForClass(
+                    currentSchedule.institute,
+                    currentSchedule.course,
+                    currentSchedule.yearLevel,
+                    currentSchedule.section
+                );
+                
+                // Get all seat elements
+                const seats = document.querySelectorAll('.seat');
+                
+                // Clear existing assignments
+                seatAssignments = {};
+                
+                // Sort students alphabetically by last name, then first name
+                const sortedStudents = [...students].sort((a, b) => {
+                    const lastNameCompare = a.lastName.localeCompare(b.lastName);
+                    if (lastNameCompare !== 0) return lastNameCompare;
+                    return a.firstName.localeCompare(b.firstName);
+                });
+                
+                // Assign students to seats
+                seats.forEach((seat, index) => {
+                    const seatId = seat.getAttribute('data-seat-id');
+                    
+                    // Assign a student if available
+                    if (index < sortedStudents.length) {
+                        seatAssignments[seatId] = sortedStudents[index].studentNumber;
+                    }
+                });
+                
+                // Update the UI
+                updateSeatAssignments();
+                
+                hideLoadingOverlay();
+                showNotification('Students have been assigned alphabetically by last name.');
+            }, 1000); // Simulated delay
+        }
+        
+        // Function to clear all seat assignments
+        function clearAllAssignments() {
+            if (!currentSchedule) return;
+            
+            showLoadingOverlay();
+            
+            setTimeout(() => {
+                // Clear all assignments
+                seatAssignments = {};
+                
+                // Update the UI
+                updateSeatAssignments();
+                
+                hideLoadingOverlay();
+                showNotification('All seat assignments have been cleared.');
+            }, 800); // Simulated delay
+        }
+        
+        // Show loading overlay
+        function showLoadingOverlay() {
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.style.display = 'flex';
+        }
+        
+        // Hide loading overlay
+        function hideLoadingOverlay() {
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.style.display = 'none';
+        }
+        
+        // Show notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.display = 'block';
+            
+            // Hide notification after 3 seconds
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Logout function
+        function logout() {
+            // Clear the logged in instructor
+            sessionStorage.removeItem('loggedInInstructor');
+            
+            // Redirect to login page
+            window.location.href = 'student-login.html';
+        }
+    </script>
+</body>
+</html>

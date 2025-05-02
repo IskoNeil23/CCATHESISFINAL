@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="Student.css">
+<style>
+ .sidebar {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color:darkgreen;
+    overflow-x: hidden;
+    padding-top: 60px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.sidebar a {
+    padding: 10px 15px;
+    text-decoration: none;
+    color: white;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidebar a:hover {
+    background-color:wheat;
+}
+
+.account-status {
+    margin-left: 10px;
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 10px;
+}
+
+.status-active {
+    background-color: #28a745;
+    color: white;
+}
+
+.status-pending {
+    background-color: #ffc107;
+    color: black;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.close-modal {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-modal:hover {
+    color: black;
+}
+
+.copied-message {
+    color: green;
+    display: none;
+    margin-left: 10px;
+}
+
+.password-field {
+    display: flex;
+    align-items: center;
+}
+
+.copy-btn {
+    margin-left: 10px;
+    padding: 5px 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.copy-btn:hover {
+    background-color: #45a049;
+}
+
+.btn-generate-all {
+    margin-bottom: 20px;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-generate-all:hover {
+    background-color: #0069d9;
+}
+</style>
+</head>
+<body>
+
+<div id="mySidebar" class="sidebar">
+    <img class="navlog" src="cca-logo.png" alt="">
+    <h1>City College of Angeles</h1>  
+    <a href="admin.html">Student Accounts</a>
+    <a class="active">Instructors Accounts</a>
+    <a href="admin-CCA-Officials.html">Admin Roles Accounts</a>
+</div>
+
+<!-- Top navigation bar with logout button -->
+<div id="topNav" class="topnav shifted">
+    <div class="nav-left">
+        <img src="cca-logo.png" alt="CCA Logo" height="50">
+        <h3>City College of Angeles - Instructor Account Management</h3>
+    </div>
+    <button class="logout-btn" onclick="logout()">Log Out</button>
+</div>
+
+<div id="main" style="margin-left: 250px">
+    <div id="pageContent" class="page-content">
+        <h2 class="section-title">Instructor Account Management</h2>
+
+        <!-- Generate All Accounts Button -->
+        <button class="btn-generate-all" onclick="generateAllAccounts()">Generate All Missing Accounts</button>
+        
+        <!-- Instructor Accounts Table View -->
+        <h3 class="section-title">Instructor Accounts</h3>
+        <div class="table-container">
+            <table class="data-table" id="instructorAccountsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Account Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="instructorAccountsTableBody">
+                    <!-- Instructor accounts will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Account Details Modal -->
+<div id="accountModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <h3>Instructor Account Details</h3>
+        <div id="accountDetails">
+            <p><strong>Instructor:</strong> <span id="modalInstructorName"></span></p>
+            <p><strong>Email:</strong> <span id="modalEmail"></span></p>
+            <p><strong>Username:</strong> <span id="modalUsername"></span></p>
+            <div class="password-field">
+                <p><strong>Password:</strong> <span id="modalPassword"></span></p>
+                <button class="copy-btn" onclick="copyPassword()">Copy</button>
+                <span class="copied-message" id="copiedMessage">Copied!</span>
+            </div>
+            <p><strong>Status:</strong> <span id="modalStatus"></span></p>
+            <p><strong>Generated On:</strong> <span id="modalGeneratedDate"></span></p>
+        </div>
+        <div class="btn-container">
+            <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+            <button class="btn btn-primary" onclick="resetPassword()">Reset Password</button>
+            <button class="btn btn-primary" id="emailCredentialsBtn" onclick="emailCredentials()">Email Credentials</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// Function to generate a random password
+function generatePassword() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+    let password = '';
+    
+    // Ensure at least one uppercase letter, one lowercase letter, one number, and one special character
+    password += chars.charAt(Math.floor(Math.random() * 26)); // uppercase
+    password += chars.charAt(Math.floor(Math.random() * 26) + 26); // lowercase
+    password += chars.charAt(Math.floor(Math.random() * 10) + 52); // number
+    password += chars.charAt(Math.floor(Math.random() * 10) + 62); // special char
+    
+    // Add random characters to reach length of 12
+    for (let i = 0; i < 8; i++) {
+        password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    
+    // Shuffle the password characters
+    return password.split('').sort(() => 0.5 - Math.random()).join('');
+}
+
+// Function to generate an account for an instructor
+function generateAccount(instructor) {
+    // Create username from email (part before @)
+    const username = instructor.emailAddress.split('@')[0];
+    
+    // Generate password
+    const password = generatePassword();
+    
+    // Create account object
+    return {
+        instructorId: instructor.instructorId,
+        username: username,
+        password: password,
+        email: instructor.emailAddress,
+        status: 'Active',
+        generatedDate: new Date().toISOString().split('T')[0]
+    };
+}
+
+// Function to generate accounts for all instructors who don't have one yet
+function generateAllAccounts() {
+    const instructors = JSON.parse(localStorage.getItem('instructors')) || [];
+    const accounts = JSON.parse(localStorage.getItem('instructorAccounts')) || [];
+    
+    if (instructors.length === 0) {
+        alert('No instructors found. Please add instructors first.');
+        return;
+    }
+    
+    let newAccountsCount = 0;
+    
+    // Loop through each instructor
+    instructors.forEach(instructor => {
+        // Check if instructor already has an account
+        const hasAccount = accounts.some(acc => acc.instructorId === instructor.instructorId);
+        
+        if (!hasAccount) {
+            // Generate new account
+            const newAccount = generateAccount(instructor);
+            accounts.push(newAccount);
+            newAccountsCount++;
+        }
+    });
+    
+    // Save accounts to localStorage
+    localStorage.setItem('instructorAccounts', JSON.stringify(accounts));
+    
+    if (newAccountsCount > 0) {
+        alert(`Successfully generated ${newAccountsCount} new instructor account(s).`);
+    } else {
+        alert('All instructors already have accounts. No new accounts were generated.');
+    }
+    
+    // Refresh table
+    displayAccountsTable();
+}
+
+// Function to generate or regenerate a single account
+function generateSingleAccount(instructorId) {
+    const instructors = JSON.parse(localStorage.getItem('instructors')) || [];
+    const instructor = instructors.find(i => i.instructorId === instructorId);
+    
+    if (!instructor) {
+        alert('Instructor not found.');
+        return;
+    }
+    
+    const accounts = JSON.parse(localStorage.getItem('instructorAccounts')) || [];
+    const existingAccountIndex = accounts.findIndex(acc => acc.instructorId === instructorId);
+    
+    // Generate new account
+    const newAccount = generateAccount(instructor);
+    
+    if (existingAccountIndex !== -1) {
+        // Update existing account
+        accounts[existingAccountIndex] = newAccount;
+        alert('Account regenerated successfully.');
+    } else {
+        // Add new account
+        accounts.push(newAccount);
+        alert('Account generated successfully.');
+    }
+    
+    // Save accounts to localStorage
+    localStorage.setItem('instructorAccounts', JSON.stringify(accounts));
+    
+    // Refresh table
+    displayAccountsTable();
+    
+    // Show account details
+    showAccountDetails(instructorId);
+}
+
+// Function to reset password for an instructor
+function resetPassword() {
+    const instructorId = document.getElementById('modalInstructorName').dataset.instructorId;
+    if (!instructorId) return;
+    
+    if (confirm('Are you sure you want to reset the password for this instructor?')) {
+        const accounts = JSON.parse(localStorage.getItem('instructorAccounts')) || [];
+        const accountIndex = accounts.findIndex(acc => acc.instructorId === instructorId);
+        
+        if (accountIndex !== -1) {
+            // Generate new password
+            accounts[accountIndex].password = generatePassword();
+            accounts[accountIndex].generatedDate = new Date().toISOString().split('T')[0];
+            
+            // Save accounts to localStorage
+            localStorage.setItem('instructorAccounts', JSON.stringify(accounts));
+            
+            // Update modal
+            document.getElementById('modalPassword').textContent = accounts[accountIndex].password;
+            document.getElementById('modalGeneratedDate').textContent = accounts[accountIndex].generatedDate;
+            
+            alert('Password reset successfully.');
+        }
+    }
+}
+
+// Function to display instructor accounts in table format
+function displayAccountsTable() {
+    const instructors = JSON.parse(localStorage.getItem('instructors')) || [];
+    const accounts = JSON.parse(localStorage.getItem('instructorAccounts')) || [];
+    const tableBody = document.getElementById('instructorAccountsTableBody');
+    tableBody.innerHTML = '';
+    
+    if (instructors.length === 0) {
+        const row = document.createElement('tr');
+        const cell = document.createElement('td');
+        cell.colSpan = 5;
+        cell.textContent = 'No instructors found.';
+        cell.style.textAlign = 'center';
+        row.appendChild(cell);
+        tableBody.appendChild(row);
+        return;
+    }
+    
+    // Sort instructors by last name
+    instructors.sort((a, b) => a.lastName.localeCompare(b.lastName));
+    
+    // Add each instructor to the table
+    instructors.forEach(instructor => {
+        const row = document.createElement('tr');
+        
+        // ID
+        const idCell = document.createElement('td');
+        idCell.textContent = instructor.instructorId;
+        row.appendChild(idCell);
+        
+        // Name
+        const nameCell = document.createElement('td');
+        nameCell.textContent = `${instructor.lastName}, ${instructor.firstName} ${instructor.middleName ? instructor.middleName : ''}`.trim();
+        row.appendChild(nameCell);
+        
+        // Email
+        const emailCell = document.createElement('td');
+        emailCell.textContent = instructor.emailAddress;
+        row.appendChild(emailCell);
+        
+        // Account Status
+        const statusCell = document.createElement('td');
+        const account = accounts.find(acc => acc.instructorId === instructor.instructorId);
+        
+        if (account) {
+            statusCell.innerHTML = `<span class="account-status status-active">Active</span>`;
+        } else {
+            statusCell.innerHTML = `<span class="account-status status-pending">No Account</span>`;
+        }
+        row.appendChild(statusCell);
+        
+        // Actions
+        const actionsCell = document.createElement('td');
+        actionsCell.className = 'action-btns';
+        
+        if (account) {
+            // View button
+            const viewBtn = document.createElement('button');
+            viewBtn.className = 'action-btn view-btn';
+            viewBtn.textContent = 'View Details';
+            viewBtn.onclick = () => showAccountDetails(instructor.instructorId);
+            actionsCell.appendChild(viewBtn);
+        } else {
+            // Generate button
+            const generateBtn = document.createElement('button');
+            generateBtn.className = 'action-btn create-btn';
+            generateBtn.textContent = 'Generate Account';
+            generateBtn.onclick = () => generateSingleAccount(instructor.instructorId);
+            actionsCell.appendChild(generateBtn);
+        }
+        
+        row.appendChild(actionsCell);
+        tableBody.appendChild(row);
+    });
+}
+
+// Function to show account details modal
+function showAccountDetails(instructorId) {
+    const instructors = JSON.parse(localStorage.getItem('instructors')) || [];
+    const accounts = JSON.parse(localStorage.getItem('instructorAccounts')) || [];
+    
+    const instructor = instructors.find(i => i.instructorId === instructorId);
+    const account = accounts.find(acc => acc.instructorId === instructorId);
+    
+    if (!instructor || !account) {
+        alert('Account information not found.');
+        return;
+    }
+    
+    const fullName = `${instructor.lastName}, ${instructor.firstName} ${instructor.middleName ? instructor.middleName : ''}`.trim();
+    
+    document.getElementById('modalInstructorName').textContent = fullName;
+    document.getElementById('modalInstructorName').dataset.instructorId = instructorId;
+    document.getElementById('modalEmail').textContent = account.email;
+    document.getElementById('modalUsername').textContent = account.username;
+    document.getElementById('modalPassword').textContent = account.password;
+    document.getElementById('modalStatus').textContent = account.status;
+    document.getElementById('modalGeneratedDate').textContent = account.generatedDate;
+    
+    document.getElementById('accountModal').style.display = 'block';
+}
+
+// Function to close the modal
+function closeModal() {
+    document.getElementById('accountModal').style.display = 'none';
+    document.getElementById('copiedMessage').style.display = 'none';
+}
+
+// Function to copy password to clipboard
+function copyPassword() {
+    const password = document.getElementById('modalPassword').textContent;
+    
+    navigator.clipboard.writeText(password).then(() => {
+        const copiedMessage = document.getElementById('copiedMessage');
+        copiedMessage.style.display = 'inline';
+        
+        setTimeout(() => {
+            copiedMessage.style.display = 'none';
+        }, 2000);
+    });
+}
+
+// Function to email credentials (simulated)
+function emailCredentials() {
+    const instructorId = document.getElementById('modalInstructorName').dataset.instructorId;
+    const instructors = JSON.parse(localStorage.getItem('instructors')) || [];
+    const accounts = JSON.parse(localStorage.getItem('instructorAccounts')) || [];
+    
+    const instructor = instructors.find(i => i.instructorId === instructorId);
+    const account = accounts.find(acc => acc.instructorId === instructorId);
+    
+    if (!instructor || !account) {
+        alert('Account information not found.');
+        return;
+    }
+    
+    // In a real application, this would send an actual email
+    alert(`Email with login credentials sent to ${instructor.emailAddress}!`);
+}
+
+// Function for logout
+function logout() {
+    if (confirm('Are you sure you want to log out?')) {
+        window.location.href = 'student-login.html';
+    }
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    const modal = document.getElementById('accountModal');
+    if (event.target === modal) {
+        closeModal();
+    }
+}
+
+// Initialize page on load
+window.onload = function() {
+    displayAccountsTable();
+};
+</script>
+
+</body>
+</html>

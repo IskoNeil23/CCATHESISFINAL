@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="login.css">
+    <title>City College of Angeles - Totalis Humanae</title>
+    <style>
+        /* Inline essential styles in case login.css is missing */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        
+        .login-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 320px;
+            text-align: center;
+        }
+        
+        .logo {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: #4b702d;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        
+        .input-container {
+            display: flex;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .icon-container {
+            background-color: #f5f5f5;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-right: 1px solid #ddd;
+        }
+        
+        input[type="text"],
+        input[type="password"],
+        input[type="email"] {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            outline: none;
+        }
+        
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        input[type="checkbox"] {
+            margin-right: 5px;
+        }
+        
+        .login-btn {
+            background-color: #4b702d;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 12px;
+            width: 100%;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        
+        .login-btn:hover {
+            background-color: #3a5a22;
+        }
+        
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .google-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        
+        .divider {
+            height: 1px;
+            background-color: #ddd;
+            margin: 20px 0;
+        }
+        
+        footer {
+            font-size: 12px;
+            color: #777;
+        }
+        
+        .error-message {
+            color: #d9534f;
+            margin-bottom: 15px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <img src="/api/placeholder/100/100" alt="City College of Angeles Logo" class="logo" style="background-color: transparent; border-radius: 50%;">
+        <h1>City College of Angeles</h1>
+        
+        <div id="error-message" class="error-message"></div>
+        
+        <form id="login-form">
+            <div class="form-group">
+                <label for="username">Username or Email</label>
+                <div class="input-container">
+                    <div class="icon-container">👤</div>
+                    <input type="text" id="username" name="username">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="input-container">
+                    <div class="icon-container">🔒</div>
+                    <input type="password" id="password" name="password">
+                </div>
+            </div>
+            
+            <div class="checkbox-container">
+                <input type="checkbox" id="showPassword">
+                <label for="showPassword">Show password</label>
+            </div>
+            
+            <button type="submit" class="login-btn">Login</button>
+        </form>
+        
+        <a href="#" class="google-btn">
+            <svg class="google-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+            </svg>
+            Sign in with CCA Email
+        </a>
+        
+        <div class="divider"></div>
+        
+        <footer>
+            © 2025 City College of Angeles • All Rights Reserved
+        </footer>
+    </div>
+
+    <script>
+        // Initialize database if it doesn't exist
+        function initializeDatabase() {
+            // Check if admin account exists
+            if (!localStorage.getItem('ccaAccounts')) {
+                // Create initial admin account
+                const initialAccounts = [
+                    {
+                        id: 1,
+                        firstName: 'CCA',
+                        lastName: 'Admin',
+                        email: 'ccaadmin1223334444@gmail.com',
+                        username: 'ccaadmin',
+                        password: 'ce',
+                        accountType: 'Registrar',
+                        department: 'ISCLIS - Institute of Computing, Library and Information Science',
+                        program: '',
+                        status: 'Active'
+                    }
+                ];
+                
+                // Save to localStorage
+                localStorage.setItem('ccaAccounts', JSON.stringify(initialAccounts));
+                console.log('Database initialized with admin account');
+            }
+        }
+        
+        // Initialize database on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDatabase();
+        });
+        
+        // Show/hide password functionality
+        document.getElementById('showPassword').addEventListener('change', function() {
+            const passwordField = document.getElementById('password');
+            passwordField.type = this.checked ? 'text' : 'password';
+        });
+        
+        // Handle login form submission
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('error-message');
+            
+            // Get accounts from localStorage
+            const accounts = JSON.parse(localStorage.getItem('ccaAccounts') || '[]');
+            
+            // Check for admin credentials
+            if ((username === 'ccaadmin1223334444@gmail.com' || username === 'ccaadmin') && password === 'admin123qwe') {
+                // Admin login successful, redirect to admin page
+                window.location.href = 'admin.html';
+                return;
+            }
+            
+            // Check for other accounts
+            const user = accounts.find(account => 
+                (account.username === username || account.email === username) && 
+                account.password === password
+            );
+            
+            if (user) {
+                // Login successful
+                // Store current user info
+                localStorage.setItem('currentUser', JSON.stringify({
+                    id: user.id,
+                    name: `${user.firstName} ${user.lastName}`,
+                    accountType: user.accountType
+                }));
+                
+                // Redirect based on account type
+                if (user.accountType === 'Registrar' || user.accountType === 'Dean') {
+                    window.location.href = 'admin.html';
+                } else if (user.accountType === 'Student') {
+                    window.location.href = 'student.html';
+                } else if (user.accountType === 'Instructor' || user.accountType === 'Faculty') {
+                    window.location.href = 'faculty.html';
+                } else {
+                    // Default redirection
+                    window.location.href = 'dashboard.html';
+                }
+            } else {
+                // Login failed
+                errorMessage.textContent = 'Invalid username or password';
+                errorMessage.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

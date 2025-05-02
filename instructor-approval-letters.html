@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="instructor.css">
+    <title>Approval Letters - Instructor Portal - City College of Angeles</title>
+    <style>
+        .sidebar h1 {
+            color: white;
+            text-align: center;
+            font-size: 35px;
+            padding: 0 15px;
+            margin-bottom: 30px;
+        }
+        body{
+            font-family: 'Times New Roman', Times, serif;
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        .welcome-card {
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .welcome-card h2 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .filter-container {
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .filter-group select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .letters-container {
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+
+        .letters-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .letters-header h3 {
+            margin: 0;
+            color: #333;
+        }
+
+        .letters-count {
+            background-color: #007bff;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .letter-card {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: box-shadow 0.3s;
+        }
+
+        .letter-card:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .letter-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .letter-title {
+            font-weight: bold;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .letter-date {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .letter-status {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-approved {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-rejected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .letter-student {
+            margin-bottom: 10px;
+        }
+
+        .letter-student-name {
+            font-weight: bold;
+        }
+
+        .letter-details {
+            margin-bottom: 15px;
+        }
+
+        .letter-details p {
+            margin: 5px 0;
+        }
+
+        .letter-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+            font-size: 14px;
+        }
+
+        .btn-view {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-approve {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-reject {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .no-letters {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 4px;
+            width: 70%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .letter-view {
+            font-family: 'Times New Roman', Times, serif;
+            line-height: 1.6;
+        }
+
+        .letter-header-details {
+            text-align: right;
+            margin-bottom: 30px;
+        }
+
+        .letter-date-details {
+            margin-bottom: 30px;
+        }
+
+        .letter-subject-details {
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 30px;
+            text-decoration: underline;
+        }
+
+        .letter-closing {
+            margin-top: 40px;
+        }
+
+        .letter-signature {
+            margin-top: 50px;
+        }
+
+        /* Response form styles */
+        .response-form {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+
+        .response-form h4 {
+            margin-top: 0;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        textarea.form-control {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .response-btns {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <img src="cca-logo.png" alt="CCA Logo">
+        <h1>City College of Angeles</h1>
+        <a href="instructor-dashboard.html">Dashboard</a>
+        <a href="instructor-class-details.html">Class Details</a>
+        <a href="InstructorAttendancesheet.html">Attendance Sheet</a>
+        <a href="instructor-seat-plan.html">Seat Plan</a>
+        <a href="#">Grading Sheet</a>
+        <a class="active">Approval Letters</a>
+    </div>
+    
+    <div class="topnav">
+        <div class="nav-left">
+            <img src="cca-logo.png" alt="CCA Logo">
+            <h3>Instructor Portal - Approval Letters</h3>
+        </div>
+        <button class="logout-btn" onclick="logout()">Log Out</button>
+    </div>
+    
+    <div class="main-content">
+        <div class="welcome-card">
+            <h2 id="welcomeMessage">Welcome!</h2>
+            <p id="instructorInfo"></p>
+        </div>
+        
+        <div class="filter-container">
+            <div class="filter-group">
+                <label for="filterSubject">Filter by Subject:</label>
+                <select id="filterSubject" onchange="filterLetters()">
+                    <option value="all">All Subjects</option>
+                    <!-- Subject options will be populated dynamically -->
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="filterStatus">Filter by Status:</label>
+                <select id="filterStatus" onchange="filterLetters()">
+                    <option value="all">All Status</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Rejected">Rejected</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="filterSection">Filter by Section:</label>
+                <select id="filterSection" onchange="filterLetters()">
+                    <option value="all">All Sections</option>
+                    <!-- Section options will be populated dynamically -->
+                </select>
+            </div>
+        </div>
+        
+        <div class="letters-container">
+            <div class="letters-header">
+                <h3>Student Excuse Letters</h3>
+                <span class="letters-count" id="lettersCount">0</span>
+            </div>
+            
+            <div id="lettersList">
+                <!-- Letter cards will be populated dynamically -->
+                <div class="no-letters" id="noLetters">
+                    <p>No excuse letters found.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- View Letter Modal -->
+    <div id="viewLetterModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            
+            <h3>Student Excuse Letter</h3>
+            
+            <div id="letterViewContainer" class="letter-view">
+                <!-- Letter content will be displayed here -->
+            </div>
+            
+            <div class="response-form" id="responseForm">
+                <h4>Your Response</h4>
+                
+                <div class="form-group">
+                    <label for="responseRemarks">Remarks:</label>
+                    <textarea id="responseRemarks" class="form-control" placeholder="Add your remarks here..."></textarea>
+                </div>
+                
+                <div class="response-btns">
+                    <button class="btn btn-reject" onclick="rejectLetter()">Reject</button>
+                    <button class="btn btn-approve" onclick="approveLetter()">Approve</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Current opened letter ID for modal actions
+        let currentLetterId = null;
+        
+        // Function to check if instructor is logged in
+        function checkLogin() {
+            const loggedInInstructor = JSON.parse(sessionStorage.getItem('loggedInInstructor'));
+            
+            if (!loggedInInstructor) {
+                // Not logged in, redirect to login page
+                window.location.href = 'student-login.htmll';
+                return null;
+            }
+            
+            // Set welcome message with instructor's name
+            const welcomeElement = document.getElementById('welcomeMessage');
+            welcomeElement.textContent = `Hello, ${loggedInInstructor.firstName}!`;
+            
+            // Set additional instructor info
+            const infoElement = document.getElementById('instructorInfo');
+            infoElement.textContent = `Welcome to your approval letters dashboard. You can review and respond to student excuse letters here.`;
+            
+            return loggedInInstructor;
+        }
+        
+        // Function to get instructor's schedule
+        function getInstructorSchedules(instructorName) {
+            const allSchedules = JSON.parse(localStorage.getItem('instructorSchedules')) || [];
+            return allSchedules.filter(schedule => schedule.instructorName === instructorName);
+        }
+        
+        // Function to load excuse letters
+        function loadExcuseLetters() {
+            const instructor = checkLogin();
+            if (!instructor) return;
+            
+            // Get all excuse requests
+            const allRequests = JSON.parse(localStorage.getItem('excuseRequests')) || [];
+            
+            // Filter requests for this instructor
+            const instructorRequests = allRequests.filter(req => 
+                req.instructorName === `${instructor.firstName} ${instructor.lastName}`
+            );
+            
+            // Update letters count
+            document.getElementById('lettersCount').textContent = instructorRequests.length;
+            
+            if (instructorRequests.length === 0) {
+                document.getElementById('noLetters').style.display = 'block';
+                return;
+            }
+            
+            document.getElementById('noLetters').style.display = 'none';
+            
+            // Sort by submission date (newest first)
+            instructorRequests.sort((a, b) => new Date(b.submissionDate) - new Date(a.submissionDate));
+            
+            // Populate the letters list
+            const lettersList = document.getElementById('lettersList');
+            lettersList.innerHTML = '';
+            
+            instructorRequests.forEach(letter => {
+                const submissionDate = new Date(letter.submissionDate).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                // Determine status class
+                let statusClass = '';
+                switch(letter.status) {
+                    case 'Pending':
+                        statusClass = 'status-pending';
+                        break;
+                    case 'Approved':
+                        statusClass = 'status-approved';
+                        break;
+                    case 'Rejected':
+                        statusClass = 'status-rejected';
+                        break;
+                }
+                
+                // Create letter card
+                const letterCard = document.createElement('div');
+                letterCard.className = 'letter-card';
+                letterCard.setAttribute('data-subject', letter.subjectCode);
+                letterCard.setAttribute('data-status', letter.status);
+                letterCard.setAttribute('data-section', letter.section);
+                
+                letterCard.innerHTML = `
+                    <div class="letter-header">
+                        <div>
+                            <span class="letter-title">${letter.subjectCode}: ${letter.subjectTitle}</span>
+                            <span class="letter-status ${statusClass}">${letter.status}</span>
+                        </div>
+                        <span class="letter-date">Submitted: ${submissionDate}</span>
+                    </div>
+                    <div class="letter-student">
+                        <span class="letter-student-name">${letter.studentName}</span> (${letter.studentNumber})
+                        <span> - ${letter.course}, ${letter.yearLevel} Year, Section ${letter.section}</span>
+                    </div>
+                    <div class="letter-details">
+                        <p><strong>Absence Period:</strong> ${letter.startWeek === letter.endWeek ? 
+                            `Week ${letter.startWeek}` : 
+                            `Week ${letter.startWeek} to Week ${letter.endWeek}`}</p>
+                        <p><strong>Reason:</strong> ${letter.reason}</p>
+                        <p><strong>Supporting Document:</strong> ${letter.hasAttachment ? 'Attached' : 'None'}</p>
+                    </div>
+                    <div class="letter-actions">
+                        <button class="btn btn-view" onclick="viewLetter('${letter.id}')">View Details</button>
+                        ${letter.status === 'Pending' ? `
+                            <button class="btn btn-reject" onclick="rejectLetter('${letter.id}')">Reject</button>
+                            <button class="btn btn-approve" onclick="approveLetter('${letter.id}')">Approve</button>
+                        ` : ''}
+                    </div>
+                `;
+                
+                lettersList.appendChild(letterCard);
+            });
+            
+            // Populate filter dropdowns
+            populateFilters(instructorRequests);
+        }
+        
+        // Function to populate filter dropdowns
+        function populateFilters(letters) {
+            const subjects = new Set();
+            const sections = new Set();
+            
+            letters.forEach(letter => {
+                subjects.add(letter.subjectCode);
+                sections.add(letter.section);
+            });
+            
+            // Populate subject filter
+            const subjectFilter = document.getElementById('filterSubject');
+            subjectFilter.innerHTML = '<option value="all">All Subjects</option>';
+            
+            Array.from(subjects).sort().forEach(subject => {
+                const option = document.createElement('option');
+                option.value = subject;
+                option.textContent = subject;
+                subjectFilter.appendChild(option);
+            });
+            
+            // Populate section filter
+            const sectionFilter = document.getElementById('filterSection');
+            sectionFilter.innerHTML = '<option value="all">All Sections</option>';
+            
+            Array.from(sections).sort().forEach(section => {
+                const option = document.createElement('option');
+                option.value = section;
+                option.textContent = `Section ${section}`;
+                sectionFilter.appendChild(option);
+            });
+        }
+        
+        // Function to filter letters
+        function filterLetters() {
+            const subjectFilter = document.getElementById('filterSubject').value;
+            const statusFilter = document.getElementById('filterStatus').value;
+            const sectionFilter = document.getElementById('filterSection').value;
+            
+            const letterCards = document.querySelectorAll('.letter-card');
+            let visibleCount = 0;
+            
+            letterCards.forEach(card => {
+                const subjectMatch = subjectFilter === 'all' || card.getAttribute('data-subject') === subjectFilter;
+                const statusMatch = statusFilter === 'all' || card.getAttribute('data-status') === statusFilter;
+                const sectionMatch = sectionFilter === 'all' || card.getAttribute('data-section') === sectionFilter;
+                
+                if (subjectMatch && statusMatch && sectionMatch) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Update displayed count
+            document.getElementById('lettersCount').textContent = visibleCount;
+            
+            // Show/hide no letters message
+            document.getElementById('noLetters').style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+        
+        // Function to view letter details
+        function viewLetter(letterId) {
+            const allRequests = JSON.parse(localStorage.getItem('excuseRequests')) || [];
+            const letter = allRequests.find(req => req.id === letterId);
+            
+            if (!letter) {
+                alert('Letter not found!');
+                return;
+            }
+            
+            // Store current letter ID for modal actions
+            currentLetterId = letterId;
+            
+            // Format submission date
+            const submissionDate = new Date(letter.submissionDate).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            
+            // Generate letter view
+            const letterHtml = `
+                <div class="letter-header-details">
+                    <div>${submissionDate}</div>
+                </div>
+                
+                <div class="letter-body">
+                    <p>To Whom It May Concern,</p>
+                    
+                    <p>I, ${letter.studentName}, with Student Number ${letter.studentNumber}, currently enrolled in ${letter.course} (${letter.yearLevel} Year, Section ${letter.section}), would like to formally request for my absence during ${letter.startWeek === letter.endWeek ? 
+                        `Week ${letter.startWeek}` : 
+                        `Week ${letter.startWeek} to Week ${letter.endWeek}`} to be considered as excused.</p>
+                    
+                    <p>The reason for my absence was due to ${letter.reason}.</p>
+                    
+                    <p>${letter.explanation}</p>
+                    
+                    <p>I understand the importance of regular attendance and assure you that I have taken the necessary steps to catch up with any missed coursework. ${letter.hasAttachment ? 'I have attached supporting documentation for your reference and verification.' : ''}</p>
+                    
+                    <p>I would greatly appreciate your understanding in this matter. Please feel free to contact me via email at ${letter.studentNumber}@student.cca.edu.ph if you require any additional information.</p>
+                    
+                    <div class="letter-closing">
+                        <p>Thank you for your consideration.</p>
+                        
+                        <p>Respectfully,</p>
+                        
+                        <div class="letter-signature">
+                            ${letter.studentName}<br>
+                            Student Number: ${letter.studentNumber}<br>
+                            ${letter.course}<br>
+                            ${letter.yearLevel} Year - Section ${letter.section}
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px; border-top: 1px solid #ddd; padding-top: 20px;">
+                    <h4>Request Details:</h4>
+                    <p><strong>Subject:</strong> ${letter.subjectCode} - ${letter.subjectTitle}</p>
+                    <p><strong>Absence Period:</strong> ${letter.startWeek === letter.endWeek ? 
+                        `Week ${letter.startWeek}` : 
+                        `Week ${letter.startWeek} to Week ${letter.endWeek}`}</p>
+                    <p><strong>Reason:</strong> ${letter.reason}</p>
+                    <p><strong>Supporting Document:</strong> ${letter.hasAttachment ? 'Attached' : 'None'}</p>
+                    <p><strong>Status:</strong> ${letter.status}</p>
+                    ${letter.status !== 'Pending' ? `<p><strong>Remarks:</strong> ${letter.remarks || 'No remarks provided'}</p>` : ''}
+                </div>
+            `;
+            
+            // Update modal content
+            document.getElementById('letterViewContainer').innerHTML = letterHtml;
+            
+            // Show/hide response form based on letter status
+            document.getElementById('responseForm').style.display = letter.status === 'Pending' ? 'block' : 'none';
+            
+            // Show modal
+            document.getElementById('viewLetterModal').style.display = 'block';
+        }
+        
+        // Function to close modal
+        function closeModal() {
+            document.getElementById('viewLetterModal').style.display = 'none';
+            document.getElementById('responseRemarks').value = '';
+            currentLetterId = null;
+        }
+        
+        // Function to approve letter
+        function approveLetter(letterId) {
+            // If called from view modal, use current letter ID
+            const id = letterId || currentLetterId;
+            if (!id) return;
+            
+            // Get remarks if responding from modal
+            const remarks = document.getElementById('responseRemarks').value;
+            
+            // Update letter status
+            updateLetterStatus(id, 'Approved', remarks);
+            
+            // Close modal if approving from there
+            if (!letterId) {
+                closeModal();
+            }
+        }
+        
+        // Function to reject letter
+        function rejectLetter(letterId) {
+            // If called from view modal, use current letter ID
+            const id = letterId || currentLetterId;
+            if (!id) return;
+            
+            // Get remarks if responding from modal
+            const remarks = document.getElementById('responseRemarks').value;
+            
+            // Validate remarks for rejection
+            if (!letterId && !remarks.trim()) {
+                alert('Please provide remarks explaining why you are rejecting this request.');
+                return;
+            }
+            
+            // Update letter status
+            updateLetterStatus(id, 'Rejected', remarks);
+            
+            // Close modal if rejecting from there
+            if (!letterId) {
+                closeModal();
+            }
+        }
+        
+        // Function to update letter status
+        function updateLetterStatus(letterId, status, remarks) {
+            const allRequests = JSON.parse(localStorage.getItem('excuseRequests')) || [];
+            const letterIndex = allRequests.findIndex(req => req.id === letterId);
+            
+            if (letterIndex === -1) {
+                alert('Letter not found!');
+                return;
+            }
+            
+            // Update the letter status and remarks
+            allRequests[letterIndex].status = status;
+            allRequests[letterIndex].remarks = remarks || '';
+            allRequests[letterIndex].responseDate = new Date().toISOString();
+            
+            // Save back to local storage
+            localStorage.setItem('excuseRequests', JSON.stringify(allRequests));
+            
+            // Reload letters
+            loadExcuseLetters();
+            
+            // Show success message
+            alert(`The excuse letter has been ${status.toLowerCase()} successfully.`);
+        }
+        
+        // Function for logout
+        function logout() {
+            if (confirm('Are you sure you want to log out?')) {
+                // Clear session storage
+                sessionStorage.removeItem('loggedInInstructor');
+                
+                // Redirect to login page
+                window.location.href = 'student-login.html';
+            }
+        }
+        
+        // Populate sample data if needed for testing
+        function populateSampleData() {
+            // Check if instructor schedules exist
+            if (!localStorage.getItem('instructorSchedules')) {
+                const sampleSchedules = [
+                    {
+                        id: "sched1",
+                        instructorName: "Jane Doe",
+                        institute: "Institute of Computing Studies",
+                        course: "Bachelor of Science in Information Technology",
+                        yearLevel: "3rd",
+                        section: "A",
+                        subjectCode: "IT301",
+                        subjectTitle: "Web Development",
+                        units: 3,
+                        schedule: "Monday 8:00 AM - 11:00 AM"
+                    },
+                    {
+                        id: "sched2",
+                        instructorName: "Jane Doe",
+                        institute: "Institute of Computing Studies",
+                        course: "Bachelor of Science in Information Technology",
+                        yearLevel: "2nd",
+                        section: "B",
+                        subjectCode: "IT201",
+                        subjectTitle: "Database Management",
+                        units: 3,
+                        schedule: "Tuesday 1:00 PM - 4:00 PM"
+                    }
+                ];
+                
+                localStorage.setItem('instructorSchedules', JSON.stringify(sampleSchedules));
+            }
+            
+            // Check if excuse requests exist
+            if (!localStorage.getItem('excuseRequests')) {
+                const today = new Date();
+                const yesterday = new Date(today);
+                yesterday.setDate(yesterday.getDate() - 1);
+                
+                const sampleRequests = [
+                    {
+                        id: "req1",
+                        studentNumber: "2023-0001",
+                        studentName: "John Smith",
+                        institute: "Institute of Computing Studies",
+                        course: "Bachelor of Science in Information Technology",
+                        yearLevel: "3rd",
+                        section: "A",
+                        subjectCode: "IT301",
+                        subjectTitle: "Web Development",
+                        instructorName: "Jane Doe",
+                        startWeek: "3",
+                        endWeek: "3",
+                        reason: "Medical/Health Issue",
+                        explanation: "I had a severe case of flu and was advised by my doctor to rest. I have attached my medical certificate as proof.",
+                        hasAttachment: true,
+                        submissionDate: today.toISOString(),
+                        status: "Pending",
+                        remarks: "",
+                        recipients: []
+                    },
+                    {
+                        id: "req2",
+                        studentNumber: "2023-0002",
+                        studentName: "Mary Johnson",
+                        institute: "Institute of Computing Studies",
+                        course: "Bachelor of Science in Information Technology",
+                        yearLevel: "2nd",
+                        section: "B",
+                        subjectCode: "IT201",
+                        subjectTitle: "Database Management",
+                        instructorName: "Jane Doe",
+                        startWeek: "5",
+                        endWeek: "6",
+                        reason: "Family Emergency",
+                        explanation: "There was a family emergency that required my immediate attention and presence. I had to travel to our province to attend to this matter.",
+                        hasAttachment: false,
+                        submissionDate: yesterday.toISOString(),
+                        status: "Approved",
+                        remarks: "Approved based on prior good attendance record.",
+                        recipients: []
+                    },
+                    {
+                        id: "req3",
+                        studentNumber: "2023-0003",
+                        studentName: "Robert Wilson",
+                        institute: "Institute of Computing Studies",
+                        course: "Bachelor of Science in Information Technology",
+                        yearLevel: "3rd",
+                        section: "A",
+                        subjectCode: "IT301",
+                        subjectTitle: "Web Development",
+                        instructorName: "Jane Doe",
+                        startWeek: "4",
+                        endWeek: "4",
+                        reason: "Academic Competition",
+                        explanation: "I was representing our college in a regional programming competition. I have attached the official invitation letter from the event organizers.",
+                        hasAttachment: true,
+                        submissionDate: yesterday.toISOString(),
+                        status: "Rejected",
+                        remarks: "Competition schedule should have been communicated in advance.",
+                        recipients: []
+                    }
+                ];
+                
+                localStorage.setItem('excuseRequests', JSON.stringify(sampleRequests));
+            }
+        }
+        
+        // Initialize page when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check login status
+            const instructor = checkLogin();
+            if (!instructor) return;
+            
+            // Populate sample data if needed
+            populateSampleData();
+            
+            // Load excuse letters
+            loadExcuseLetters();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,252 @@
+import React, { useState } from 'react';
+
+const StudentEnrollmentRecord = () => {
+  // Sample initial data
+  const initialStudents = [
+    { id: 1, name: 'John Smith', section: 'A', studentNumber: '2024001', year: '2024-2025', course: 'Computer Science', cca: 'Basketball', email: 'john.smith@email.com' },
+    { id: 2, name: 'Maria Garcia', section: 'B', studentNumber: '2024015', year: '2024-2025', course: 'Biology', cca: 'Chess Club', email: 'maria.g@email.com' },
+    { id: 3, name: 'James Lee', section: 'A', studentNumber: '2025032', year: '2025-2026', course: 'Psychology', cca: 'Debate Team', email: 'james.l@email.com' },
+    { id: 4, name: 'Sarah Johnson', section: 'C', studentNumber: '2026008', year: '2026-2027', course: 'Business', cca: 'Student Council', email: 'sarah.j@email.com' }
+  ];
+
+  const [students, setStudents] = useState(initialStudents);
+  const [newStudent, setNewStudent] = useState({
+    name: '',
+    section: '',
+    studentNumber: '',
+    year: '2024-2025',
+    course: '',
+    cca: '',
+    email: ''
+  });
+  const [filters, setFilters] = useState({
+    name: '',
+    section: '',
+    year: 'all'
+  });
+
+  // Handle input changes for new student form
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewStudent(prev => ({ ...prev, [name]: value }));
+  };
+
+  // Handle filter changes
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters(prev => ({ ...prev, [name]: value }));
+  };
+
+  // Add new student
+  const addStudent = (e) => {
+    e.preventDefault();
+    const newId = students.length > 0 ? Math.max(...students.map(s => s.id)) + 1 : 1;
+    setStudents([...students, { ...newStudent, id: newId }]);
+    setNewStudent({
+      name: '',
+      section: '',
+      studentNumber: '',
+      year: '2024-2025',
+      course: '',
+      cca: '',
+      email: ''
+    });
+  };
+
+  // Filter students based on selected filters
+  const filteredStudents = students.filter(student => {
+    const nameMatch = student.name.toLowerCase().includes(filters.name.toLowerCase());
+    const sectionMatch = filters.section === '' || student.section === filters.section;
+    const yearMatch = filters.year === 'all' || student.year === filters.year;
+    return nameMatch && sectionMatch && yearMatch;
+  });
+
+  // Get unique sections for the dropdown
+  const sections = [...new Set(students.map(s => s.section))].filter(Boolean).sort();
+
+  return (
+    <div className="p-6 max-w-6xl mx-auto bg-white rounded-lg shadow">
+      <h1 className="text-2xl font-bold mb-6">Student Enrollment Records</h1>
+      
+      {/* Filter Section */}
+      <div className="mb-8 p-4 bg-gray-50 rounded-lg">
+        <h2 className="text-lg font-semibold mb-4">Filter Options</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Filter by Name</label>
+            <input
+              type="text"
+              name="name"
+              value={filters.name}
+              onChange={handleFilterChange}
+              className="w-full p-2 border rounded focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Search by name..."
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Filter by Section</label>
+            <select
+              name="section"
+              value={filters.section}
+              onChange={handleFilterChange}
+              className="w-full p-2 border rounded focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="">All Sections</option>
+              {sections.map(section => (
+                <option key={section} value={section}>Section {section}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Filter by Academic Year</label>
+            <select
+              name="year"
+              value={filters.year}
+              onChange={handleFilterChange}
+              className="w-full p-2 border rounded focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="all">All Years</option>
+              <option value="2024-2025">2024-2025</option>
+              <option value="2025-2026">2025-2026</option>
+              <option value="2026-2027">2026-2027</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      
+      {/* Add New Student Form */}
+      <div className="mb-8 p-4 bg-blue-50 rounded-lg">
+        <h2 className="text-lg font-semibold mb-4">Add New Student</h2>
+        <form onSubmit={addStudent}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+              <input
+                type="text"
+                name="name"
+                value={newStudent.name}
+                onChange={handleInputChange}
+                required
+                className="w-full p-2 border rounded focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Section</label>
+              <input
+                type="text"
+                name="section"
+                value={newStudent.section}
+                onChange={handleInputChange}
+                required
+                className="w-full p-2 border rounded focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Student Number</label>
+              <input
+                type="text"
+                name="studentNumber"
+                value={newStudent.studentNumber}
+                onChange={handleInputChange}
+                required
+                className="w-full p-2 border rounded focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Academic Year</label>
+              <select
+                name="year"
+                value={newStudent.year}
+                onChange={handleInputChange}
+                required
+                className="w-full p-2 border rounded focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="2024-2025">2024-2025</option>
+                <option value="2025-2026">2025-2026</option>
+                <option value="2026-2027">2026-2027</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Course</label>
+              <input
+                type="text"
+                name="course"
+                value={newStudent.course}
+                onChange={handleInputChange}
+                required
+                className="w-full p-2 border rounded focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">CCA</label>
+              <input
+                type="text"
+                name="cca"
+                value={newStudent.cca}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <input
+                type="email"
+                name="email"
+                value={newStudent.email}
+                onChange={handleInputChange}
+                required
+                className="w-full p-2 border rounded focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+          </div>
+          <button
+            type="submit"
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Add Student
+          </button>
+        </form>
+      </div>
+      
+      {/* Students Table */}
+      <div className="overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Section</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student Number</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Year</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CCA</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {filteredStudents.map((student) => (
+              <tr key={student.id}>
+                <td className="px-6 py-4 whitespace-nowrap">{student.name}</td>
+                <td className="px-6 py-4 whitespace-nowrap">Section {student.section}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{student.studentNumber}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{student.year}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{student.course}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{student.cca}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{student.email}</td>
+              </tr>
+            ))}
+            {filteredStudents.length === 0 && (
+              <tr>
+                <td colSpan="7" className="px-6 py-4 text-center text-gray-500">No records found matching your filters</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+      <div className="mt-4 text-sm text-gray-600">
+        Showing {filteredStudents.length} of {students.length} total records
+      </div>
+    </div>
+  );
+};
+
+export default StudentEnrollmentRecord;

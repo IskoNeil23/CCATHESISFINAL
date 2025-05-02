@@ -1,0 +1,310 @@
+h1 {
+    color: white;
+}
+body {
+    background-color: white;
+    font-family: "Lato", sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Top navigation bar */
+.topnav {
+    width: 100%;
+    background-color: darkgreen;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: 0.5s;
+    height: 60px;
+}
+
+.topnav .nav-left {
+    display: flex;
+    align-items: center;
+}
+
+.topnav img {
+    height: 50px;
+    margin-left: 10px;
+}
+
+.topnav h3 {
+    color: white;
+    margin-left: 10px;
+}
+
+.logout-btn {
+    background-color: #b22222;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    margin-right: 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.logout-btn:hover {
+    background-color: #8b0000;
+}
+
+/* Modify the transition for top nav when sidebar is open */
+.topnav.shifted {
+    width: calc(100% - 250px);
+    margin-left: 250px;
+}
+
+.sidebar {
+    text-align: center;
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 3;
+    top: 0;
+    left: 0;
+    background-color: darkgreen;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+.sidebar a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #ffffff;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidebar a:hover {
+    color: #000000;
+    background-color: wheat;
+}
+
+/* Special styling for the Class Records link */
+.sidebar a[href="studentCOR.html"] {
+    background-color: wheat;
+    color: #000000;
+}
+
+.sidebar .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+.openbtn {
+    font-size: 20px;
+    cursor: pointer;
+    background-color: transparent;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+}
+
+.openbtn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+#main {
+    background-color: white;
+    transition: margin-left .5s;
+    border-radius: 25px;
+    border: 2px solid white;
+    padding: 16px;
+    margin-top: 60px; /* Add margin to accommodate top nav */
+}
+
+.navlog {
+    height: 150px;
+    text-align: center;
+    align-items: center;
+    width: 150px;
+}
+
+/* Class Records specific styles */
+.controls {
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+.control-group {
+    margin-right: 20px;
+}
+
+select, input, button {
+    padding: 8px;
+    margin: 5px 0;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+button {
+    background-color: darkgreen;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 8px 16px;
+}
+
+button:hover {
+    background-color: #006400;
+}
+
+button.delete-btn {
+    background-color: #b22222;
+}
+
+button.delete-btn:hover {
+    background-color: #8b0000;
+}
+
+.attendance-table {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 800px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+th {
+    background-color: darkgreen;
+    color: white;
+    position: sticky;
+    top: 0;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+td.student-name {
+    text-align: left;
+    font-weight: bold;
+    background-color: #e6e6e6;
+    position: sticky;
+    left: 0;
+}
+
+td.editable {
+    cursor: pointer;
+}
+
+td.present {
+    background-color: #c8e6c9;
+}
+
+td.absent {
+    background-color: #ffcdd2;
+}
+
+.status-cell {
+    width: 80px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 4;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 50%;
+    max-width: 600px;
+}
+
+.modal-controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    justify-content: flex-end;
+}
+
+.student-list {
+    margin-top: 15px;
+}
+
+.student-list textarea {
+    width: 100%;
+    height: 200px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.date-header {
+    min-width: 120px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.legend {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+.legend-item {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.legend-color {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+    vertical-align: middle;
+    border: 1px solid #ccc;
+}
+
+.legend-present {
+    background-color: #c8e6c9;
+}
+
+.legend-absent {
+    background-color: #ffcdd2;
+}
+
+.legend-unmarked {
+    background-color: white;
+}
+
+.section-title {
+    margin: 0;
+    color: darkgreen;
+}

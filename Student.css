@@ -1,0 +1,540 @@
+
+.sidebar {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color:darkgreen;
+    overflow-x: hidden;
+    padding-top: 60px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.sidebar a {
+    padding: 10px 15px;
+    text-decoration: none;
+    font-size: 18px;
+    color: white;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidebar a:hover {
+    background-color:wheat;
+}
+
+
+
+
+/* Make sure the main content area is properly shifted */
+#main {
+    margin-left: 250px;
+    padding: 20px;
+    transition: margin-left 0.5s;
+}
+
+/* Top navigation adjustments */
+.topnav.shifted {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+}
+    /* Sidebar styling */
+    .sidebar a.active {
+        background-color: wheat; 
+        color: rgb(0, 0, 0);
+        font-weight: bold;
+    }
+    
+    /* Styles for the instructor management page */
+    .form-container {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 15px;
+    }
+
+    .form-group {
+        margin-right: 20px;
+        margin-bottom: 15px;
+        flex: 1 0 200px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .form-group input, .form-group select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .btn-container {
+        margin-top: 20px;
+        text-align: right;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .btn-primary {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .btn-secondary {
+        background-color: #f0f0f0;
+        color: #333;
+        margin-right: 10px;
+    }
+
+    /* Filters for instructors */
+    .filters-container {
+        background-color: #f9f9f9;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .filter-group {
+        margin-right: 15px;
+        min-width: 150px;
+        margin-bottom: 10px;
+    }
+
+    .filter-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .filter-group select {
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        width: 100%;
+    }
+
+    .search-box {
+        flex: 1;
+        margin-right: 15px;
+        min-width: 200px;
+    }
+
+    .search-box input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    /* Table styles */
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .data-table th, .data-table td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+    }
+
+    .data-table th {
+        background-color: #f2f2f2;
+        position: sticky;
+        top: 0;
+    }
+
+    .data-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .data-table tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .table-container {
+        overflow-x: auto;
+        max-height: 500px;
+        overflow-y: auto;
+    }
+
+    .section-title {
+        margin-top: 30px;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #eee;
+    }
+
+    /* Action buttons in table */
+    .action-btns {
+        display: flex;
+        gap: 5px;
+    }
+
+    .action-btn {
+        padding: 5px 10px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .edit-btn {
+        background-color: #2196F3;
+        color: white;
+    }
+
+    .delete-btn {
+        background-color: #f44336;
+        color: white;
+    }
+
+    .view-btn {
+        background-color: #ff9800;
+        color: white;
+    }
+
+    /* Instructor cards */
+    .instructor-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .instructor-card {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        padding: 20px;
+        transition: transform 0.3s ease;
+    }
+
+    .instructor-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .instructor-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .instructor-name {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .instructor-id {
+        color: #666;
+        font-size: 14px;
+    }
+
+    .instructor-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .detail-item {
+        margin-bottom: 8px;
+    }
+
+    .detail-label {
+        font-weight: bold;
+        color: #555;
+        font-size: 13px;
+        display: block;
+    }
+
+    .detail-value {
+        margin-top: 3px;
+    }
+
+    /* Database action buttons */
+    .db-actions {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .db-actions button {
+        padding: 10px 15px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    
+    .db-actions button.import-btn {
+        background-color: #2196F3;
+    }
+    
+    /* Hidden file input */
+    #fileInput {
+        display: none;
+    }
+    
+    /* Last saved indicator */
+    .last-saved {
+        font-style: italic;
+        color: #666;
+        margin-top: 5px;
+    }
+.sidebar a.active {
+    background-color:wheat; 
+    color: rgb(0, 0, 0); /* White text */
+    
+}
+h1{
+    color: white;
+}
+body {
+background-color: white;
+font-family: "Lato", sans-serif;
+margin: 0;
+padding: 0;
+}
+
+/* Top navigation bar */
+.topnav {
+width: 100%;
+background-color: darkgreen;
+overflow: hidden;
+position: fixed;
+top: 0;
+z-index: 2;
+display: flex;
+align-items: center;
+justify-content: space-between;
+transition: 0.5s;
+height: 60px;
+}
+
+.topnav .nav-left {
+display: flex;
+align-items: center;
+}
+
+.topnav img {
+height: 50px;
+margin-left: 10px;
+}
+
+.topnav h3 {
+color: white;
+margin-left: 10px;
+}
+
+.logout-btn {
+background-color: #b22222;
+color: white;
+border: none;
+padding: 8px 16px;
+margin-right: 15px;
+border-radius: 4px;
+cursor: pointer;
+font-weight: bold;
+transition: background-color 0.3s;
+}
+
+.logout-btn:hover {
+background-color: #8b0000;
+}
+
+/* Added styles to adjust the top nav when sidebar is open */
+.topnav.shifted {
+width: calc(100% - 250px);
+margin-left: 250px;
+}
+
+.sidebar {
+text-align: center;
+height: 100%;
+width: 0;
+position: fixed;
+z-index: 3;
+top: 0;
+left: 0;
+background-color: darkgreen;
+overflow-x: hidden;
+transition: 0.5s;
+padding-top: 60px;
+}
+
+.sidebar a {
+padding: 8px 8px 8px 32px;
+text-decoration: none;
+font-size: 25px;
+color: #ffffff;
+display: block;
+transition: 0.3s;
+}
+
+.sidebar a:hover {
+color: #000000;
+background-color: wheat;
+}
+
+.sidebar .closebtn {
+position: absolute;
+top: 0;
+right: 25px;
+font-size: 36px;
+margin-left: 50px;
+}
+
+.openbtn {
+font-size: 20px;
+cursor: pointer;
+background-color: transparent;
+color: rgb(0, 0, 0);
+padding: 10px 15px;
+border: none;
+}
+
+.openbtn:hover {
+background-color: white;
+}
+
+#main {
+background-color: white;
+transition: margin-left .5s;
+border-radius: 25px;
+border: 2px solid white;
+padding: 16px;
+margin-top: 60px; /* Add margin to accommodate top nav */
+}
+
+.navlog {
+height: 150px;
+text-align: center;
+align-items: center;
+width: 150px;
+}
+
+/* Page transition styles */
+.page-content {
+opacity: 1;
+transition: opacity 0.5s ease-in-out;
+}
+
+.page-content.fade-out {
+opacity: 0;
+}
+
+/* Excuse Letter specific styles */
+.letter-form {
+background-color: #f9f9f9;
+padding: 20px;
+border-radius: 10px;
+margin-top: 20px;
+}
+
+.form-group {
+margin-bottom: 15px;
+}
+
+.form-group label {
+display: block;
+margin-bottom: 5px;
+font-weight: bold;
+}
+
+.form-group input, .form-group select, .form-group textarea {
+width: 100%;
+padding: 8px;
+border: 1px solid #ddd;
+border-radius: 5px;
+}
+
+.form-group textarea {
+height: 120px;
+}
+
+.submit-btn {
+background-color: darkgreen;
+color: white;
+padding: 10px 20px;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+font-size: 16px;
+}
+
+.submit-btn:hover {
+background-color: #006400;
+}
+
+.letter-list {
+margin-top: 30px;
+}
+
+.letter-item {
+border: 1px solid #ddd;
+border-radius: 5px;
+padding: 15px;
+margin-bottom: 10px;
+background-color: white;
+}
+
+.letter-status {
+display: inline-block;
+padding: 5px 10px;
+border-radius: 15px;
+font-size: 12px;
+font-weight: bold;
+}
+
+.status-pending {
+background-color: #ffeeba;
+color: #856404;
+}
+
+.status-approved {
+background-color: #d4edda;
+color: #155724;
+}
+
+.status-rejected {
+background-color: #f8d7da;
+color: #721c24;
+}
+
+.file-preview {
+max-width: 100%;
+margin-top: 10px;
+border: 1px solid #ddd;
+padding: 10px;
+border-radius: 5px;
+}
+
+.letter-actions {
+margin-top: 10px;
+}
